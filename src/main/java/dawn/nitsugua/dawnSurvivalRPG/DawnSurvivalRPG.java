@@ -1,0 +1,16 @@
+package dawn.nitsugua.dawnSurvivalRPG;
+
+import org.bukkit.plugin.java.JavaPlugin;
+
+public final class DawnSurvivalRPG extends JavaPlugin {
+
+    @Override
+    public void onEnable() {
+        // Plugin startup logic
+    }
+
+    @Override
+    public void onDisable() {
+        // Plugin shutdown logic
+    }
+}
