@@ -6,10 +6,10 @@ import org.jetbrains.annotations.Nullable;
 
 public class CustomItem {
     //this is the custom item object
-    private String customMaterial;
-    private String name;
-    private Material parentMaterial;
-    private String customModelData;
+    protected String customMaterial;
+    protected String name;
+    protected Material parentMaterial;
+    protected String customModelData; //why protected? Because CustomWeapon or other classes might extend
 
     public CustomItem(@NotNull String customMaterial, @NotNull String name, @NotNull Material parentMaterial, @Nullable String customModelData) {
         this.customMaterial = customMaterial;
