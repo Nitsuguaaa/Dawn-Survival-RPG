@@ -1,11 +1,16 @@
 package dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.GiveSubcommands;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -21,10 +26,34 @@ public class GiveCommand {
     @NotNull
     public LiteralArgumentBuilder<CommandSourceStack> build() {
         return Commands.literal("give")
+                //Argument 1 <item>
+                .then(Commands.argument("item", StringArgumentType.word())
+                    .executes(ctx -> {
+                        if(!(ctx.getSource().getSender() instanceof Player player)) {
+                            ctx.getSource().getSender().sendMessage("For player's only");
+                            return Command.SINGLE_SUCCESS;
+                        }
+
+                        String commandItem = ctx.getArgument("item", String.class);
+
+                        player.sendMessage(Component.text("You said: " + commandItem));
+
+                        ItemStack item = new ItemStack(Material.DIAMOND_CHESTPLATE, 1);
+                        Inventory inventory = player.getInventory();
+
+                        inventory.addItem(item);
+                        player.sendMessage(Component.text("Gave you 1 Diamond Chestplate"));
+
+                        return Command.SINGLE_SUCCESS;
+                    })
+                )
+                //Runs if item is not stated
                 .executes(ctx -> {
-                    ctx.getSource().getSender().sendMessage(
-                            Component.text("Giving something")
-                    );
+                    if(!(ctx.getSource().getSender() instanceof Player player)) {
+                        ctx.getSource().getSender().sendMessage("For player's only");
+                        return Command.SINGLE_SUCCESS;
+                    }
+                    ctx.getSource().getExecutor().sendMessage(Component.text("You did not provide an item."));
                     return Command.SINGLE_SUCCESS;
                 });
     }
