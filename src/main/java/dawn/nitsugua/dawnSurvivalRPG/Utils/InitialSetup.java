@@ -5,15 +5,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 
 public class InitialSetup {
-    private final DawnSurvivalRPG plugin;
 
-    public InitialSetup(@NotNull DawnSurvivalRPG plugin) {
-        this.plugin = plugin;
-    }
-
-    public void runFirstInitialize() {
+    public static void runFirstInitialize(@NotNull DawnSurvivalRPG plugin) {
         File pluginFolder = plugin.getDataFolder();
         if (!pluginFolder.exists()) {
             pluginFolder.mkdirs();
@@ -44,7 +40,7 @@ public class InitialSetup {
                 yaml.save(sampleItem);
                 plugin.getLogger().info("Created a sample item: end_sword.yml");
 
-            } catch (Exception e) {
+            } catch (IOException e) {
                 plugin.getLogger().info("Failed to create sample item: " + e.getMessage());
             }
         }

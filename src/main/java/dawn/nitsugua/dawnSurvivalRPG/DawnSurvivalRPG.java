@@ -18,9 +18,15 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        registerCommands();
+        getLogger().info("=============================================");
+        getLogger().info("     Dawn Survival RPG v" + getPluginMeta().getVersion());
 
-        getServer().getPluginManager().registerEvents(new PlayerBreakingBlockListener(), this);
+        InitialSetup.runFirstInitialize(instance);
+        registerCommands();
+        registerListeners();
+        registerItems();
+
+        getLogger().info("=============================================");
     }
 
     @Override
@@ -39,8 +45,20 @@ public final class DawnSurvivalRPG extends JavaPlugin {
 
         getLogger().info("Commands Registered!");
 
+    }
+
+    private void registerListeners() {
+        getLogger().info("Registering Listeners...");
+
+        getServer().getPluginManager().registerEvents(new PlayerBreakingBlockListener(), this);
+
+        getLogger().info("Listeners Registered!");
+    }
+
+    private void registerItems() {
         getLogger().info("Registering Custom Items...");
 
+        getLogger().info("Custom Items Registered!");
     }
 
     @NotNull
