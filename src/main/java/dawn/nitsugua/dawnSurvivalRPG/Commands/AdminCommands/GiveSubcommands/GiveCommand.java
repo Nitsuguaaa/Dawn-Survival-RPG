@@ -6,11 +6,15 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.registry.keys.ItemTypeKeys;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -38,11 +42,16 @@ public class GiveCommand {
 
                         player.sendMessage(Component.text("You said: " + commandItem));
 
-                        ItemStack item = new ItemStack(Material.DIAMOND_CHESTPLATE, 1);
+                        ItemStack item = new ItemStack(Material.DIAMOND_SWORD, 1);
                         Inventory inventory = player.getInventory();
 
+                        ItemMeta itemMeta = item.getItemMeta();
+
+                        itemMeta.customName(Component.text("End Sword"));
+                        item.setItemMeta(itemMeta);
+
                         inventory.addItem(item);
-                        player.sendMessage(Component.text("Gave you 1 Diamond Chestplate"));
+                        player.sendMessage(Component.text("Gave you 1 Diamond Sword"));
 
                         return Command.SINGLE_SUCCESS;
                     })
