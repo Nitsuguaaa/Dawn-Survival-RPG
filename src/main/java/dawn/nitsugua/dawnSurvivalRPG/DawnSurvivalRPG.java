@@ -1,6 +1,7 @@
 package dawn.nitsugua.dawnSurvivalRPG;
 
 import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.ItemCommand;
+import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemLoader;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.TestListeners.PlayerBreakingBlockListener;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.InitialSetup;
 import io.papermc.paper.command.brigadier.Commands;
@@ -57,7 +58,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
 
     private void registerItems() {
         getLogger().info("Registering Custom Items...");
-
+        CustomItemLoader.initialize(instance);
         getLogger().info("Custom Items Registered!");
     }
 

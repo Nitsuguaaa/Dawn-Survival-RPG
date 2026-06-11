@@ -44,5 +44,20 @@ public class InitialSetup {
                 plugin.getLogger().info("Failed to create sample item: " + e.getMessage());
             }
         }
+
+        File defaultMessages = new File(pluginFolder, "messages.yml");
+        if(!defaultMessages.exists()) {
+            try {
+                YamlConfiguration yaml = new YamlConfiguration();
+
+                yaml.set("Error", "An error occurred");
+                yaml.save(defaultMessages);
+                plugin.getLogger().info("Created a default messages: messages.yml");
+
+            } catch (IOException e) {
+
+                plugin.getLogger().info("Failed to create messages");
+            }
+        }
     }
 }

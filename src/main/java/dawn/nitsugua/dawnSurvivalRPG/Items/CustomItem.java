@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class CustomItem {
-    //this is the custom item object
+    //this is the custom item object.
     protected String customMaterial;
     protected String name;
     protected Material parentMaterial;
@@ -18,7 +18,7 @@ public class CustomItem {
         this.customModelData = (customModelData != null) ? customModelData : "none";
     }
 
-    //should onUse be here? Anyway I'll still add it
+    //should onUse be here? Anyway I'll still add it. Turns out I don't need it here
     public void onUse() {
         //check if the item has an attached class with the ability...hmm...
     }
