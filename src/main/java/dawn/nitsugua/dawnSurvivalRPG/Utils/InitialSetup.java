@@ -13,7 +13,7 @@ public class InitialSetup {
         File pluginFolder = plugin.getDataFolder();
         if (!pluginFolder.exists()) {
             pluginFolder.mkdirs();
-            plugin.getLogger().info("Created Plugin Folder");
+            plugin.getLog().info("Created Plugin Folder");
         }
 
         File itemsFolder = new File(pluginFolder, "items");

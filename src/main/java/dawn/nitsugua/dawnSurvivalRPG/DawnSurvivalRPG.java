@@ -4,30 +4,33 @@ import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.ItemCommand;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemLoader;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.TestListeners.PlayerBreakingBlockListener;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.InitialSetup;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 public final class DawnSurvivalRPG extends JavaPlugin {
-
+    private static ComponentLogger log;
     private static DawnSurvivalRPG instance;
 
     @Override
     public void onEnable() {
         instance = this;
+        log = ComponentLogger.logger("DawnRPG");
 
-        getLogger().info("=============================================");
-        getLogger().info("     Dawn Survival RPG v" + getPluginMeta().getVersion());
+        log.info(TextUtil.format("<dark_gray>=============================================</dark_gray>"));
+        log.info(TextUtil.format("     <green>Dawn Survival RPG</green> <dark_gray>v</dark_gray><white>" + getPluginMeta().getVersion() + "</white>"));
 
         InitialSetup.runFirstInitialize(instance);
         registerCommands();
         registerListeners();
         registerItems();
 
-        getLogger().info("=============================================");
+        log.info(TextUtil.format("<dark_gray>=============================================</dark_gray>"));
     }
 
     @Override
@@ -36,7 +39,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     }
 
     private void registerCommands() {
-        getLogger().info("Registering Commands...");
+        log.info(TextUtil.format("<yellow>Registering Commands...</yellow>"));
         LifecycleEventManager<Plugin> manager =this.getLifecycleManager();
         manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
             final Commands commands = event.registrar();
@@ -44,24 +47,27 @@ public final class DawnSurvivalRPG extends JavaPlugin {
             new ItemCommand(this).register(commands);
         });
 
-        getLogger().info("Commands Registered!");
+        log.info(TextUtil.format("<green>Commands Registered!</green>"));
 
     }
 
     private void registerListeners() {
-        getLogger().info("Registering Listeners...");
+        log.info(TextUtil.format("<yellow>Registering Listeners...</yellow>"));
 
         getServer().getPluginManager().registerEvents(new PlayerBreakingBlockListener(), this);
 
-        getLogger().info("Listeners Registered!");
+        log.info(TextUtil.format("<green>Listeners Registered!</green>"));
     }
 
     private void registerItems() {
-        getLogger().info("Registering Custom Items...");
+        log.info(TextUtil.format("<yellow>Registering Custom Items...</yellow>"));
         CustomItemLoader.initialize(instance);
-        getLogger().info("Custom Items Registered!");
+        log.info(TextUtil.format("<green>Custom Items Registered!</green>"));
     }
 
     @NotNull
     public static DawnSurvivalRPG getInstance() {return instance;}
+
+    @NotNull
+    public ComponentLogger getLog() {return log;}
 }
