@@ -46,6 +46,9 @@ public class GiveCommand {
 
                         /*
                             This will be removed once Custom Item is finished
+
+                            TODO:
+                                - remove static custom item and replace with item factory
                          */
                         player.sendMessage(Component.text("You said: " + commandItem));
 
@@ -57,7 +60,7 @@ public class GiveCommand {
                         itemMeta.customName(Component.text("End Sword"));
                         AttributeModifier newAttr = new AttributeModifier(
                                 NamespacedKey.minecraft("base_attack_damage"),
-                                1000,
+                                999,
                                 AttributeModifier.Operation.ADD_NUMBER,
                                 EquipmentSlotGroup.MAINHAND
                         );
