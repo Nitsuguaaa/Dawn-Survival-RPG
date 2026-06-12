@@ -1,4 +1,4 @@
 package dawn.nitsugua.dawnSurvivalRPG.Utils;
 
-public class Messages {
+public class MessagesUtil {
 }
