@@ -4,11 +4,13 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.registry.keys.ItemTypeKeys;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -50,7 +52,7 @@ public class GiveCommand {
                             TODO:
                                 - remove static custom item and replace with item factory
                          */
-                        player.sendMessage(Component.text("You said: " + commandItem));
+                        player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.SUCCESS, "Running give command"));
 
                         ItemStack item = new ItemStack(Material.DIAMOND_SWORD, 1);
                         Inventory inventory = player.getInventory();
@@ -69,7 +71,7 @@ public class GiveCommand {
 
 
                         inventory.addItem(item);
-                        player.sendMessage(Component.text("Gave you 1 Diamond Sword"));
+                        player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.SUCCESS, "Gave you x" + item.getAmount() + " " + PlainTextComponentSerializer.plainText().serialize(item.displayName())));
 
                         return Command.SINGLE_SUCCESS;
                     })
@@ -80,7 +82,7 @@ public class GiveCommand {
                         ctx.getSource().getSender().sendMessage("For player's only");
                         return Command.SINGLE_SUCCESS;
                     }
-                    ctx.getSource().getExecutor().sendMessage(Component.text("You did not provide an item."));
+                    player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.FAILURE, "Please provide an item!"));
                     return Command.SINGLE_SUCCESS;
                 });
     }

@@ -21,7 +21,7 @@ public class ItemCommand {
 
     public void register(@NotNull Commands commands) {
         LiteralCommandNode<CommandSourceStack> dawnrpgNode = Commands.literal("dawnitem")
-                .requires(sender -> sender.getSender().isOp())
+                .requires(sender -> sender.getSender().isOp()) //only for admin
                 .executes(ctx -> {
                     sendPluginInfo(ctx.getSource());
                     return Command.SINGLE_SUCCESS;
