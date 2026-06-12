@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.datacomponent.DataComponentTypes;
@@ -18,6 +19,7 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.checkerframework.checker.units.qual.A;
@@ -51,6 +53,7 @@ public class GiveCommand {
 
                             TODO:
                                 - remove static custom item and replace with item factory
+                                - Fix attribute shit IDK
                          */
                         player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.SUCCESS, "Running give command"));
 
@@ -59,10 +62,13 @@ public class GiveCommand {
 
                         ItemMeta itemMeta = item.getItemMeta();
 
-                        itemMeta.customName(Component.text("End Sword"));
+                        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+                        itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+
+                        itemMeta.displayName(TextUtil.format("<purple>End Sword</purple>"));
                         AttributeModifier newAttr = new AttributeModifier(
                                 NamespacedKey.minecraft("base_attack_damage"),
-                                999,
+                                9,
                                 AttributeModifier.Operation.ADD_NUMBER,
                                 EquipmentSlotGroup.MAINHAND
                         );

@@ -5,6 +5,8 @@ import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CustomItem {
@@ -15,11 +17,12 @@ public class CustomItem {
     protected String customModelData; //why protected? Because CustomWeapon or other classes might extend
     protected List<Component> lore;
 
-    public CustomItem(@NotNull String customMaterial, @NotNull String name, @NotNull Material parentMaterial, @Nullable String customModelData) {
+    public CustomItem(@NotNull String customMaterial, @NotNull String name, @NotNull Material parentMaterial, @Nullable List<Component> lore, @Nullable String customModelData) {
         this.customMaterial = customMaterial;
         this.name = name;
         this.parentMaterial = parentMaterial;
         this.customModelData = (customModelData != null) ? customModelData : "none";
+        this.lore = lore;
     }
 
     //should onUse be here? Anyway I'll still add it. Turns out I don't need it here
@@ -47,10 +50,16 @@ public class CustomItem {
         return this;
     }
 
-    public String getCustomModelData() { return (!customModelData.equals("none")) ? customModelData : null; }
+    public String getCustomModelData() { return (customModelData.equals("none")) ? null : customModelData; }
     public CustomItem setCustomModelData(String customModelData) {
         //check here if there's the same custom model data
         this.customModelData = customModelData;
+        return this;
+    }
+
+    public List<Component> getLore() {return lore.isEmpty() ? null : Collections.unmodifiableList(lore);}
+    public CustomItem setLore(List<Component> lore) {
+        this.lore = new ArrayList<>(lore);
         return this;
     }
 
