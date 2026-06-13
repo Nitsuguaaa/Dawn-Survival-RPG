@@ -12,13 +12,15 @@ import java.util.List;
 public class CustomItem {
     //this is the custom item object.
     protected String customMaterial;
+    protected String rarity;
     protected String name;
     protected Material parentMaterial;
     protected String customModelData; //why protected? Because CustomWeapon or other classes might extend
     protected List<Component> lore;
 
-    public CustomItem(@NotNull String customMaterial, @NotNull String name, @NotNull Material parentMaterial, @Nullable List<Component> lore, @Nullable String customModelData) {
+    public CustomItem(@NotNull String customMaterial, @NotNull String rarity, @NotNull String name, @NotNull Material parentMaterial, @Nullable List<Component> lore, @Nullable String customModelData) {
         this.customMaterial = customMaterial;
+        this.rarity = rarity;
         this.name = name;
         this.parentMaterial = parentMaterial;
         this.customModelData = (customModelData != null) ? customModelData : "none";

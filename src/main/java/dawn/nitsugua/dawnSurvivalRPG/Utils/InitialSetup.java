@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class InitialSetup {
 
@@ -33,9 +34,19 @@ public class InitialSetup {
             try {
                 YamlConfiguration yaml = new YamlConfiguration();
 
+                yaml.set("custom-material", "END_SWORD");
+                yaml.set("rarity", "RARE");
                 yaml.set("name", "End Sword");
-                yaml.set("damage", 20);
                 yaml.set("material", "DIAMOND_SWORD");
+                yaml.set("weapon-damage", 20);
+                yaml.set("lore", Arrays.asList(
+                   "<dark_gray>Damage:</dark_gray> <red>20",
+                   "",
+                   "<gold>Ability: Teleport</gold><bold><yellow>RIGHT CLICK</yellow></bold>",
+                   "<gray>Teleports</gray> <blue>8</blue> <gray>blocks in front of you</gray>",
+                   "<dark_gray>Mana Cost:</dark_gray> <dark_aqua>50</dark_aqua>",
+                   "<dark_gray>Cooldown:</dark_gray> <green>1s</green>"
+                ));
 
                 yaml.save(sampleItem);
                 plugin.getLogger().info("Created a sample item: end_sword.yml");

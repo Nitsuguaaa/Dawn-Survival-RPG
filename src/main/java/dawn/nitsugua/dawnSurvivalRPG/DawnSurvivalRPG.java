@@ -28,7 +28,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         InitialSetup.runFirstInitialize(instance);
         registerCommands();
         registerListeners();
-        registerItems();
+        registerManagersAndLoaders();
 
         log.info(TextUtil.format("<dark_gray>=============================================</dark_gray>"));
     }
@@ -59,10 +59,10 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         log.info(TextUtil.format("<green>Listeners Registered!</green>"));
     }
 
-    private void registerItems() {
-        log.info(TextUtil.format("<yellow>Registering Custom Items...</yellow>"));
+    private void registerManagersAndLoaders() {
+        log.info(TextUtil.format("<yellow>Registering Managers and Loaders...</yellow>"));
         CustomItemLoader.initialize(instance);
-        log.info(TextUtil.format("<green>Custom Items Registered!</green>"));
+        log.info(TextUtil.format("<green>Managers and Loaders Registered!</green>"));
     }
 
     @NotNull
