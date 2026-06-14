@@ -2,6 +2,7 @@ package dawn.nitsugua.dawnSurvivalRPG.Items;
 
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
@@ -23,7 +24,11 @@ public class CustomItemManager {
         plugin.getLog().info(TextUtil.format("<green>Successfully registered custom item: <white>" + customItem.getName()));
     }
 
+    @Nullable
     public CustomItem getCustomItem(String customMaterial) {
+        if(customItems.get(customMaterial) == null) {
+            return null;
+        }
         return customItems.get(customMaterial);
     }
 }

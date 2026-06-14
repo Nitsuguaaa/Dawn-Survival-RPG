@@ -4,6 +4,8 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
+import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItem;
+import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemManager;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -30,23 +32,23 @@ import java.awt.*;
 public class GiveCommand {
 
     private final DawnSurvivalRPG plugin;
+    private final CustomItemManager customItemManager;
 
     public GiveCommand(@NotNull DawnSurvivalRPG plugin) {
         this.plugin = plugin;
+        customItemManager = new CustomItemManager(this.plugin);
     }
 
     @NotNull
     public LiteralArgumentBuilder<CommandSourceStack> build() {
         return Commands.literal("give")
                 //Argument 1 <item>
-                .then(Commands.argument("item", StringArgumentType.word())
+                .then(Commands.literal("static-item")
                     .executes(ctx -> {
                         if(!(ctx.getSource().getSender() instanceof Player player)) {
                             ctx.getSource().getSender().sendMessage("For player's only");
                             return Command.SINGLE_SUCCESS;
                         }
-
-                        String commandItem = ctx.getArgument("item", String.class);
 
                         /*
                             This will be removed once Custom Item is finished
@@ -82,6 +84,35 @@ public class GiveCommand {
                         return Command.SINGLE_SUCCESS;
                     })
                 )
+                .then(Commands.argument("info", StringArgumentType.word())
+                        .executes(ctx -> {
+                            if(!(ctx.getSource().getSender() instanceof Player player)) {
+                                ctx.getSource().getSender().sendMessage("For player's only");
+                                return Command.SINGLE_SUCCESS;
+                            }
+
+                            String itemKey = ctx.getArgument("info", String.class);
+
+                            CustomItem customItem = customItemManager.getCustomItem(itemKey);
+                            if(customItem == null) {
+                                player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.FAILURE, "Custom Item not found!"));
+                                return Command.SINGLE_SUCCESS;
+                            }
+
+                            player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "Taking info: " + customItem.getName() +
+                                    "\n rarity: " + customItem.getRarity() +
+                                    "\n category: " + customItem.getCategory() +
+                                    "\n sub-category: " + customItem.getSubCategory() +
+                                    "\n material:" + customItem.getCustomMaterial() +
+                                    "\n parent-material: " + customItem.getParentMaterial().name() +
+                                    "\n lore:"));
+
+                            for(Component loreLine : customItem.getLore()) {
+                                player.sendMessage(loreLine);
+                            }
+
+                            return Command.SINGLE_SUCCESS;
+                        }))
                 //Runs if item is not stated
                 .executes(ctx -> {
                     if(!(ctx.getSource().getSender() instanceof Player player)) {
