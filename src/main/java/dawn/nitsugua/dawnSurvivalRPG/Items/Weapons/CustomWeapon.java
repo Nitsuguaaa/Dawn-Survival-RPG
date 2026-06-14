@@ -13,8 +13,8 @@ public class CustomWeapon extends CustomItem{
     private double weaponDamage;
     private int weaponDurability;
 
-    public CustomWeapon(@NotNull String customMaterial, @NotNull String rarity, @NotNull String name, @NotNull Material parentMaterial, double weaponDamage, int weaponDurability, @Nullable List<Component> lore, @Nullable String customModelData) {
-        super(customMaterial, rarity, name, parentMaterial, lore, customModelData);
+    public CustomWeapon(@NotNull String customMaterial, @NotNull String rarity, @NotNull String name, @NotNull Material parentMaterial, @NotNull String category, @NotNull String subCategory, double weaponDamage, int weaponDurability, @Nullable List<Component> lore, @Nullable String customModelData) {
+        super(customMaterial, rarity, name, parentMaterial, category, subCategory, lore, customModelData);
 
         this.weaponDamage = weaponDamage;
         this.weaponDurability = weaponDurability;

@@ -54,6 +54,8 @@ public class CustomItemLoader {
             String customMaterial = config.getString("custom-material");
             String rarity = config.getString("rarity");
             String name = config.getString("name");
+            String category = config.getString("category");
+            String subCategory = config.getString("sub-category");
 
             String materialName = config.getString("material");
             Material parentMaterial;
@@ -77,7 +79,7 @@ public class CustomItemLoader {
                         weaponDurability = config.getInt("weapon-durability");
                     }
 
-                    item = new CustomWeapon(customMaterial, rarity, name, parentMaterial, damage, weaponDurability, lore, customMaterial);
+                    item = new CustomWeapon(customMaterial, rarity, name, parentMaterial, category, subCategory, damage, weaponDurability, lore, customMaterial);
                     plugin.getLog().info(TextUtil.format("<green>Registering Weapon"));
                     break;
                 case "equipment":

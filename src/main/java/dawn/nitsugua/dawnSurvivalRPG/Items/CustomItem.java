@@ -17,14 +17,18 @@ public class CustomItem {
     protected Material parentMaterial;
     protected String customModelData; //why protected? Because CustomWeapon or other classes might extend
     protected List<Component> lore;
+    protected String category;
+    protected String subCategory;
 
-    public CustomItem(@NotNull String customMaterial, @NotNull String rarity, @NotNull String name, @NotNull Material parentMaterial, @Nullable List<Component> lore, @Nullable String customModelData) {
+    public CustomItem(@NotNull String customMaterial, @NotNull String rarity, @NotNull String name, @NotNull Material parentMaterial, @NotNull String category, @NotNull String subCategory, @Nullable List<Component> lore, @Nullable String customModelData) {
         this.customMaterial = customMaterial;
         this.rarity = rarity;
         this.name = name;
         this.parentMaterial = parentMaterial;
         this.customModelData = (customModelData != null) ? customModelData : "none";
         this.lore = lore;
+        this.category = category;
+        this.subCategory = subCategory;
     }
 
     //should onUse be here? Anyway I'll still add it. Turns out I don't need it here
@@ -65,5 +69,21 @@ public class CustomItem {
         return this;
     }
 
+    public String getRarity() {return rarity;}
+    public CustomItem setRarity(String rarity) {
+        this.rarity = rarity;
+        return this;
+    }
 
+    public String getCategory() {return category;}
+    public CustomItem setCategory(String category) {
+        this.category = category;
+        return this;
+    }
+
+    public String getSubCategory() {return subCategory;}
+    public CustomItem setSubCategory(String subCategory) {
+        this.subCategory = subCategory;
+        return this;
+    }
 }
