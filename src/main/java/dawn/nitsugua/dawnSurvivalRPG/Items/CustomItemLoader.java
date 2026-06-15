@@ -52,10 +52,10 @@ public class CustomItemLoader {
             CustomItem item = null;
 
             String customMaterial = config.getString("custom-material");
-            plugin.getLog().info("[CustomItemLoader] Getting: " + customMaterial);
+            // debug: plugin.getLog().info("[CustomItemLoader] Getting: " + customMaterial);
             String rarity = config.getString("rarity");
             String name = config.getString("name");
-            plugin.getLog().info("[CustomItemLoader] Getting: " + name);
+            //debug: plugin.getLog().info("[CustomItemLoader] Getting: " + name);
             String category = config.getString("category");
             String subCategory = config.getString("sub-category");
 

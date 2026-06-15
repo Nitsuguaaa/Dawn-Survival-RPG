@@ -22,13 +22,11 @@ public class CustomItemManager {
         //register it here
         customItems.put(customItem.customMaterial, customItem);
         plugin.getLog().info(TextUtil.format("<green>Successfully registered custom item: <white>" + customItem.getItemName() + " <green> With custom material name: <white>" + customItem.getCustomMaterial()));
-        plugin.getLog().info("getting custom item: " + customItems.get(customItem.customMaterial).getItemName());
     }
 
     @Nullable
     public CustomItem getCustomItem(String customMaterial) {
-        plugin.getLog().info("Available keys: " + customItems.keySet());
-        //plugin.getLog().info(TextUtil.format("[CustomItemManager]<green>Getting item: " + customItems.get("END_SWORD").getCustomMaterial()));
+        //For debugging: plugin.getLog().info("Available keys: " + customItems.keySet());
         if(customItems.get(customMaterial) == null) {
             return null;
         }

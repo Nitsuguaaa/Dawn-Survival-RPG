@@ -33,7 +33,11 @@ public class CustomItem {
 
     //should onUse be here? Anyway I'll still add it. Turns out I don't need it here
 
-    @Deprecated //Replaced with standalone Skill registry
+    /**
+     * Deprecated
+     * Replaced with standalone Skill registry
+     */
+    @Deprecated
     public void onUse() {
         //check if the item has an attached class with the ability...hmm...
     }

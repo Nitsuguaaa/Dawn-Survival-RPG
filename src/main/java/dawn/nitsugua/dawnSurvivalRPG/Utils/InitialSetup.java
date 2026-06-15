@@ -44,7 +44,7 @@ public class InitialSetup {
                 yaml.set("lore", Arrays.asList(
                    "<dark_gray>Damage:</dark_gray> <red>20",
                    "",
-                   "<gold>Ability: Teleport</gold><bold><yellow>RIGHT CLICK</yellow></bold>",
+                   "<gold>Ability: Teleport</gold><bold><yellow> RIGHT CLICK</yellow></bold>",
                    "<gray>Teleports</gray> <blue>8</blue> <gray>blocks in front of you</gray>",
                    "<dark_gray>Mana Cost:</dark_gray> <dark_aqua>50</dark_aqua>",
                    "<dark_gray>Cooldown:</dark_gray> <green>1s</green>"
