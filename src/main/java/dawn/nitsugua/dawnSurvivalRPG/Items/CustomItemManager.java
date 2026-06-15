@@ -16,16 +16,19 @@ public class CustomItemManager {
 
     //This contained the runtime storage of all custom items.
     //When a customitem is needed, CustomItemFactory will retrieve data here and fabricate a world item of that instance
-    private HashMap<String, CustomItem> customItems = new HashMap<>();
+    public static HashMap<String, CustomItem> customItems = new HashMap<>();
 
     public void registerItem(CustomItem customItem) {
         //register it here
         customItems.put(customItem.customMaterial, customItem);
-        plugin.getLog().info(TextUtil.format("<green>Successfully registered custom item: <white>" + customItem.getName()));
+        plugin.getLog().info(TextUtil.format("<green>Successfully registered custom item: <white>" + customItem.getItemName() + " <green> With custom material name: <white>" + customItem.getCustomMaterial()));
+        plugin.getLog().info("getting custom item: " + customItems.get(customItem.customMaterial).getItemName());
     }
 
     @Nullable
     public CustomItem getCustomItem(String customMaterial) {
+        plugin.getLog().info("Available keys: " + customItems.keySet());
+        //plugin.getLog().info(TextUtil.format("[CustomItemManager]<green>Getting item: " + customItems.get("END_SWORD").getCustomMaterial()));
         if(customItems.get(customMaterial) == null) {
             return null;
         }

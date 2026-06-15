@@ -84,35 +84,42 @@ public class GiveCommand {
                         return Command.SINGLE_SUCCESS;
                     })
                 )
-                .then(Commands.argument("info", StringArgumentType.word())
-                        .executes(ctx -> {
-                            if(!(ctx.getSource().getSender() instanceof Player player)) {
-                                ctx.getSource().getSender().sendMessage("For player's only");
-                                return Command.SINGLE_SUCCESS;
-                            }
+                .then(Commands.literal("info")
+                        .then(Commands.argument("name", StringArgumentType.word())
+                                .executes(ctx -> {
+                                    if(!(ctx.getSource().getSender() instanceof Player player)) {
+                                        ctx.getSource().getSender().sendMessage("For player's only");
+                                        return Command.SINGLE_SUCCESS;
+                                    }
 
-                            String itemKey = ctx.getArgument("info", String.class);
+                                    String itemKey = ctx.getArgument("name", String.class);
 
-                            CustomItem customItem = customItemManager.getCustomItem(itemKey);
-                            if(customItem == null) {
-                                player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.FAILURE, "Custom Item not found!"));
-                                return Command.SINGLE_SUCCESS;
-                            }
+                                    CustomItem customItem = customItemManager.getCustomItem(itemKey);
+                                    player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "You are trying to get: " + itemKey));
+                                    if(customItem == null) {
+                                        player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.FAILURE, "Custom Item not found!"));
+                                        return Command.SINGLE_SUCCESS;
+                                    }
 
-                            player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "Taking info: " + customItem.getName() +
-                                    "\n rarity: " + customItem.getRarity() +
-                                    "\n category: " + customItem.getCategory() +
-                                    "\n sub-category: " + customItem.getSubCategory() +
-                                    "\n material:" + customItem.getCustomMaterial() +
-                                    "\n parent-material: " + customItem.getParentMaterial().name() +
-                                    "\n lore:"));
+                                    player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "Taking info: " + customItem.getItemName() +
+                                            "\n rarity: " + customItem.getRarity() +
+                                            "\n category: " + customItem.getCategory() +
+                                            "\n sub-category: " + customItem.getSubCategory() +
+                                            "\n material:" + customItem.getCustomMaterial() +
+                                            "\n parent-material: " + customItem.getParentMaterial().name() +
+                                            "\n lore:"));
 
-                            for(Component loreLine : customItem.getLore()) {
-                                player.sendMessage(loreLine);
-                            }
+                                    for(Component loreLine : customItem.getLore()) {
+                                        player.sendMessage(loreLine);
+                                    }
 
-                            return Command.SINGLE_SUCCESS;
-                        }))
+                                    return Command.SINGLE_SUCCESS;
+                                })
+                        )
+                        /*.executes(ctx -> {
+
+                        })*/
+                )
                 //Runs if item is not stated
                 .executes(ctx -> {
                     if(!(ctx.getSource().getSender() instanceof Player player)) {

@@ -44,8 +44,8 @@ public class CustomItem {
         return this;
     }
 
-    public String getName() { return name; }
-    public CustomItem setName(String name) {
+    public String getItemName() { return name; }
+    public CustomItem setItemName(String name) {
         this.name = name;
         return this;
     }
