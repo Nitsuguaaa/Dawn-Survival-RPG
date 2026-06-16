@@ -1,5 +1,6 @@
 package dawn.nitsugua.dawnSurvivalRPG.Items;
 
+import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import org.bukkit.Material;
@@ -11,6 +12,7 @@ public class CustomItemFactory {
     //this is where the items gets put into the world
 
     private DawnSurvivalRPG plugin;
+    private DawnRegistry dawnRegistry = DawnRegistry.getInstance();
 
     public CustomItemFactory(DawnSurvivalRPG plugin) {
         this.plugin = plugin;
@@ -18,7 +20,7 @@ public class CustomItemFactory {
 
     public ItemStack createCustomItem(String item) {
         plugin.getLog().info("Got data: {}", item);
-        CustomItem customItem = plugin.getCustomItemManager().getCustomItem(item);
+        CustomItem customItem = dawnRegistry.getCustomItem(item);
 
         Material itemMaterial = customItem.getParentMaterial();
         ItemStack finalItem = new ItemStack(itemMaterial);

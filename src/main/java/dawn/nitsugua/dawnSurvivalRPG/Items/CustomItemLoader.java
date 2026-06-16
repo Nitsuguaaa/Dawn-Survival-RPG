@@ -1,5 +1,7 @@
 package dawn.nitsugua.dawnSurvivalRPG.Items;
 
+import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.CustomItemManager;
+import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Items.Weapons.CustomWeapon;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
@@ -14,11 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CustomItemLoader {
-    private final DawnSurvivalRPG plugin;
+    //private final DawnSurvivalRPG plugin;
+    private static final DawnRegistry dawnRegistry = DawnRegistry.getInstance();
 
-    public CustomItemLoader(@NotNull DawnSurvivalRPG plugin) {
-        this.plugin = plugin;
-    }
+    public CustomItemLoader(@NotNull DawnSurvivalRPG plugin) { } //nothing for now
 
     //Do I just need separation of methods (static) or I want to use it elsewhere? (instance)
     public static void initialize(@NotNull DawnSurvivalRPG plugin) {
@@ -44,7 +45,7 @@ public class CustomItemLoader {
 
         /*
             TODO:
-                - for future reference if it does break constantly. Do add edge cases for missing YAML data :)
+
          */
         if (file.getName().endsWith(".yml")) {
             ConfigurationSection config = YamlConfiguration.loadConfiguration(file);
@@ -62,6 +63,12 @@ public class CustomItemLoader {
             String materialName = config.getString("material");
             Material parentMaterial;
 
+            // Check for required fields
+            if (customMaterial == null || name == null || materialName == null || rarity == null || category == null || subCategory == null) {
+                plugin.getLog().info(TextUtil.format("<red>Missing required fields in: " + file.getName()));
+                return;
+            }
+
             try { //fallback try-catch in-case I'm dumb and I didn't uppercase my material
                 parentMaterial = Material.valueOf(materialName.toUpperCase());
             } catch (IllegalArgumentException e) {
@@ -76,12 +83,9 @@ public class CustomItemLoader {
             switch(parentFileName) {
                 case "weapons":
                     double damage = config.getDouble("weapon-damage");
-                    int weaponDurability = 0;
-                    if(config.getInt("weapon-durability") != 0) { //There is weapon-durability stated
-                        weaponDurability = config.getInt("weapon-durability");
-                    }
+                    int weaponDurability = config.getInt("weapon-durability", 0); // Default 0
 
-                    item = new CustomWeapon(customMaterial, rarity, name, parentMaterial, category, subCategory, damage, weaponDurability, lore, customMaterial);
+                    item = new CustomWeapon(customMaterial, rarity, name, parentMaterial, category, subCategory, damage, weaponDurability, lore, null);
                     plugin.getLog().info(TextUtil.format("<green>Registering Weapon"));
                     break;
                 case "equipment":
@@ -101,8 +105,7 @@ public class CustomItemLoader {
             }
 
             if(item != null) {
-                CustomItemManager manager = new CustomItemManager(plugin);
-                manager.registerItem(item);
+                dawnRegistry.registerItem(item);
             }
         }
     }

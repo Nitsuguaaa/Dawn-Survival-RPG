@@ -2,7 +2,6 @@ package dawn.nitsugua.dawnSurvivalRPG;
 
 import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.ItemCommand;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemLoader;
-import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemManager;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.TestListeners.PlayerBreakingBlockListener;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.InitialSetup;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
@@ -17,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 public final class DawnSurvivalRPG extends JavaPlugin {
     private static ComponentLogger log;
     private static DawnSurvivalRPG instance;
-    private static CustomItemManager customItemManager;
 
     @Override
     public void onEnable() {
@@ -64,15 +62,14 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     private void registerManagersAndLoaders() {
         log.info(TextUtil.format("<yellow>Registering Managers and Loaders...</yellow>"));
         CustomItemLoader.initialize(instance);
-        customItemManager = new CustomItemManager(this);
         log.info(TextUtil.format("<green>Managers and Loaders Registered!</green>"));
     }
 
     @NotNull
     public static DawnSurvivalRPG getInstance() {return instance;}
 
-    @NotNull
-    public CustomItemManager getCustomItemManager() {return customItemManager;}
+
+    //public CustomItemManager getCustomItemManager() {return customItemManager;}
 
     @NotNull
     public ComponentLogger getLog() {return log;}

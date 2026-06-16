@@ -4,19 +4,12 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
-import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItem;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemFactory;
-import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemManager;
+import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.CustomItemManager;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
-import io.papermc.paper.datacomponent.DataComponentTypes;
-import io.papermc.paper.registry.keys.ItemTypeKeys;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -28,10 +21,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.checkerframework.checker.units.qual.A;
 import org.jetbrains.annotations.NotNull;
-
-import java.awt.*;
 
 public class GiveCommand {
 
