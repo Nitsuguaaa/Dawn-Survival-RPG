@@ -11,15 +11,15 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class CustomItemFactory {
     //this is where the items gets put into the world
 
-    private DawnSurvivalRPG plugin;
-    private DawnRegistry dawnRegistry = DawnRegistry.getInstance();
+    private final DawnSurvivalRPG plugin;
+    private final DawnRegistry dawnRegistry = DawnRegistry.getInstance();
 
     public CustomItemFactory(DawnSurvivalRPG plugin) {
         this.plugin = plugin;
     }
 
     public ItemStack createCustomItem(String item) {
-        plugin.getLog().info("Got data: {}", item);
+        //debug: plugin.getLog().info("Got data: {}", item);
         CustomItem customItem = dawnRegistry.getCustomItem(item);
 
         Material itemMaterial = customItem.getParentMaterial();
@@ -31,7 +31,7 @@ public class CustomItemFactory {
         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
         //SWITCH TO DYNAMIC RARITY USING YAML
-        itemMeta.displayName(TextUtil.setItemRarity(TextUtil.ItemRarity.RARE, customItem.getItemName()));
+        itemMeta.displayName(TextUtil.setItemRarity(customItem.getRarity(), customItem.getItemName()));
 
         finalItem.setItemMeta(itemMeta);
 

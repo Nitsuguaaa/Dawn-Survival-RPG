@@ -1,6 +1,7 @@
 package dawn.nitsugua.dawnSurvivalRPG.Items.Weapons;
 
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItem;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +14,7 @@ public class CustomWeapon extends CustomItem{
     private double weaponDamage;
     private int weaponDurability;
 
-    public CustomWeapon(@NotNull String customMaterial, @NotNull String rarity, @NotNull String name, @NotNull Material parentMaterial, @NotNull String category, @NotNull String subCategory, double weaponDamage, int weaponDurability, @Nullable List<Component> lore, @Nullable String customModelData) {
+    public CustomWeapon(@NotNull String customMaterial, @NotNull TextUtil.ItemRarity rarity, @NotNull String name, @NotNull Material parentMaterial, @NotNull String category, @NotNull String subCategory, double weaponDamage, int weaponDurability, @Nullable List<Component> lore, @Nullable String customModelData) {
         super(customMaterial, rarity, name, parentMaterial, category, subCategory, lore, customModelData);
 
         this.weaponDamage = weaponDamage;

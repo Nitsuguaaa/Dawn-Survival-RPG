@@ -5,7 +5,6 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemFactory;
-import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.CustomItemManager;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -26,12 +25,10 @@ import org.jetbrains.annotations.NotNull;
 public class GiveCommand {
 
     private final DawnSurvivalRPG plugin;
-    private final CustomItemManager customItemManager;
     private final CustomItemFactory customItemFactory;
 
     public GiveCommand(@NotNull DawnSurvivalRPG plugin) {
         this.plugin = plugin;
-        customItemManager = new CustomItemManager(this.plugin);
         customItemFactory = new CustomItemFactory(this.plugin);
     }
 

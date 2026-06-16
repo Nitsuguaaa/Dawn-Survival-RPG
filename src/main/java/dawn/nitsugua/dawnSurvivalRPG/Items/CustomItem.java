@@ -1,5 +1,6 @@
 package dawn.nitsugua.dawnSurvivalRPG.Items;
 
+import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +13,7 @@ import java.util.List;
 public class CustomItem {
     //this is the custom item object.
     protected String customMaterial;
-    protected String rarity;
+    protected TextUtil.ItemRarity rarity;
     protected String name;
     protected Material parentMaterial;
     protected String customModelData; //why protected? Because CustomWeapon or other classes might extend
@@ -20,7 +21,7 @@ public class CustomItem {
     protected String category;
     protected String subCategory;
 
-    public CustomItem(@NotNull String customMaterial, @NotNull String rarity, @NotNull String name, @NotNull Material parentMaterial, @NotNull String category, @NotNull String subCategory, @Nullable List<Component> lore, @Nullable String customModelData) {
+    public CustomItem(@NotNull String customMaterial, @NotNull TextUtil.ItemRarity rarity, @NotNull String name, @NotNull Material parentMaterial, @NotNull String category, @NotNull String subCategory, @Nullable List<Component> lore, @Nullable String customModelData) {
         this.customMaterial = customMaterial;
         this.rarity = rarity;
         this.name = name;
@@ -73,8 +74,8 @@ public class CustomItem {
         return this;
     }
 
-    public String getRarity() {return rarity;}
-    public CustomItem setRarity(String rarity) {
+    public TextUtil.ItemRarity getRarity() {return rarity;}
+    public CustomItem setRarity(TextUtil.ItemRarity rarity) {
         this.rarity = rarity;
         return this;
     }

@@ -1,6 +1,5 @@
 package dawn.nitsugua.dawnSurvivalRPG.Items;
 
-import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.CustomItemManager;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Items.Weapons.CustomWeapon;
@@ -9,6 +8,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Item;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -19,7 +19,7 @@ public class CustomItemLoader {
     //private final DawnSurvivalRPG plugin;
     private static final DawnRegistry dawnRegistry = DawnRegistry.getInstance();
 
-    public CustomItemLoader(@NotNull DawnSurvivalRPG plugin) { } //nothing for now
+    //public CustomItemLoader(@NotNull DawnSurvivalRPG plugin) { } //nothing for now
 
     //Do I just need separation of methods (static) or I want to use it elsewhere? (instance)
     public static void initialize(@NotNull DawnSurvivalRPG plugin) {
@@ -62,11 +62,19 @@ public class CustomItemLoader {
 
             String materialName = config.getString("material");
             Material parentMaterial;
+            TextUtil.ItemRarity finalRarity;
 
             // Check for required fields
             if (customMaterial == null || name == null || materialName == null || rarity == null || category == null || subCategory == null) {
                 plugin.getLog().info(TextUtil.format("<red>Missing required fields in: " + file.getName()));
                 return;
+            }
+
+            try {
+                finalRarity = TextUtil.ItemRarity.valueOf(rarity.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                plugin.getLog().info(TextUtil.format("<red>Invalid rarity: " + rarity));
+                finalRarity = TextUtil.ItemRarity.COMMON;
             }
 
             try { //fallback try-catch in-case I'm dumb and I didn't uppercase my material
@@ -85,7 +93,7 @@ public class CustomItemLoader {
                     double damage = config.getDouble("weapon-damage");
                     int weaponDurability = config.getInt("weapon-durability", 0); // Default 0
 
-                    item = new CustomWeapon(customMaterial, rarity, name, parentMaterial, category, subCategory, damage, weaponDurability, lore, null);
+                    item = new CustomWeapon(customMaterial, finalRarity, name, parentMaterial, category, subCategory, damage, weaponDurability, lore, null);
                     plugin.getLog().info(TextUtil.format("<green>Registering Weapon"));
                     break;
                 case "equipment":
@@ -105,7 +113,12 @@ public class CustomItemLoader {
             }
 
             if(item != null) {
-                dawnRegistry.registerItem(item);
+                boolean success = dawnRegistry.registerItem(item);
+                if(success) {
+                    plugin.getLog().info(TextUtil.format("<green>Custom item is registered!"));
+                } else {
+                    plugin.getLog().info(TextUtil.format("<red>An error occurred while registering the item"));
+                }
             }
         }
     }
