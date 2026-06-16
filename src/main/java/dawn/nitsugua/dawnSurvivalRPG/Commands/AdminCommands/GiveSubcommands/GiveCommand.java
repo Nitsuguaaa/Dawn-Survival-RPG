@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItem;
+import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemFactory;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemManager;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
@@ -13,6 +14,9 @@ import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.registry.keys.ItemTypeKeys;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -33,10 +37,12 @@ public class GiveCommand {
 
     private final DawnSurvivalRPG plugin;
     private final CustomItemManager customItemManager;
+    private final CustomItemFactory customItemFactory;
 
     public GiveCommand(@NotNull DawnSurvivalRPG plugin) {
         this.plugin = plugin;
         customItemManager = new CustomItemManager(this.plugin);
+        customItemFactory = new CustomItemFactory(this.plugin);
     }
 
     @NotNull
@@ -67,7 +73,7 @@ public class GiveCommand {
                         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
                         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
-                        itemMeta.displayName(TextUtil.format("<purple>End Sword</purple>"));
+                        itemMeta.displayName(TextUtil.setItemRarity(TextUtil.ItemRarity.RARE, "End Sword"));
                         AttributeModifier newAttr = new AttributeModifier(
                                 NamespacedKey.minecraft("base_attack_damage"),
                                 9,
@@ -93,8 +99,13 @@ public class GiveCommand {
                                     }
 
                                     String itemKey = ctx.getArgument("name", String.class);
+                                    Inventory inventory = player.getInventory();
 
-                                    CustomItem customItem = customItemManager.getCustomItem(itemKey);
+                                    inventory.addItem(customItemFactory.createCustomItem(itemKey));
+
+                                    //CustomItemFactory.createCustomItem(itemKey);
+
+                                    /*CustomItem customItem = customItemManager.getCustomItem(itemKey);
                                     player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "You are trying to get: " + itemKey));
                                     if(customItem == null) {
                                         player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.FAILURE, "Custom Item not found!"));
@@ -111,7 +122,7 @@ public class GiveCommand {
 
                                     for(Component loreLine : customItem.getLore()) {
                                         player.sendMessage(loreLine);
-                                    }
+                                    }*/
 
                                     return Command.SINGLE_SUCCESS;
                                 })
