@@ -26,13 +26,13 @@ public class CustomItemLoader {
         File customItemFolder = new File(plugin.getDataFolder().getPath() + "/items"); //Items directory
         File[] files = customItemFolder.listFiles(); //Inside Items directory
 
-        if (files == null) { plugin.getLog().info(TextUtil.format("<red>An error occurred while parsing the YAML files of custom items")); return;}
+        if (files == null || files.length == 0) { plugin.getLog().info(TextUtil.format("<red>An error occurred while parsing the YAML files of custom items")); return;}
 
         //plugin.getLog().info(TextUtil.format("<aqua>Here are the files in the folder: "));
         for (File file : files) { //Each directory inside the Items gets opened and checked
             File[] subFiles = file.listFiles(); //the actual YAML
 
-            if (subFiles == null) {plugin.getLog().info(TextUtil.format("<red>There seems to be no items in this directory")); return;}
+            if (subFiles == null || subFiles.length == 0) {plugin.getLog().info(TextUtil.format("<red>There seems to be no items in this directory")); return;}
             for (File subFile : subFiles) {
                 parseFile(file.getName(), subFile, plugin);
             }
@@ -115,6 +115,15 @@ public class CustomItemLoader {
             }
 
             if(item != null) {
+                //check if it has skill
+                if(config.contains("skill")) {
+                    String skillType = config.getString("skill.type");
+                    Integer manaCost = config.contains("skill.mana-cost") ? config.getInt("skill.mana-cost") : null;
+                    Double cooldown = config.contains("skill.cooldown") ? config.getDouble("skill.cooldown") : null;
+
+                    item.setInteractable(true, skillType, manaCost, cooldown);
+                }
+
                 boolean success = dawnRegistry.registerItem(item);
                 if(success) {
                     plugin.getLog().info(TextUtil.sendLogInfo("CustomItemLoader", TextUtil.LogInfo.INFO, "Custom Item registered!"));

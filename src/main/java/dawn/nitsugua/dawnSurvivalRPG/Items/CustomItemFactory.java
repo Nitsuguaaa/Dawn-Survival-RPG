@@ -54,6 +54,19 @@ public class CustomItemFactory {
         pdc.set(DawnKeys.CATEGORY, PersistentDataType.STRING, customItem.getCategory());
         pdc.set(DawnKeys.SUB_CATEGORY, PersistentDataType.STRING, customItem.getSubCategory());
 
+        if(customItem.isInteractable()) {
+            // Store mana cost (default 0)
+            int mana = customItem.getManaCost() != null ? customItem.getManaCost() : 0;
+            pdc.set(DawnKeys.MANA, PersistentDataType.INTEGER, mana);
+
+            // Store cooldown (default 0.0)
+            double cooldown = customItem.getCooldown() != null ? customItem.getCooldown() : 0.0;
+            pdc.set(DawnKeys.COOLDOWN, PersistentDataType.DOUBLE, cooldown);
+
+            // Store the skill type
+            pdc.set(DawnKeys.SKILL_TYPE, PersistentDataType.STRING, customItem.getInteractableType());
+        }
+
 
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         //itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);

@@ -12,14 +12,19 @@ import java.util.List;
 
 public class CustomItem {
     //this is the custom item object.
-    protected String customMaterial;
-    protected TextUtil.ItemRarity rarity;
-    protected String name;
-    protected Material parentMaterial;
-    protected String customModelData; //why protected? Because CustomWeapon or other classes might extend
-    protected List<Component> lore;
-    protected String category;
-    protected String subCategory;
+    private String customMaterial;
+    private TextUtil.ItemRarity rarity;
+    private String name;
+    private Material parentMaterial;
+    private String customModelData; //why private? Because CustomWeapon or other classes might extend
+    private List<Component> lore;
+    private String category;
+    private String subCategory;
+
+    private boolean interactable = false;
+    private String interactableType; //for refactor if I actually find a place to store skill type enums
+    private Integer manaCost;
+    private Double cooldown;
 
     public CustomItem(@NotNull String customMaterial, @NotNull TextUtil.ItemRarity rarity, @NotNull String name, @NotNull Material parentMaterial, @NotNull String category, @NotNull String subCategory, @Nullable List<Component> lore, @Nullable String customModelData) {
         this.customMaterial = customMaterial;
@@ -42,6 +47,19 @@ public class CustomItem {
     public void onUse() {
         //check if the item has an attached class with the ability...hmm...
     }
+
+    public void setInteractable(Boolean bool, String interactableType, @Nullable Integer manaCost, @Nullable Double cooldown) {
+        this.interactable = bool;
+        this.interactableType = interactableType;
+
+        this.manaCost = manaCost;
+        this.cooldown = cooldown;
+    }
+
+    public boolean isInteractable() {return interactable;}
+    public String getInteractableType() {return interactableType;}
+    public Integer getManaCost() {return manaCost;}
+    public Double getCooldown() {return cooldown;}
 
     public String getCustomMaterial() { return customMaterial; }
     public CustomItem setCustomMaterial(String customMaterial) {

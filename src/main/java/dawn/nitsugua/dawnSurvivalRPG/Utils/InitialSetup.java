@@ -50,6 +50,10 @@ public class InitialSetup {
                    "<dark_gray>Cooldown:</dark_gray> <green>1s</green>"
                 ));
 
+                yaml.set("skill.type", "ACTIVE");
+                yaml.set("skill.mana-cost", 50);
+                yaml.set("skill.cooldown", 1.0);
+
                 yaml.save(sampleItem);
                 plugin.getLogger().info("Created a sample item: end_sword.yml");
 
