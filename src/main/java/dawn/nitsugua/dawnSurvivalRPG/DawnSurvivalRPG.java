@@ -2,7 +2,9 @@ package dawn.nitsugua.dawnSurvivalRPG;
 
 import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.ItemCommand;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemLoader;
+import dawn.nitsugua.dawnSurvivalRPG.Listeners.PlayerListeners.ItemEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.TestListeners.PlayerBreakingBlockListener;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.DawnKeys;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.InitialSetup;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import io.papermc.paper.command.brigadier.Commands;
@@ -55,12 +57,14 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         log.info(TextUtil.format("<yellow>Registering Listeners...</yellow>"));
 
         getServer().getPluginManager().registerEvents(new PlayerBreakingBlockListener(), this);
+        getServer().getPluginManager().registerEvents(new ItemEvents(this), this);
 
         log.info(TextUtil.format("<green>Listeners Registered!</green>"));
     }
 
     private void registerManagersAndLoaders() {
         log.info(TextUtil.format("<yellow>Registering Managers and Loaders...</yellow>"));
+        DawnKeys.init(this);
         CustomItemLoader.initialize(instance);
         log.info(TextUtil.format("<green>Managers and Loaders Registered!</green>"));
     }
