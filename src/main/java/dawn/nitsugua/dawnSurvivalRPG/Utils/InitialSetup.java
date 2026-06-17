@@ -38,7 +38,7 @@ public class InitialSetup {
                 yaml.set("rarity", "RARE");
                 yaml.set("name", "End Sword");
                 yaml.set("material", "DIAMOND_SWORD");
-                yaml.set("weapon-damage", 20);
+                yaml.set("weapon-damage", 7);
                 yaml.set("category", "WEAPON");
                 yaml.set("sub-category", "SWORD");
                 yaml.set("lore", Arrays.asList(

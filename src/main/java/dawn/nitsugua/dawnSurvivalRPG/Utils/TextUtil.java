@@ -44,6 +44,10 @@ public class TextUtil {
         return MINI_MESSAGE.deserialize(rarity.rarity + itemName).decoration(TextDecoration.ITALIC, false);
     }
 
+    public static Component setItemLore(String lore) {
+        return MINI_MESSAGE.deserialize(lore).decoration(TextDecoration.ITALIC, false);
+    }
+
     public static Component sendLogInfo(String className, LogInfo logType, String message) {
         return MINI_MESSAGE.deserialize("["+className+"] " + logType.logInfo + message);
     }

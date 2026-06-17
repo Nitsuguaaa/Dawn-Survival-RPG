@@ -90,7 +90,8 @@ public class CustomItemLoader {
 
             switch(parentFileName) {
                 case "weapons":
-                    double damage = config.getDouble("weapon-damage");
+                    double damage = config.getDouble("weapon-damage", 10.0);
+                    if (damage <= 0) damage = 10.0; // Never allow 0 or negative
                     int weaponDurability = config.getInt("weapon-durability", 0); // Default 0
 
                     item = new CustomWeapon(customMaterial, finalRarity, name, parentMaterial, category, subCategory, damage, weaponDurability, lore, null);
@@ -131,7 +132,7 @@ public class CustomItemLoader {
             if(line == null || line.isEmpty()) {
                 componentLore.add(Component.empty());
             } else {
-                componentLore.add(TextUtil.format(line));
+                componentLore.add(TextUtil.setItemLore(line));
             }
         }
 
