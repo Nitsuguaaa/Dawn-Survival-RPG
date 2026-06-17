@@ -85,6 +85,7 @@ public class CustomItemLoader {
             }
 
             List<Component> lore = parseLore(config.getStringList("lore"));
+            lore.add(TextUtil.setItemRarity(finalRarity, "<bold>" + rarity.toLowerCase() + " " + subCategory.toLowerCase()));
 
             //plugin.getLog().info(TextUtil.format("<aqua>This YAML's name is: </aqua><white>" + config.getString("name")));
 
