@@ -94,7 +94,7 @@ public class CustomItemLoader {
                     int weaponDurability = config.getInt("weapon-durability", 0); // Default 0
 
                     item = new CustomWeapon(customMaterial, finalRarity, name, parentMaterial, category, subCategory, damage, weaponDurability, lore, null);
-                    plugin.getLog().info(TextUtil.format("<green>Registering Weapon"));
+                    plugin.getLog().info(TextUtil.sendLogInfo("CustomItemLoader", TextUtil.LogInfo.INFO, "Registering weapon: <white>" + name));
                     break;
                 case "equipment":
                     plugin.getLog().info(TextUtil.format("<green>Registering Equipment"));
@@ -115,7 +115,7 @@ public class CustomItemLoader {
             if(item != null) {
                 boolean success = dawnRegistry.registerItem(item);
                 if(success) {
-                    plugin.getLog().info(TextUtil.format("<green>Custom item is registered!"));
+                    plugin.getLog().info(TextUtil.sendLogInfo("CustomItemLoader", TextUtil.LogInfo.INFO, "Custom Item registered!"));
                 } else {
                     plugin.getLog().info(TextUtil.format("<red>An error occurred while registering the item"));
                 }

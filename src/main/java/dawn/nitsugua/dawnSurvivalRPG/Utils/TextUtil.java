@@ -21,6 +21,19 @@ public class TextUtil {
         }
     }
 
+    public enum LogInfo {
+        SUCCESS("<green>"),
+        ERROR("<red>"),
+        INFO("<aqua>"),
+        WARNING("<yellow>");
+
+        private final String logInfo;
+
+        LogInfo(String logInfo) {
+            this.logInfo = logInfo;
+        }
+    }
+
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
 
     public static Component format(String string) {
@@ -29,5 +42,9 @@ public class TextUtil {
 
     public static Component setItemRarity(ItemRarity rarity, String itemName) {
         return MINI_MESSAGE.deserialize(rarity.rarity + itemName).decoration(TextDecoration.ITALIC, false);
+    }
+
+    public static Component sendLogInfo(String className, LogInfo logType, String message) {
+        return MINI_MESSAGE.deserialize("["+className+"] " + logType.logInfo + message);
     }
 }
