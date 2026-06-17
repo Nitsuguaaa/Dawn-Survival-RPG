@@ -1,6 +1,7 @@
 package dawn.nitsugua.dawnSurvivalRPG.Listeners.PlayerListeners;
 
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.DawnKeys;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,9 +20,9 @@ public class ItemEvents implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onItemInteraction(PlayerInteractEvent e) {
         ItemStack item = e.getItem();
-        if(item == null) return;
+        if(item == null || !(DawnKeys.isDawnObject(item.getItemMeta().getPersistentDataContainer()))) return;
 
         Player player = e.getPlayer();
-        player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "You using an item?"));
+        player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "Hey, that's a Dawn Custom Item!"));
     }
 }

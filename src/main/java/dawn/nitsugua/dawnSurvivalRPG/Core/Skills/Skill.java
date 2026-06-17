@@ -1,4 +1,4 @@
-package dawn.nitsugua.dawnSurvivalRPG.Items;
+package dawn.nitsugua.dawnSurvivalRPG.Core.Skills;
 
 import org.bukkit.entity.Player;
 

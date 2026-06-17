@@ -3,6 +3,7 @@ package dawn.nitsugua.dawnSurvivalRPG.Items;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Items.Weapons.CustomWeapon;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.DawnKeys;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -13,6 +14,8 @@ import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +46,14 @@ public class CustomItemFactory {
         finalItem = new ItemStack(itemMaterial); //the itemStack to be returned
 
         ItemMeta itemMeta = finalItem.getItemMeta();
+
+        PersistentDataContainer pdc = itemMeta.getPersistentDataContainer();
+
+        pdc.set(DawnKeys.DAWN_OBJECT, PersistentDataType.BOOLEAN, true);
+        pdc.set(DawnKeys.ITEM_ID, PersistentDataType.STRING, customItem.getCustomMaterial());
+        pdc.set(DawnKeys.CATEGORY, PersistentDataType.STRING, customItem.getCategory());
+        pdc.set(DawnKeys.SUB_CATEGORY, PersistentDataType.STRING, customItem.getSubCategory());
+
 
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         //itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -78,6 +89,10 @@ public class CustomItemFactory {
         }
 
         ItemMeta itemMeta = finalItem.getItemMeta();
+
+        //Might be a dumb idea but in my head, every custom weapon has either an active skill or a passive skill
+        //for now it's a boolean, but it might turn into a list down the road if I want the item to use multiple systems
+        itemMeta.getPersistentDataContainer().set(DawnKeys.USES, PersistentDataType.BOOLEAN, true);
 
         AttributeModifier newAttribute = new AttributeModifier(
                 NamespacedKey.minecraft("base_attack_damage"),
