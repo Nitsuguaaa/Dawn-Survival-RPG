@@ -2,3 +2,10 @@ Custom Items:
  - Needs dynamic lore instead of static lore.
  - Needs World Item updating whenever config changes.
  - Item conflicts (when both custom item has the same ID)
+
+ Skills:
+ - add mana
+ - add cooldown
+
+ EndSwordSkill:
+ - fix the Y issue

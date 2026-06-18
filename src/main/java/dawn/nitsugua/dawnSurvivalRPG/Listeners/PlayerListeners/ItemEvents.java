@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -41,6 +42,12 @@ public class ItemEvents implements Listener {
         ItemStack item = player.getInventory().getItemInMainHand();
         if(item.getType() == Material.AIR || !(DawnKeys.isDawnObject(item.getItemMeta().getPersistentDataContainer()))) return;
 
+        // Ensure we are only firing skills on right clicks
+        Action action = e.getAction();
+        if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+
         ItemMeta itemMeta = item.getItemMeta();
         PersistentDataContainer pdc = itemMeta.getPersistentDataContainer();
 
@@ -50,6 +57,9 @@ public class ItemEvents implements Listener {
         }
 
         if(pdc.has(DawnKeys.MANA) && pdc.has(DawnKeys.COOLDOWN)) {
+            // --> THE FIX: Stop vanilla Minecraft from continuing the block interaction
+            //e.setCancelled(true);
+
            skillManager.onUse(player, item, pdc);
         }
     }
