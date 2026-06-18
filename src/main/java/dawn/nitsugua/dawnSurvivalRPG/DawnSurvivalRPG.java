@@ -2,6 +2,7 @@ package dawn.nitsugua.dawnSurvivalRPG;
 
 import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.ItemCommand;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemLoader;
+import dawn.nitsugua.dawnSurvivalRPG.Items.Skills.SkillLoader;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.PlayerListeners.ItemEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.TestListeners.PlayerBreakingBlockListener;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.DawnKeys;
@@ -46,7 +47,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
             final Commands commands = event.registrar();
 
-            new ItemCommand(this).register(commands);
+            new ItemCommand(instance).register(commands);
         });
 
         log.info(TextUtil.format("<green>Commands Registered!</green>"));
@@ -56,16 +57,17 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     private void registerListeners() {
         log.info(TextUtil.format("<yellow>Registering Listeners...</yellow>"));
 
-        getServer().getPluginManager().registerEvents(new PlayerBreakingBlockListener(), this);
-        getServer().getPluginManager().registerEvents(new ItemEvents(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerBreakingBlockListener(), instance);
+        getServer().getPluginManager().registerEvents(new ItemEvents(instance), instance);
 
         log.info(TextUtil.format("<green>Listeners Registered!</green>"));
     }
 
     private void registerManagersAndLoaders() {
         log.info(TextUtil.format("<yellow>Registering Managers and Loaders...</yellow>"));
-        DawnKeys.init(this);
+        DawnKeys.init(instance);
         CustomItemLoader.initialize(instance);
+        SkillLoader.initialize(instance);
         log.info(TextUtil.format("<green>Managers and Loaders Registered!</green>"));
     }
 

@@ -23,6 +23,7 @@ public class CustomItemLoader {
 
     //Do I just need separation of methods (static) or I want to use it elsewhere? (instance)
     public static void initialize(@NotNull DawnSurvivalRPG plugin) {
+        plugin.getLog().info(TextUtil.sendLogInfo("CustomItemLoader", TextUtil.LogInfo.INFO, "Registering Custom Items..."));
         File customItemFolder = new File(plugin.getDataFolder().getPath() + "/items"); //Items directory
         File[] files = customItemFolder.listFiles(); //Inside Items directory
 
@@ -37,6 +38,7 @@ public class CustomItemLoader {
                 parseFile(file.getName(), subFile, plugin);
             }
         }
+        plugin.getLog().info(TextUtil.sendLogInfo("CustomItemLoader", TextUtil.LogInfo.SUCCESS, "Custom Items registered!"));
     }
 
     private static void parseFile(String parentFileName, File file, DawnSurvivalRPG plugin) {
@@ -96,7 +98,7 @@ public class CustomItemLoader {
                     int weaponDurability = config.getInt("weapon-durability", 0); // Default 0
 
                     item = new CustomWeapon(customMaterial, finalRarity, name, parentMaterial, category, subCategory, damage, weaponDurability, lore, null);
-                    plugin.getLog().info(TextUtil.sendLogInfo("CustomItemLoader", TextUtil.LogInfo.INFO, "Registering weapon: <white>" + name));
+                    plugin.getLog().info(TextUtil.sendLogInfo("CustomItemLoader", TextUtil.LogInfo.INFO, "Registering weapon: <white>" + customMaterial));
                     break;
                 case "equipment":
                     plugin.getLog().info(TextUtil.format("<green>Registering Equipment"));
@@ -124,12 +126,7 @@ public class CustomItemLoader {
                     item.setInteractable(true, skillType, manaCost, cooldown);
                 }
 
-                boolean success = dawnRegistry.registerItem(item);
-                if(success) {
-                    plugin.getLog().info(TextUtil.sendLogInfo("CustomItemLoader", TextUtil.LogInfo.INFO, "Custom Item registered!"));
-                } else {
-                    plugin.getLog().info(TextUtil.format("<red>An error occurred while registering the item"));
-                }
+                dawnRegistry.registerItem(item);
             }
         }
     }

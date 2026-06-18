@@ -1,8 +1,10 @@
 package dawn.nitsugua.dawnSurvivalRPG.Listeners.PlayerListeners;
 
+import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.SkillManager;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.DawnKeys;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -11,7 +13,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 
 public class ItemEvents implements Listener {
     private final DawnSurvivalRPG plugin;
@@ -22,20 +23,34 @@ public class ItemEvents implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onItemInteraction(PlayerInteractEvent e) {
-        ItemStack item = e.getItem();
-        if(item == null || !(DawnKeys.isDawnObject(item.getItemMeta().getPersistentDataContainer()))) return;
+        Player player = e.getPlayer();
+        ItemStack item = player.getInventory().getItemInMainHand();
+        if(item.getType() == Material.AIR || !(DawnKeys.isDawnObject(item.getItemMeta().getPersistentDataContainer()))) return;
+
+
+        //player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "Checking if item is updated..."));
+
+        //check item versions here
+    }
+
+    @EventHandler
+    public void onSkillUse(PlayerInteractEvent e) {
+        SkillManager skillManager = new SkillManager(plugin);
 
         Player player = e.getPlayer();
-        player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "Hey, that's a Dawn Custom Item!"));
+        ItemStack item = player.getInventory().getItemInMainHand();
+        if(item.getType() == Material.AIR || !(DawnKeys.isDawnObject(item.getItemMeta().getPersistentDataContainer()))) return;
 
         ItemMeta itemMeta = item.getItemMeta();
         PersistentDataContainer pdc = itemMeta.getPersistentDataContainer();
 
+        if(!pdc.has(DawnKeys.USES)) {
+            //player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.FAILURE, "This DawnItem doesn't have a skill attached!"));
+            return;
+        }
+
         if(pdc.has(DawnKeys.MANA) && pdc.has(DawnKeys.COOLDOWN)) {
-            player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "Mana: " + pdc.get(DawnKeys.MANA, PersistentDataType.INTEGER)));
-            player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "Cooldown: " + pdc.get(DawnKeys.COOLDOWN, PersistentDataType.DOUBLE)));
-        } else {
-            player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.FAILURE, "No mana or cooldown found"));
+           skillManager.onUse(player, item, pdc);
         }
     }
 }
