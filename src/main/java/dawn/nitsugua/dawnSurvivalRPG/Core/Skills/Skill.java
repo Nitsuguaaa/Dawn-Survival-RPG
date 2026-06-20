@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public interface Skill {
-    void onUse(Player player, ItemStack item);
+    boolean onUse(Player player, ItemStack item);
     String getId();
 
     default int getDefaultManaCost() { return 0; }

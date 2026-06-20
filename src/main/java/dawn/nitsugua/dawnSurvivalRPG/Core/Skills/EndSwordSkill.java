@@ -22,7 +22,7 @@ public class EndSwordSkill implements Skill {
     }
 
     @Override
-    public void onUse(Player player, ItemStack item) {
+    public boolean onUse(Player player, ItemStack item) {
         Location destination = findTeleportLocation(player);
 
         if (destination == null) {
@@ -30,7 +30,7 @@ public class EndSwordSkill implements Skill {
                     MessagesUtil.commonMessages.FAILURE,
                     "There are blocks in the way"
             ));
-            return;
+            return false;
         }
 
         Bukkit.getScheduler().runTask(DawnSurvivalRPG.getInstance(), () -> {
@@ -40,6 +40,7 @@ public class EndSwordSkill implements Skill {
                     "Teleported!"
             ));
         });
+        return true;
     }
 
     public Location findTeleportLocation(Player player) {

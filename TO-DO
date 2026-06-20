@@ -9,3 +9,4 @@ Custom Items:
 
  EndSwordSkill:
  - fix the Y issue
+ - make skill dynamically get data on config
