@@ -120,7 +120,7 @@ public class CustomItemLoader {
                 //check if it has skill
                 if(config.contains("skill")) {
                     String skillType = config.getString("skill.type");
-                    Integer manaCost = config.contains("skill.mana-cost") ? config.getInt("skill.mana-cost") : null;
+                    Double manaCost = config.contains("skill.mana-cost") ? config.getDouble("skill.mana-cost") : null;
                     Double cooldown = config.contains("skill.cooldown") ? config.getDouble("skill.cooldown") : null;
 
                     item.setInteractable(true, skillType, manaCost, cooldown);

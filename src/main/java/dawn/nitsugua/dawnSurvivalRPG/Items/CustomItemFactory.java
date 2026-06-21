@@ -56,8 +56,8 @@ public class CustomItemFactory {
 
         if(customItem.isInteractable()) {
             // Store mana cost (default 0)
-            int mana = customItem.getManaCost() != null ? customItem.getManaCost() : 0;
-            pdc.set(DawnKeys.MANA, PersistentDataType.INTEGER, mana);
+            Double mana = customItem.getManaCost() != null ? customItem.getManaCost() : 0;
+            pdc.set(DawnKeys.MANA, PersistentDataType.DOUBLE, mana);
 
             // Store cooldown (default 0.0)
             double cooldown = customItem.getCooldown() != null ? customItem.getCooldown() : 0.0;

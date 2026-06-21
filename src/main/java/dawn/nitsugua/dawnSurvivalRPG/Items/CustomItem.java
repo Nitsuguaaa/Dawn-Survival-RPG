@@ -23,7 +23,7 @@ public class CustomItem {
 
     private boolean interactable = false;
     private String interactableType; //for refactor if I actually find a place to store skill type enums
-    private Integer manaCost;
+    private Double manaCost;
     private Double cooldown;
 
     public CustomItem(@NotNull String customMaterial, @NotNull TextUtil.ItemRarity rarity, @NotNull String name, @NotNull Material parentMaterial, @NotNull String category, @NotNull String subCategory, @Nullable List<Component> lore, @Nullable String customModelData) {
@@ -48,7 +48,7 @@ public class CustomItem {
         //check if the item has an attached class with the ability...hmm...
     }
 
-    public void setInteractable(Boolean bool, String interactableType, @Nullable Integer manaCost, @Nullable Double cooldown) {
+    public void setInteractable(Boolean bool, String interactableType, @Nullable Double manaCost, @Nullable Double cooldown) {
         this.interactable = bool;
         this.interactableType = interactableType;
 
@@ -58,7 +58,7 @@ public class CustomItem {
 
     public boolean isInteractable() {return interactable;}
     public String getInteractableType() {return interactableType;}
-    public Integer getManaCost() {return manaCost;}
+    public Double getManaCost() {return manaCost;}
     public Double getCooldown() {return cooldown;}
 
     public String getCustomMaterial() { return customMaterial; }

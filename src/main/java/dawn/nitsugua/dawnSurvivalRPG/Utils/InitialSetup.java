@@ -51,7 +51,7 @@ public class InitialSetup {
                 ));
 
                 yaml.set("skill.type", "ACTIVE");
-                yaml.set("skill.mana-cost", 50);
+                yaml.set("skill.mana-cost", 50.0);
                 yaml.set("skill.cooldown", 1.0);
 
                 yaml.save(sampleItem);

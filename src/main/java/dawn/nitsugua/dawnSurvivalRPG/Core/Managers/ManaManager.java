@@ -13,6 +13,11 @@ public class ManaManager {
     }
 
     public void onManaItemUse(CustomItem customItem) {
-        int manaCost = customItem.getManaCost();
+        Double manaCost = customItem.getManaCost();
+
+    }
+
+    public void calculateMana() {
+
     }
 }
