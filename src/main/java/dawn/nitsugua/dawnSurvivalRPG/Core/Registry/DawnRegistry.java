@@ -13,7 +13,6 @@ public class DawnRegistry {
     private static final HashMap<String, CustomItem> customItems = new HashMap<>(); //Custom Items
     private static final HashMap<String, Skill> skills = new HashMap<>();
     private static final HashMap<UUID, DawnPlayer> playerData = new HashMap<>();
-    private static final HashMap<UUID, Double> manaCache = new HashMap<UUID, Double>();
 
     public DawnRegistry() {}
     public static DawnRegistry getInstance() {return INSTANCE;};
@@ -37,9 +36,5 @@ public class DawnRegistry {
     }
     @Nullable
     public DawnPlayer getDawnPlayer(UUID player) { return playerData.get(player);}
-
-    public void startRuntimeMana(DawnPlayer player) {
-        manaCache.put(player.getPlayerId(), player.getMana());
-    }
 
 }

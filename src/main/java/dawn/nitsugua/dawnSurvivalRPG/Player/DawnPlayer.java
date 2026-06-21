@@ -11,6 +11,7 @@ public class DawnPlayer {
 
     //Attributes
     private double mana; //everyone starts at base 100 mana
+    private double currentMana;
     private double hp; //for future use
     private double defense; //for future use
     private double attackDamage; //for future use
@@ -29,6 +30,11 @@ public class DawnPlayer {
     public void setMana(double mana) { this.mana = mana; }
     public void addMana(double amount) { this.mana += amount; }
     public void removeMana(double amount) { this.mana -= amount; }
+
+    public double getCurrentMana() {return currentMana;}
+    public void setCurrentMana(double mana) { this.currentMana = mana; }
+    public void addCurrentMana(double amount) { this.currentMana += amount; }
+    public void removeCurrentMana(double amount) { this.currentMana -= amount; }
 
     public HashMap<EquipmentSlot, String> getArmorSet() {return armorSet;}
     public String getSpecificArmorSlot(EquipmentSlot equipmentSlot) {
