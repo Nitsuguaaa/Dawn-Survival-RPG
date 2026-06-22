@@ -10,7 +10,7 @@ public class DawnPlayer {
 
 
     //Attributes
-    private double mana; //everyone starts at base 100 mana
+    private double mana = 100.0; //everyone starts at base 100 mana
     private double currentMana;
     private double hp; //for future use
     private double defense; //for future use
@@ -19,9 +19,8 @@ public class DawnPlayer {
     //Armor?
     private HashMap<EquipmentSlot, String> armorSet = new HashMap<>();
 
-    public DawnPlayer(UUID playerId, double mana) {
+    public DawnPlayer(UUID playerId) {
         this.playerId = playerId;
-        this.mana = mana;
     }
 
     public UUID getPlayerId() {return playerId;}

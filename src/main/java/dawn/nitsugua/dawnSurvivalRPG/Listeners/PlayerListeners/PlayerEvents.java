@@ -7,11 +7,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class PlayerListeners implements Listener {
+public class PlayerEvents implements Listener {
     private final DawnSurvivalRPG plugin;
     private final PlayerManager playerManager;
 
-    public PlayerListeners(DawnSurvivalRPG plugin) {
+    public PlayerEvents(DawnSurvivalRPG plugin) {
         this.plugin = plugin;
         this.playerManager = new PlayerManager(plugin);
     }

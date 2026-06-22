@@ -4,6 +4,7 @@ import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.ItemCommand;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemLoader;
 import dawn.nitsugua.dawnSurvivalRPG.Items.Skills.SkillLoader;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.PlayerListeners.ItemEvents;
+import dawn.nitsugua.dawnSurvivalRPG.Listeners.PlayerListeners.PlayerEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.TestListeners.PlayerBreakingBlockListener;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.DawnKeys;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.InitialSetup;
@@ -59,6 +60,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new PlayerBreakingBlockListener(), instance);
         getServer().getPluginManager().registerEvents(new ItemEvents(instance), instance);
+        getServer().getPluginManager().registerEvents(new PlayerEvents(instance), instance);
 
         log.info(TextUtil.format("<green>Listeners Registered!</green>"));
     }

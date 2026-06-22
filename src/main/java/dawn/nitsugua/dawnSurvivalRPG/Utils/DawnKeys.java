@@ -1,7 +1,9 @@
 package dawn.nitsugua.dawnSurvivalRPG.Utils;
 
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -38,7 +40,12 @@ public class DawnKeys {
         SUB_CATEGORY = new NamespacedKey(plugin, "sub-category");
     }
 
-    public static boolean isDawnObject(PersistentDataContainer pdc) {
+    public static boolean isDawnObject(ItemStack item) {
+        if(item == null) return false;
+        if(item.getType() == Material.AIR) return false;
+        if(!item.hasItemMeta()) return false;
+
+        PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
         return pdc.has(DawnKeys.DAWN_OBJECT, PersistentDataType.BOOLEAN);
     }
 }
