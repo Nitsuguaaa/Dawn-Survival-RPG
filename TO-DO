@@ -4,9 +4,11 @@ Custom Items:
  - Item conflicts (when both custom item has the same ID)
 
  Skills:
- - add mana
  - add cooldown
 
  EndSwordSkill:
  - fix the Y issue
  - make skill dynamically get data on config
+
+ Utils:
+ - add global ticker
