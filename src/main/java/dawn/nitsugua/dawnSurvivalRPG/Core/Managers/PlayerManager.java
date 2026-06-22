@@ -30,6 +30,12 @@ public class PlayerManager {
         }, 1L);
     }
 
+    public void playerLeaveEvent(Player player) {
+        UUID playerId = player.getUniqueId();
+
+        dawnRegistry.removePlayer(playerId);
+    }
+
     public void initializePlayer(Player player) {
         //get armor too but for now just main hand item
 

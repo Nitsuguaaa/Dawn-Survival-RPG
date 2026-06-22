@@ -32,7 +32,7 @@ public class ManaManager {
 
         if(DawnKeys.isDawnObject(item)) {
             PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
-            player.sendMessage("Current item has been received by mana manager");
+            //DEBUG: player.sendMessage("Current item has been received by mana manager");
             if(pdc.has(DawnKeys.MANA)) {
                 double prevMana = pdc.get(DawnKeys.MANA, PersistentDataType.DOUBLE);
                 dawnPlayer.addMana(prevMana);
@@ -41,13 +41,13 @@ public class ManaManager {
 
         if(DawnKeys.isDawnObject(previousItem)) {
             PersistentDataContainer prevPdc = previousItem.getItemMeta().getPersistentDataContainer();
-            player.sendMessage("Previous item has been received by mana manager");
+            //DEBUG: player.sendMessage("Previous item has been received by mana manager");
             if(prevPdc.has(DawnKeys.MANA)) {
                 double mana = prevPdc.get(DawnKeys.MANA, PersistentDataType.DOUBLE);
                 dawnPlayer.removeMana(mana);
             }
         }
 
-        player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "Your current mana now is: " + dawnPlayer.getMana()));
+       //DEBUG:  player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "Your current mana now is: " + dawnPlayer.getMana()));
     }
 }

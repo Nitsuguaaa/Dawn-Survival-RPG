@@ -36,5 +36,5 @@ public class DawnRegistry {
     }
     @Nullable
     public DawnPlayer getDawnPlayer(UUID player) { return playerData.get(player);}
-
+    public void removePlayer(UUID player) {playerData.remove(player);}
 }

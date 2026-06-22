@@ -23,6 +23,6 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
-
+        playerManager.playerLeaveEvent(e.getPlayer());
     }
 }
