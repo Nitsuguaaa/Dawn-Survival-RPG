@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ManaManager {
@@ -20,8 +21,12 @@ public class ManaManager {
         this.plugin = plugin;
     }
 
-    public void onManaItemUse(CustomItem customItem) {
+    public void onManaItemUse(CustomItem customItem, Player player) {
+        DawnPlayer dawnPlayer = dawnRegistry.getDawnPlayer(player.getUniqueId());
         Double manaCost = customItem.getManaCost();
+
+        dawnPlayer.removeCurrentMana(manaCost);
+        player.sendMessage("Removed mana, current: " + dawnPlayer.getCurrentMana());
 
     }
 
@@ -49,5 +54,17 @@ public class ManaManager {
         }
 
        //DEBUG:  player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "Your current mana now is: " + dawnPlayer.getMana()));
+    }
+
+    public boolean hasMana(Player player, PersistentDataContainer pdc) {
+        DawnPlayer dawnPlayer = dawnRegistry.getDawnPlayer(player.getUniqueId());
+        double currentMana = dawnPlayer.getCurrentMana();
+        double itemMana = pdc.get(DawnKeys.MANA, PersistentDataType.DOUBLE);
+
+        if(itemMana > currentMana) {
+            player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.FAILURE, "You don't have enough mana!"));
+            return false;
+        }
+        return true;
     }
 }

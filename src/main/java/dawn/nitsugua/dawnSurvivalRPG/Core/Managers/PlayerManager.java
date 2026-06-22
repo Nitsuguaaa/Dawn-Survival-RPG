@@ -41,5 +41,9 @@ public class PlayerManager {
 
         ItemStack mainHand = player.getInventory().getItemInMainHand();
         manaManager.calculateMaxMana(player, mainHand, null);
+
+        DawnPlayer dawnPlayer = dawnRegistry.getDawnPlayer(player.getUniqueId());
+        if (dawnPlayer == null) return;
+        dawnPlayer.setCurrentMana(dawnPlayer.getMana());
     }
 }

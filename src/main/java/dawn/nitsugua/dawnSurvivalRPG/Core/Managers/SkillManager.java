@@ -22,8 +22,9 @@ public class SkillManager {
     public void onUse(Player player, ItemStack item, PersistentDataContainer pdc) {
         Skill skill = dawnRegistry.getSkill(pdc.get(DawnKeys.ITEM_ID, PersistentDataType.STRING) + "_SKILL");
         if(skill != null) {
+            if(!manaManager.hasMana(player, pdc)) {return;}
             if(skill.onUse(player, item)) {
-                    manaManager.onManaItemUse(dawnRegistry.getCustomItem(pdc.get(DawnKeys.ITEM_ID, PersistentDataType.STRING)));
+                    manaManager.onManaItemUse(dawnRegistry.getCustomItem(pdc.get(DawnKeys.ITEM_ID, PersistentDataType.STRING)), player);
             }
         }
     }
