@@ -41,9 +41,11 @@ public class ManaManager {
 
         for(DawnPlayer dawnPlayer : dawnPlayers.values()) {
             //calculate any armor, weapon, enhancements that add more mana regeneration
-            if(dawnPlayer.getCurrentMana() >= dawnPlayer.getMana()) continue; //skip if already at max mana cap
-            dawnPlayer.addCurrentMana(1.0);
-            Bukkit.getPlayer(dawnPlayer.getPlayerId()).sendMessage("Your mana is now: " + dawnPlayer.getCurrentMana());
+            if(dawnPlayer.getCurrentMana() >= dawnPlayer.getMaxMana()) continue; //skip if already at max mana cap
+
+            double finalRegen = dawnPlayer.getMaxMana() * 0.02;
+            dawnPlayer.addCurrentMana(finalRegen);
+            Bukkit.getPlayer(dawnPlayer.getPlayerId()).sendMessage("Your mana is now: " + (int)dawnPlayer.getCurrentMana() + "/" + dawnPlayer.getMaxMana());
         }
     }
 
@@ -51,7 +53,7 @@ public class ManaManager {
 
     }
 
-    public void calculateMaxMana(Player player, @Nullable ItemStack item, @Nullable ItemStack previousItem) {
+    public void calculateMaxIntelligenceFromItem(Player player, @Nullable ItemStack item, @Nullable ItemStack previousItem) {
         //player.sendMessage("Calculating mana..."); //DEBUG
         //this would calculate armor but for now it's just weapons
         DawnPlayer dawnPlayer = dawnRegistry.getDawnPlayer(player.getUniqueId());
@@ -59,10 +61,11 @@ public class ManaManager {
         if(DawnKeys.isDawnObject(item)) {
             PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
             //DEBUG: player.sendMessage("Current item has been received by mana manager");
-            if(pdc.has(DawnKeys.MANA)) {
-                double mana = pdc.getOrDefault(DawnKeys.MANA, PersistentDataType.DOUBLE, 0.0);
-                if(mana > 0) {
-                    dawnPlayer.addMana(mana);
+            if(pdc.has(DawnKeys.INTELLIGENCE)) {
+                int intelligence = pdc.getOrDefault(DawnKeys.INTELLIGENCE, PersistentDataType.INTEGER, 0);
+                if(intelligence > 0) {
+                    //player.sendMessage("Set intelligence to: " + intelligence + ", max mana is now: " + dawnPlayer.getMaxMana()); //DEBUG
+                    dawnPlayer.addIntelligence(intelligence);
                 }
             }
         }
@@ -70,18 +73,24 @@ public class ManaManager {
         if(DawnKeys.isDawnObject(previousItem)) {
             PersistentDataContainer prevPdc = previousItem.getItemMeta().getPersistentDataContainer();
             //DEBUG: player.sendMessage("Previous item has been received by mana manager");
-            if(prevPdc.has(DawnKeys.MANA)) {
-                double mana = prevPdc.getOrDefault(DawnKeys.MANA, PersistentDataType.DOUBLE, 0.0);
-                if(mana > 0) {
-                    dawnPlayer.removeMana(mana);
-                    if(dawnPlayer.getCurrentMana() > dawnPlayer.getMana()) {
-                        dawnPlayer.setCurrentMana(dawnPlayer.getMana());
+            if(prevPdc.has(DawnKeys.INTELLIGENCE)) {
+                int intelligence = prevPdc.getOrDefault(DawnKeys.INTELLIGENCE, PersistentDataType.INTEGER, 0);
+                if(intelligence > 0) {
+                    dawnPlayer.removeIntelligence(intelligence);
+                    //player.sendMessage("Set intelligence to: " + intelligence + ", max mana is now: " + dawnPlayer.getMaxMana()); //DEBUG
+                    if(dawnPlayer.getCurrentMana() > dawnPlayer.getMaxMana()) {
+                        //player.sendMessage("Current mana is now: " + dawnPlayer.getCurrentMana()); //DEBUG
+                        dawnPlayer.setCurrentMana(dawnPlayer.getMaxMana());
                     }
                 }
             }
         }
 
        //DEBUG:  player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "Your current mana now is: " + dawnPlayer.getMana()));
+    }
+
+    public void calculateMaxIntelligenceFromArmor(Player player) {
+
     }
 
     public boolean hasMana(Player player, PersistentDataContainer pdc) {

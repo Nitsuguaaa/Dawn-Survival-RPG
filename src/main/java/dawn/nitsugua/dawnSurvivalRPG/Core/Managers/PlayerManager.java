@@ -40,10 +40,11 @@ public class PlayerManager {
         //get armor too but for now just main hand item
 
         ItemStack mainHand = player.getInventory().getItemInMainHand();
-        manaManager.calculateMaxMana(player, mainHand, null);
+        manaManager.calculateMaxIntelligenceFromItem(player, mainHand, null);
+        //manaManager.calculateMaxIntelligenceFromArmor(player);
 
         DawnPlayer dawnPlayer = dawnRegistry.getDawnPlayer(player.getUniqueId());
         if (dawnPlayer == null) return;
-        dawnPlayer.setCurrentMana(dawnPlayer.getMana());
+        dawnPlayer.setCurrentMana(dawnPlayer.getMaxMana());
     }
 }

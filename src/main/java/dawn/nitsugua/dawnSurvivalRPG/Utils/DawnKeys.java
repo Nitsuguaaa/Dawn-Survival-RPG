@@ -23,6 +23,9 @@ public class DawnKeys {
     public static NamespacedKey CATEGORY;
     public static NamespacedKey SUB_CATEGORY;
 
+    //Attributes
+    public static NamespacedKey INTELLIGENCE;
+
     public static void init(DawnSurvivalRPG plugin) {
         DAWN_OBJECT = new NamespacedKey(plugin, "dawn_object");
         ITEM_ID = new NamespacedKey(plugin, "item_id");
@@ -38,6 +41,8 @@ public class DawnKeys {
         USES = new NamespacedKey(plugin, "uses"); //if the item has a right-click usage
         CATEGORY = new NamespacedKey(plugin, "category");
         SUB_CATEGORY = new NamespacedKey(plugin, "sub-category");
+
+        INTELLIGENCE = new NamespacedKey(plugin, "intelligence");
     }
 
     public static boolean isDawnObject(ItemStack item) {

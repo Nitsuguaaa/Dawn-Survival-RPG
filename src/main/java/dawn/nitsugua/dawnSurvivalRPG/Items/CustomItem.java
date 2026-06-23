@@ -23,6 +23,8 @@ public class CustomItem {
 
     private boolean interactable = false;
     private String interactableType; //for refactor if I actually find a place to store skill type enums
+
+    private int intelligence;
     private Double manaCost;
     private Double cooldown;
 
@@ -55,6 +57,14 @@ public class CustomItem {
         this.manaCost = manaCost;
         this.cooldown = cooldown;
     }
+
+    public void setAttributes(@Nullable Integer intelligence) { //add more later
+        if(intelligence != null) {
+            this.intelligence = intelligence;
+        }
+    }
+
+    public Integer getIntelligence() {return intelligence;}
 
     public boolean isInteractable() {return interactable;}
     public String getInteractableType() {return interactableType;}

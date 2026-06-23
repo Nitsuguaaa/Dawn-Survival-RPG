@@ -49,6 +49,8 @@ public class InitialSetup {
                    "<dark_gray>Mana Cost:</dark_gray> <dark_aqua>50</dark_aqua>",
                    "<dark_gray>Cooldown:</dark_gray> <green>1s</green>"
                 ));
+                
+                yaml.set("attributes.intelligence", 20);
 
                 yaml.set("skill.type", "ACTIVE");
                 yaml.set("skill.mana-cost", 50.0);

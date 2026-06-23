@@ -78,6 +78,6 @@ public class ItemEvents implements Listener {
 
         if(item == null && previousItem == null) {return;}
 
-        manaManager.calculateMaxMana(player, item, previousItem);
+        manaManager.calculateMaxIntelligenceFromItem(player, item, previousItem);
     }
 }

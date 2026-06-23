@@ -11,7 +11,7 @@ Custom Items:
  - make skill dynamically get data on config
 
  Utils:
- - add global ticker
+ - DONE: add global ticker
 
  TaskManager and Global timer:
- - facto in half second tasks
+ - DONE: factor in half second tasks

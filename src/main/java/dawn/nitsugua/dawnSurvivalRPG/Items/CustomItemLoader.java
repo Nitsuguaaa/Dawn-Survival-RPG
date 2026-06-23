@@ -117,6 +117,18 @@ public class CustomItemLoader {
             }
 
             if(item != null) {
+                //check if it has attributes
+                if(config.contains("attributes")) {
+                    //DEBUG plugin.getLog().info(TextUtil.sendLogInfo("CustomItemLoader", TextUtil.LogInfo.SUCCESS, "Found attributes for: " + item.getItemName()));
+                    Integer intelligence = null;
+
+                    if(config.contains("attributes.intelligence")) {
+                        intelligence = config.getInt("attributes.intelligence");
+                    }
+
+                    item.setAttributes(intelligence);
+                }
+
                 //check if it has skill
                 if(config.contains("skill")) {
                     String skillType = config.getString("skill.type");

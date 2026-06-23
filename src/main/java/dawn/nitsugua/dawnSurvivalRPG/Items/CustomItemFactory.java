@@ -54,7 +54,13 @@ public class CustomItemFactory {
         pdc.set(DawnKeys.CATEGORY, PersistentDataType.STRING, customItem.getCategory());
         pdc.set(DawnKeys.SUB_CATEGORY, PersistentDataType.STRING, customItem.getSubCategory());
 
-        if(customItem.isInteractable()) {
+        //set attributes
+        if(customItem.getIntelligence() != null) {
+            //DEBUG plugin.getLog().info("Found intelligence! Setting to item right now");
+            pdc.set(DawnKeys.INTELLIGENCE, PersistentDataType.INTEGER, customItem.getIntelligence());
+        }
+
+        if(customItem.isInteractable()) { //if the weapons has a skill
             // Store mana cost (default 0)
             Double mana = customItem.getManaCost() != null ? customItem.getManaCost() : 0;
             pdc.set(DawnKeys.MANA, PersistentDataType.DOUBLE, mana);
@@ -68,11 +74,11 @@ public class CustomItemFactory {
         }
 
 
-        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES); //hide vanilla attributes
         //itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        itemMeta.displayName(TextUtil.setItemRarity(customItem.getRarity(), customItem.getItemName()));
+        itemMeta.displayName(TextUtil.setItemRarity(customItem.getRarity(), customItem.getItemName())); //set display name
 
-        if(customItem.getLore() != null) {
+        if(customItem.getLore() != null) { //if the weapon has custom lore
             itemMeta.lore(customItem.getLore());
         } else {
             itemMeta.lore(defaultLore);
