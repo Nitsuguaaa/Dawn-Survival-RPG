@@ -22,8 +22,6 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     private static DawnSurvivalRPG instance;
     private GlobalTicker ticker;
 
-    private static DawnRegistry dr = DawnRegistry.getInstance(); //DEBUG
-
     @Override
     public void onEnable() {
         instance = this;
