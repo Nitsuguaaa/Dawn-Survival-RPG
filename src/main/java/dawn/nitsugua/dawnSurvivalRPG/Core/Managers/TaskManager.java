@@ -1,23 +1,18 @@
 package dawn.nitsugua.dawnSurvivalRPG.Core.Managers;
 
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
-import dawn.nitsugua.dawnSurvivalRPG.Utils.Enums.TimeUnit;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.GlobalTimer;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.ScheduledTask;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class TaskManager {
     private final DawnRegistry dawnRegistry = DawnRegistry.getInstance();
+    List<String> toRemove = new ArrayList<>();
 
     //Why not just go straight to registry? Because I might add other logic, defeats the purpose of a registry that just handles storage
-    public void registerTask(String name, Runnable runnable, int interval, TimeUnit unit) {
-        ScheduledTask task = new ScheduledTask(name, runnable)
-                .setInterval(interval)
-                .setTimeUnit(unit);
-        dawnRegistry.registerTask(name, task);
-    }
-
     public void removeTask(String name) {
         dawnRegistry.removeTask(name);
     }
@@ -27,7 +22,15 @@ public class TaskManager {
         for(ScheduledTask task : tasks.values()) {
             if (shouldRun(task, time)) {
                 task.run();
+
+                if(task.shouldRemoveAfterRun() || (task.getMaxRuns()) != -1 && task.getRuns() >= task.getMaxRuns()) {
+                    toRemove.add(task.getTaskName());
+                }
             }
+        }
+
+        for(String name : toRemove) {
+            dawnRegistry.removeTask(name);
         }
     }
 
@@ -37,18 +40,32 @@ public class TaskManager {
         }
 
         int current = switch (task.getTimeUnit()) {
+            case TICK -> (int) time.getTick();
             case SECOND -> time.getSecond();
             case MINUTE -> time.getMinute();
             case HOUR -> time.getHour();
         };
 
-        if(task.getSpecificTimes() != null && !task.getSpecificTimes().isEmpty()) {
-            return task.getSpecificTimes().contains(current);
+        //now check if it already ran on the same point
+        if(task.getLastRan() == current) {
+            return false; //huh now it's the same as get max runs, I should create an ENUM
         }
 
-        if (task.getInterval() > 0) {
-            return current % task.getInterval() == 0;
+        boolean shouldRun = false;
+
+        if(task.getSpecificTimes() != null && !task.getSpecificTimes().isEmpty()) {
+            shouldRun = task.getSpecificTimes().contains(current);
+        } else if (task.getInterval() > 0) {
+            shouldRun = current % task.getInterval() == 0;
+        } else {
+            shouldRun = true;
         }
-        return true;
+
+        if (shouldRun) {
+            task.setLastRan(current);
+            return true;
+        }
+
+        return false;
     }
 }

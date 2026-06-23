@@ -4,9 +4,12 @@ import dawn.nitsugua.dawnSurvivalRPG.Core.Skills.Skill;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItem;
 import dawn.nitsugua.dawnSurvivalRPG.Player.DawnPlayer;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.ScheduledTask;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class DawnRegistry {
@@ -40,6 +43,7 @@ public class DawnRegistry {
     @Nullable
     public DawnPlayer getDawnPlayer(UUID player) { return playerData.get(player);}
     public void removePlayer(UUID player) {playerData.remove(player);}
+    public HashMap<UUID, DawnPlayer> getAllPlayers() {return playerData;}
 
     public void registerTask(String name, ScheduledTask task) { tasks.put(name, task);}
     @Nullable

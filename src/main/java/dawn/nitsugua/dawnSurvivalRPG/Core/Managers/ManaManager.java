@@ -6,12 +6,16 @@ import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItem;
 import dawn.nitsugua.dawnSurvivalRPG.Player.DawnPlayer;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.DawnKeys;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.HashMap;
+import java.util.UUID;
 
 public class ManaManager {
     private final DawnRegistry dawnRegistry = DawnRegistry.getInstance();
@@ -28,6 +32,22 @@ public class ManaManager {
         if(manaCost == null) return;
         dawnPlayer.removeCurrentMana(manaCost);
         player.sendMessage("Removed mana, current: " + dawnPlayer.getCurrentMana());
+
+    }
+
+    public static void regenMana() {
+        HashMap<UUID, DawnPlayer> dawnPlayers = DawnRegistry.getInstance().getAllPlayers();
+        if (dawnPlayers == null) return;
+
+        for(DawnPlayer dawnPlayer : dawnPlayers.values()) {
+            //calculate any armor, weapon, enhancements that add more mana regeneration
+            if(dawnPlayer.getCurrentMana() >= dawnPlayer.getMana()) continue; //skip if already at max mana cap
+            dawnPlayer.addCurrentMana(1.0);
+            Bukkit.getPlayer(dawnPlayer.getPlayerId()).sendMessage("Your mana is now: " + dawnPlayer.getCurrentMana());
+        }
+    }
+
+    public void manaActionBar() {
 
     }
 
@@ -54,6 +74,9 @@ public class ManaManager {
                 double mana = prevPdc.getOrDefault(DawnKeys.MANA, PersistentDataType.DOUBLE, 0.0);
                 if(mana > 0) {
                     dawnPlayer.removeMana(mana);
+                    if(dawnPlayer.getCurrentMana() > dawnPlayer.getMana()) {
+                        dawnPlayer.setCurrentMana(dawnPlayer.getMana());
+                    }
                 }
             }
         }

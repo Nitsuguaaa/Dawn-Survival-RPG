@@ -23,7 +23,7 @@ public class GlobalTimer {
         syncToSystem();
 
         plugin.getLog().info(TextUtil.sendLogInfo("GlobalTimer", TextUtil.LogInfo.SUCCESS, "Global Timer Initialized!"));
-        plugin.getLog().info(TextUtil.sendLogInfo("GlobalTimer", TextUtil.LogInfo.SUCCESS, "Hour: " + hour + ", Minute: " + minute + ", Second: " + second + ", Day of the month: " + dayOfTheMonth + ", Day of the week: " + dayOfTheWeek));
+        //plugin.getLog().info(TextUtil.sendLogInfo("GlobalTimer", TextUtil.LogInfo.SUCCESS, "Hour: " + hour + ", Minute: " + minute + ", Second: " + second + ", Day of the month: " + dayOfTheMonth + ", Day of the week: " + dayOfTheWeek));
     }
 
     public void syncToSystem() {
@@ -37,7 +37,12 @@ public class GlobalTimer {
     }
 
     public void tick() {
-        tick ++;
+        tick += 10;
+
+        // ✅ Debug: Check if tick is incrementing
+        //if (tick % 20 == 0) {
+        //    System.out.println("[Tick] second: " + second + " → " + (second + 1));
+        //}
 
         if (tick % 20 == 0) {
             second++;
@@ -55,27 +60,10 @@ public class GlobalTimer {
         }
     }
 
-    public DayOfWeek getDayOfTheWeek() {
-        return dayOfTheWeek;
-    }
-
-    public int getDayOfTheMonth() {
-        return dayOfTheMonth;
-    }
-
-    public int getHour() {
-        return hour;
-    }
-
-    public int getMinute() {
-        return minute;
-    }
-
-    public int getSecond() {
-        return second;
-    }
-
-    public long getTick() {
-        return tick;
-    }
+    public DayOfWeek getDayOfTheWeek() {return dayOfTheWeek;}
+    public int getDayOfTheMonth() {return dayOfTheMonth;}
+    public int getHour() {return hour;}
+    public int getMinute() {return minute;}
+    public int getSecond() {return second;}
+    public long getTick() {return tick;}
 }

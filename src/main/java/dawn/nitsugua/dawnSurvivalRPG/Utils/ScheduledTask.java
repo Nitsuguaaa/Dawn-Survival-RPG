@@ -14,6 +14,9 @@ public class ScheduledTask {
 
     private int maxRuns = -1;
     private int runs = 0;
+
+    private int lastRan = -1;
+
     private Set<Integer> specificTimes = null;
     private boolean removeAfterRun = false;
 
@@ -50,6 +53,10 @@ public class ScheduledTask {
         return this;
     }
 
+    public void setLastRan(int last) {
+        this.lastRan = last;
+    }
+
     public void run() {
         if(runnable != null) {
             runnable.run();
@@ -57,6 +64,7 @@ public class ScheduledTask {
         }
     }
 
+    public int getLastRan() {return lastRan;}
     public int getMaxRuns() {return maxRuns;}
     public int getRuns() {return runs;}
     public TimeUnit getTimeUnit() {return timeUnit;}

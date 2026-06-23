@@ -1,15 +1,14 @@
 package dawn.nitsugua.dawnSurvivalRPG;
 
 import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.ItemCommand;
+import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
+import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.ManaTasks;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemLoader;
 import dawn.nitsugua.dawnSurvivalRPG.Items.Skills.SkillLoader;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.PlayerListeners.ItemEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.PlayerListeners.PlayerEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.TestListeners.PlayerBreakingBlockListener;
-import dawn.nitsugua.dawnSurvivalRPG.Utils.DawnKeys;
-import dawn.nitsugua.dawnSurvivalRPG.Utils.GlobalTimer;
-import dawn.nitsugua.dawnSurvivalRPG.Utils.InitialSetup;
-import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.*;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
@@ -21,6 +20,9 @@ import org.jetbrains.annotations.NotNull;
 public final class DawnSurvivalRPG extends JavaPlugin {
     private static ComponentLogger log;
     private static DawnSurvivalRPG instance;
+    private GlobalTicker ticker;
+
+    private static DawnRegistry dr = DawnRegistry.getInstance(); //DEBUG
 
     @Override
     public void onEnable() {
@@ -29,9 +31,11 @@ public final class DawnSurvivalRPG extends JavaPlugin {
 
         log.info(TextUtil.format("<dark_gray>=============================================</dark_gray>"));
         log.info(TextUtil.format("     <green>Dawn Survival RPG</green> <dark_gray>v</dark_gray><white>" + getPluginMeta().getVersion() + "</white>"));
+        ticker = new GlobalTicker(instance);
+        ticker.start();
 
-        new GlobalTimer(instance).syncToSystem();
         InitialSetup.runFirstInitialize(instance);
+        registerTasks();
         registerCommands();
         registerListeners();
         registerManagersAndLoaders();
@@ -42,6 +46,9 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        if(ticker != null) {
+            ticker.stop();
+        }
     }
 
     private void registerCommands() {
@@ -73,6 +80,10 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         CustomItemLoader.initialize(instance);
         SkillLoader.initialize(instance);
         log.info(TextUtil.format("<green>Managers and Loaders Registered!</green>"));
+    }
+
+    private void registerTasks() {
+        ManaTasks.initManaTasks(instance);
     }
 
     @NotNull
