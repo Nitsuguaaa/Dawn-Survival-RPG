@@ -7,6 +7,7 @@ import dawn.nitsugua.dawnSurvivalRPG.Listeners.PlayerListeners.ItemEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.PlayerListeners.PlayerEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.TestListeners.PlayerBreakingBlockListener;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.DawnKeys;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.GlobalTimer;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.InitialSetup;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import io.papermc.paper.command.brigadier.Commands;
@@ -29,6 +30,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         log.info(TextUtil.format("<dark_gray>=============================================</dark_gray>"));
         log.info(TextUtil.format("     <green>Dawn Survival RPG</green> <dark_gray>v</dark_gray><white>" + getPluginMeta().getVersion() + "</white>"));
 
+        new GlobalTimer(instance).syncToSystem();
         InitialSetup.runFirstInitialize(instance);
         registerCommands();
         registerListeners();

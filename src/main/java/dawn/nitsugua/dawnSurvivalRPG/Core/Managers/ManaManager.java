@@ -25,6 +25,7 @@ public class ManaManager {
         DawnPlayer dawnPlayer = dawnRegistry.getDawnPlayer(player.getUniqueId());
         Double manaCost = customItem.getManaCost();
 
+        if(manaCost == null) return;
         dawnPlayer.removeCurrentMana(manaCost);
         player.sendMessage("Removed mana, current: " + dawnPlayer.getCurrentMana());
 
@@ -39,8 +40,10 @@ public class ManaManager {
             PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
             //DEBUG: player.sendMessage("Current item has been received by mana manager");
             if(pdc.has(DawnKeys.MANA)) {
-                double prevMana = pdc.get(DawnKeys.MANA, PersistentDataType.DOUBLE);
-                dawnPlayer.addMana(prevMana);
+                double mana = pdc.getOrDefault(DawnKeys.MANA, PersistentDataType.DOUBLE, 0.0);
+                if(mana > 0) {
+                    dawnPlayer.addMana(mana);
+                }
             }
         }
 
@@ -48,8 +51,10 @@ public class ManaManager {
             PersistentDataContainer prevPdc = previousItem.getItemMeta().getPersistentDataContainer();
             //DEBUG: player.sendMessage("Previous item has been received by mana manager");
             if(prevPdc.has(DawnKeys.MANA)) {
-                double mana = prevPdc.get(DawnKeys.MANA, PersistentDataType.DOUBLE);
-                dawnPlayer.removeMana(mana);
+                double mana = prevPdc.getOrDefault(DawnKeys.MANA, PersistentDataType.DOUBLE, 0.0);
+                if(mana > 0) {
+                    dawnPlayer.removeMana(mana);
+                }
             }
         }
 
@@ -59,7 +64,8 @@ public class ManaManager {
     public boolean hasMana(Player player, PersistentDataContainer pdc) {
         DawnPlayer dawnPlayer = dawnRegistry.getDawnPlayer(player.getUniqueId());
         double currentMana = dawnPlayer.getCurrentMana();
-        double itemMana = pdc.get(DawnKeys.MANA, PersistentDataType.DOUBLE);
+        Double itemMana = pdc.get(DawnKeys.MANA, PersistentDataType.DOUBLE);
+        if (itemMana == null) return false;
 
         if(itemMana > currentMana) {
             player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.FAILURE, "You don't have enough mana!"));
