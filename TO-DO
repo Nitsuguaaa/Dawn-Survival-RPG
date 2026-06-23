@@ -12,3 +12,6 @@ Custom Items:
 
  Utils:
  - add global ticker
+
+ TaskManager and Global timer:
+ - facto in half second tasks

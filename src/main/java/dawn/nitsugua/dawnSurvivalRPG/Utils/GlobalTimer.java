@@ -54,4 +54,28 @@ public class GlobalTimer {
             }
         }
     }
+
+    public DayOfWeek getDayOfTheWeek() {
+        return dayOfTheWeek;
+    }
+
+    public int getDayOfTheMonth() {
+        return dayOfTheMonth;
+    }
+
+    public int getHour() {
+        return hour;
+    }
+
+    public int getMinute() {
+        return minute;
+    }
+
+    public int getSecond() {
+        return second;
+    }
+
+    public long getTick() {
+        return tick;
+    }
 }
