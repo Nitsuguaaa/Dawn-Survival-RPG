@@ -1,5 +1,6 @@
 package dawn.nitsugua.dawnSurvivalRPG.Listeners.PlayerListeners;
 
+import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.CooldownManager;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.ManaManager;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.SkillManager;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
@@ -21,10 +22,12 @@ import org.bukkit.persistence.PersistentDataType;
 public class ItemEvents implements Listener {
     private final DawnSurvivalRPG plugin;
     private final ManaManager manaManager;
+    private final CooldownManager cooldownManager;
 
     public ItemEvents(DawnSurvivalRPG plugin) {
         this.plugin = plugin;
         this.manaManager = new ManaManager(plugin);
+        this.cooldownManager = new CooldownManager(plugin);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -63,7 +66,11 @@ public class ItemEvents implements Listener {
             // --> THE FIX: Stop vanilla Minecraft from continuing the block interaction
             //e.setCancelled(true);
 
-           skillManager.onUse(player, item, pdc);
+            if(!manaManager.hasMana(player, pdc)) return;
+            if(cooldownManager.isOnCooldown(player, pdc)) return;
+
+            skillManager.onUse(player, item, pdc);
+            cooldownManager.setCooldown(item);
         }
     }
 

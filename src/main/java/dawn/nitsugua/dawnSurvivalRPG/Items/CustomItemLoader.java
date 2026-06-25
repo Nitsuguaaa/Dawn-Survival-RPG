@@ -133,7 +133,7 @@ public class CustomItemLoader {
                 if(config.contains("skill")) {
                     String skillType = config.getString("skill.type");
                     Double manaCost = config.contains("skill.mana-cost") ? config.getDouble("skill.mana-cost") : null;
-                    Double cooldown = config.contains("skill.cooldown") ? config.getDouble("skill.cooldown") : null;
+                    Double cooldown = config.contains("skill.cooldown") ? config.getDouble("skill.cooldown") : 0;
 
                     item.setInteractable(true, skillType, manaCost, cooldown);
                 }

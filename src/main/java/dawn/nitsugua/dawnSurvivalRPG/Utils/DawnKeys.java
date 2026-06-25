@@ -13,6 +13,7 @@ public class DawnKeys {
     public static NamespacedKey ITEM_VERSION;
     public static NamespacedKey ITEM_UUID;
     public static NamespacedKey COOLDOWN;
+    public static NamespacedKey LAST_USED;
     public static NamespacedKey MANA;
     public static NamespacedKey MAX_MANA;
     public static NamespacedKey SKILL_TYPE;
@@ -32,6 +33,7 @@ public class DawnKeys {
         ITEM_VERSION = new NamespacedKey(plugin, "item_version");
         ITEM_UUID = new NamespacedKey(plugin, "item_uuid");
         COOLDOWN = new NamespacedKey(plugin, "cooldown");
+        LAST_USED = new NamespacedKey(plugin, "last-used");
         MANA = new NamespacedKey(plugin, "mana");
         MAX_MANA = new NamespacedKey(plugin, "max_mana");
         SKILL_TYPE = new NamespacedKey(plugin, "skill_type");
