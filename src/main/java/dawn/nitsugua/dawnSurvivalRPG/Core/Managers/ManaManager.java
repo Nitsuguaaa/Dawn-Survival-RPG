@@ -6,6 +6,7 @@ import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItem;
 import dawn.nitsugua.dawnSurvivalRPG.Player.DawnPlayer;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.DawnKeys;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -30,7 +31,7 @@ public class ManaManager {
 
         if(manaCost == null) return;
         dawnPlayer.removeCurrentMana(manaCost);
-        player.sendMessage("Removed mana, current: " + dawnPlayer.getCurrentMana());
+        //DEBUG player.sendMessage("Removed mana, current: " + dawnPlayer.getCurrentMana());
 
     }
 
@@ -44,8 +45,16 @@ public class ManaManager {
 
             double finalRegen = dawnPlayer.getMaxMana() * 0.02;
             dawnPlayer.addCurrentMana(finalRegen);
-            Bukkit.getPlayer(dawnPlayer.getPlayerId()).sendMessage("Your mana is now: " + (int)dawnPlayer.getCurrentMana() + "/" + dawnPlayer.getMaxMana());
+            //Bukkit.getPlayer(dawnPlayer.getPlayerId()).sendMessage("Your mana is now: " + (int)dawnPlayer.getCurrentMana() + "/" + dawnPlayer.getMaxMana());
+            sendManaUI(dawnPlayer);
         }
+    }
+
+    public static void sendManaUI(DawnPlayer player) {
+        Player target = Bukkit.getPlayer(player.getPlayerId());
+        if(!target.isOnline()) return;
+
+        target.sendActionBar(TextUtil.format("<aqua>✦ " + (int)player.getCurrentMana() + "/" + (int)player.getMaxMana()));
     }
 
     public void manaActionBar() {
