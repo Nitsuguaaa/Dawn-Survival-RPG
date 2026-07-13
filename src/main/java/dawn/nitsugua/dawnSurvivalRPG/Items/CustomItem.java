@@ -28,6 +28,14 @@ public class CustomItem {
     private Double manaCost;
     private Double cooldown;
 
+    //variables added if custom item has an RNG
+    private boolean rollable = false;
+    private double dropChance;
+    private int maxDropCount;
+
+    //Decorative
+    private boolean glinting = false;
+
     public CustomItem(@NotNull String customMaterial, @NotNull TextUtil.ItemRarity rarity, @NotNull String name, @NotNull Material parentMaterial, @NotNull String category, @NotNull String subCategory, @Nullable List<Component> lore, @Nullable String customModelData) {
         this.customMaterial = customMaterial;
         this.rarity = rarity;
@@ -63,6 +71,26 @@ public class CustomItem {
             this.intelligence = intelligence;
         }
     }
+
+    public void toggleGlint() {this.glinting = true;}
+    public boolean isGlinting() {return glinting;}
+
+    public void setRollable(double dropChance, int maxDropCount) {
+        rollable = true;
+        this.dropChance = dropChance;
+        this.maxDropCount = maxDropCount;
+    }
+    public boolean isRollable() {
+        return rollable;
+    }
+    public boolean updateRollable(double dropChance, int maxDropCount) {
+        if(!rollable) return false;
+        this.dropChance = dropChance;
+        this.maxDropCount = maxDropCount;
+        return true;
+    }
+    public double getDropChance() {return dropChance;}
+    public int getMaxDropCount() {return maxDropCount;}
 
     public Integer getIntelligence() {return intelligence;}
 

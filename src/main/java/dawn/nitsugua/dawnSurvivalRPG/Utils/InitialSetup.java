@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.*;
 
 public class InitialSetup {
 
@@ -21,6 +21,18 @@ public class InitialSetup {
         if (!itemsFolder.exists()) {
             itemsFolder.mkdirs();
             plugin.getLogger().info("Created Items Folder");
+        }
+
+        File mobFolder = new File(pluginFolder, "mobs");
+        if(!mobFolder.exists()) {
+            mobFolder.mkdirs();
+            plugin.getLogger().info("Created Mob Folder");
+        }
+
+        File mobDropFolder = new File(mobFolder, "drops");
+        if(!mobDropFolder.exists()) {
+            mobDropFolder.mkdirs();
+            plugin.getLogger().info("Created Mob drops Folder");
         }
 
         File weaponsFolder = new File(itemsFolder, "weapons");
@@ -58,6 +70,33 @@ public class InitialSetup {
 
                 yaml.save(sampleItem);
                 plugin.getLogger().info("Created a sample item: end_sword.yml");
+
+            } catch (IOException e) {
+                plugin.getLogger().info("Failed to create sample item: " + e.getMessage());
+            }
+        }
+
+        File sampleMobDrop = new File(mobDropFolder, "enderman.yml");
+        if(!sampleMobDrop.exists()) {
+            try {
+                YamlConfiguration yaml = new YamlConfiguration();
+
+                yaml.set("parent-mob", "ENDERMAN");
+                //yaml.set("rarity", "RARE");
+                yaml.set("name", "Enderman");
+
+                List<Map<String, Object>> dropList = new ArrayList<>();
+
+                Map<String, Object> drop1 = new HashMap<>();
+                drop1.put("item", "CONCENTRATED_EYE");
+                drop1.put("chance", 0.01);
+                drop1.put("max", 1);
+                dropList.add(drop1);
+
+                yaml.set("drops", dropList);
+
+                yaml.save(sampleMobDrop);
+                plugin.getLogger().info("Created a sample item: enderman.yml");
 
             } catch (IOException e) {
                 plugin.getLogger().info("Failed to create sample item: " + e.getMessage());

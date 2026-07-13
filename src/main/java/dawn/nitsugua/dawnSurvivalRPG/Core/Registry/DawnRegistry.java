@@ -2,6 +2,7 @@ package dawn.nitsugua.dawnSurvivalRPG.Core.Registry;
 
 import dawn.nitsugua.dawnSurvivalRPG.Core.Skills.Skill;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItem;
+import dawn.nitsugua.dawnSurvivalRPG.Mobs.CustomMob;
 import dawn.nitsugua.dawnSurvivalRPG.Player.DawnPlayer;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.ScheduledTask;
 import org.bukkit.entity.Player;
@@ -17,6 +18,7 @@ public class DawnRegistry {
     private static final HashMap<String, CustomItem> customItems = new HashMap<>(); //Custom Items
     private static final HashMap<String, Skill> skills = new HashMap<>();
     private static final HashMap<UUID, DawnPlayer> playerData = new HashMap<>();
+    private static final HashMap<String, CustomMob> customMobs = new HashMap<>();
 
     private static final HashMap<String, ScheduledTask> tasks = new HashMap<>();
 
@@ -50,4 +52,8 @@ public class DawnRegistry {
     public ScheduledTask getTask(String name) { return tasks.get(name);}
     public void removeTask(String name) { tasks.remove(name);}
     public HashMap<String, ScheduledTask> getAllTasks() {return tasks;}
+
+    public void registerCustomMob(CustomMob customMob) {customMobs.put(customMob.getMobName(), customMob);}
+    @Nullable
+    public CustomMob getCustomMob(String customMob) {return customMobs.get(customMob);}
 }
