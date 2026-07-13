@@ -21,7 +21,7 @@ public class MobEvents implements Listener {
         if(e.getEntity() instanceof Player) return;
         if(!(e.getDamageSource().getCausingEntity() instanceof Player player)) return;
 
-        mobManager.onMobDeath(e.getEntity(), player);
+        mobManager.onMobDeath(e, e.getEntity(), player);
 
     }
 }

@@ -37,7 +37,7 @@ public class CustomItemFactory {
         this.defaultLore.add(TextUtil.setItemLore("<gray>Custom Item"));
     }
 
-    public ItemStack createCustomItem(String item) {
+    public ItemStack createCustomItem(String item, int amount) {
         ItemStack finalItem;
 
         //debug: plugin.getLog().info("Got data: {}", item);
@@ -45,7 +45,7 @@ public class CustomItemFactory {
 
         //assert customItem != null;
         Material itemMaterial = customItem.getParentMaterial();
-        finalItem = new ItemStack(itemMaterial); //the itemStack to be returned
+        finalItem = new ItemStack(itemMaterial, amount); //the itemStack to be returned
 
         ItemMeta itemMeta = finalItem.getItemMeta();
 

@@ -88,7 +88,7 @@ public class GiveCommand {
                                     String itemKey = ctx.getArgument("name", String.class);
                                     Inventory inventory = player.getInventory();
 
-                                    inventory.addItem(customItemFactory.createCustomItem(itemKey));
+                                    inventory.addItem(customItemFactory.createCustomItem(itemKey, 1));
 
                                     //CustomItemFactory.createCustomItem(itemKey);
 
