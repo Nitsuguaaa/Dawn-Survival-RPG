@@ -76,6 +76,11 @@ public class CustomItemFactory {
         //itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         itemMeta.displayName(TextUtil.setItemRarity(customItem.getRarity(), customItem.getItemName())); //set display name
 
+        //decorative
+        if(customItem.isGlinting()) {
+            itemMeta.setEnchantmentGlintOverride(true);
+        }
+
         if(customItem.getLore() != null) { //if the weapon has custom lore
             itemMeta.lore(customItem.getLore());
         } else {
