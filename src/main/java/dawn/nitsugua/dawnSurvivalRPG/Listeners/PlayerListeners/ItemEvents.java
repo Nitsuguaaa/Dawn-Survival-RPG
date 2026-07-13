@@ -50,6 +50,7 @@ public class ItemEvents implements Listener {
         ItemStack item = player.getInventory().getItemInMainHand();
 
         if(!DawnKeys.isDawnObject(item)) return;
+        e.setCancelled(true); //for future stuff, change it because of consumables
 
         // Ensure we are only firing skills on right clicks
         Action action = e.getAction();

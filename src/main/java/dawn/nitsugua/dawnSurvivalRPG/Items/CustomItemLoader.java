@@ -87,7 +87,7 @@ public class CustomItemLoader {
             }
 
             List<Component> lore = parseLore(config.getStringList("lore"));
-            lore.add(TextUtil.setItemRarity(finalRarity, "<bold>" + rarity.toLowerCase() + " " + subCategory.toLowerCase()));
+            lore.add(TextUtil.setItemRarity(finalRarity, "<bold>" + rarity.toLowerCase().replace('_', ' ') + " " + subCategory.toLowerCase().replace('_', ' ')));
 
             //plugin.getLog().info(TextUtil.format("<aqua>This YAML's name is: </aqua><white>" + config.getString("name")));
 
@@ -111,6 +111,10 @@ public class CustomItemLoader {
                     break;
                 case "usable":
                     plugin.getLog().info(TextUtil.format("<green>Registering Usable item"));
+                    break;
+                case "materials": //normal item, used only as an ingredient
+                    item = new CustomItem(customMaterial, finalRarity, name, parentMaterial, category, subCategory, lore, null);
+                    plugin.getLog().info(TextUtil.sendLogInfo("CustomItemLoader", TextUtil.LogInfo.INFO, "Registering material: <white>" + customMaterial));
                     break;
                 default:
                     plugin.getLog().info(TextUtil.format("<red>An unknown directory is inside the items directory, please remove"));

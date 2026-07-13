@@ -30,7 +30,7 @@ public class CustomItemFactory {
     private final DawnSurvivalRPG plugin;
     private final DawnRegistry dawnRegistry = DawnRegistry.getInstance();
 
-    private ItemStack finalItem;
+    //private
 
     public CustomItemFactory(DawnSurvivalRPG plugin) {
         this.plugin = plugin;
@@ -38,6 +38,8 @@ public class CustomItemFactory {
     }
 
     public ItemStack createCustomItem(String item) {
+        ItemStack finalItem;
+
         //debug: plugin.getLog().info("Got data: {}", item);
         CustomItem customItem = dawnRegistry.getCustomItem(item);
 
@@ -91,23 +93,19 @@ public class CustomItemFactory {
 
         switch (customItem.getCategory()) { //modifies default custom item to specific category
             case "WEAPON":
-                customWeapon(customItem);
-                break;
+                return customWeapon(customItem, finalItem);
             case "ARMOR":
                 plugin.getLog().info(TextUtil.sendLogInfo("CustomItemFactory", TextUtil.LogInfo.WARNING, "Custom Armor not set."));
                 break;
             default:
-                return null;
+                return finalItem;
         }
-
-
-
         return finalItem;
     }
 
-    private void customWeapon(CustomItem customItem) {
+    private ItemStack customWeapon(CustomItem customItem, ItemStack finalItem) {
         if(!(customItem instanceof CustomWeapon customWeapon)) {
-            return;
+            return finalItem;
         }
 
         ItemMeta itemMeta = finalItem.getItemMeta();
@@ -128,10 +126,11 @@ public class CustomItemFactory {
                 itemMeta.addAttributeModifier(Attribute.ATTACK_DAMAGE, newAttribute);
 
                 finalItem.setItemMeta(itemMeta);
-                return;
+                return finalItem;
             case "BOW":
                 plugin.getLog().info(TextUtil.sendLogInfo("CustomItemFactory", TextUtil.LogInfo.WARNING, "Custom Bow not set."));
                 break;
         }
+        return finalItem;
     }
 }
