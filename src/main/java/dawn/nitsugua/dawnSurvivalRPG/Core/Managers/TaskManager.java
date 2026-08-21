@@ -10,8 +10,6 @@ import java.util.List;
 
 public class TaskManager {
     private final DawnRegistry dawnRegistry = DawnRegistry.getInstance();
-    List<String> toRemove = new ArrayList<>();
-
     //Why not just go straight to registry? Because I might add other logic, defeats the purpose of a registry that just handles storage
     public void removeTask(String name) {
         dawnRegistry.removeTask(name);
@@ -19,6 +17,7 @@ public class TaskManager {
 
     public void processTasks(GlobalTimer time) {
         HashMap<String, ScheduledTask> tasks = dawnRegistry.getAllTasks();
+        List<String> toRemove = new ArrayList<>();
         for(ScheduledTask task : tasks.values()) {
             if (shouldRun(task, time)) {
                 task.run();
