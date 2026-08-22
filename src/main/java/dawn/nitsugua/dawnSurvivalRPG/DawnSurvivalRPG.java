@@ -1,6 +1,8 @@
 package dawn.nitsugua.dawnSurvivalRPG;
 
+import dawn.nitsugua.dawnSurvivalRPG.API.DawnAPI;
 import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.ItemCommand;
+import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.TaskManager;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.ManaTasks;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemLoader;
@@ -13,6 +15,7 @@ import dawn.nitsugua.dawnSurvivalRPG.Utils.*;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,6 +25,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     private static ComponentLogger log;
     private static DawnSurvivalRPG instance;
     private GlobalTicker ticker;
+    private DawnAPI api;
 
     @Override
     public void onEnable() {
@@ -38,6 +42,13 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         registerCommands();
         registerListeners();
         registerManagersAndLoaders();
+
+        this.api = new DawnAPI() {
+            @Override
+            public TaskManager getTaskManager() {
+                return ticker.getTaskManager();
+            }
+        };
 
         log.info(TextUtil.format("<dark_gray>=============================================</dark_gray>"));
     }
@@ -88,6 +99,11 @@ public final class DawnSurvivalRPG extends JavaPlugin {
 
     @NotNull
     public static DawnSurvivalRPG getInstance() {return instance;}
+
+    @NotNull
+    public DawnAPI getAPI () {
+        return api;
+    }
 
 
     //public CustomItemManager getCustomItemManager() {return customItemManager;}

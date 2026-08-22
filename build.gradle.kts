@@ -43,7 +43,7 @@ tasks.register<Copy>("deployToTestServer") {
 
     from(layout.buildDirectory.dir("libs"))
 
-    val targetDir = file("C:/Users/AC/Desktop/26.1-Server/plugins")
+    val targetDir = file("C:/Users/AC/Desktop/DawnMC-26.1/plugins")
     into(targetDir)
 
     duplicatesStrategy = DuplicatesStrategy.INCLUDE

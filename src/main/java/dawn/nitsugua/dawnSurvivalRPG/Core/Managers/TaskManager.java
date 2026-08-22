@@ -15,6 +15,10 @@ public class TaskManager {
         dawnRegistry.removeTask(name);
     }
 
+    public void registerTask(ScheduledTask task) {
+        dawnRegistry.registerTask(task.getTaskName(), task);
+    }
+
     public void processTasks(GlobalTimer time) {
         HashMap<String, ScheduledTask> tasks = dawnRegistry.getAllTasks();
         List<String> toRemove = new ArrayList<>();

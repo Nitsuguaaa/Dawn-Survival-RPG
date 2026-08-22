@@ -47,4 +47,8 @@ public class GlobalTicker implements Runnable {
     public GlobalTimer getTimer() {
         return timer;
     }
+
+    public TaskManager getTaskManager() {
+        return this.taskManager;
+    }
 }
