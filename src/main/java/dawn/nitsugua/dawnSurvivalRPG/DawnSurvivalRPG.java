@@ -7,7 +7,9 @@ import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.ManaTasks;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemLoader;
 import dawn.nitsugua.dawnSurvivalRPG.Items.Skills.SkillLoader;
+import dawn.nitsugua.dawnSurvivalRPG.Listeners.EntityListeners.FancyNPCEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.EntityListeners.MobEvents;
+import dawn.nitsugua.dawnSurvivalRPG.Listeners.EntityListeners.VillagerEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.PlayerListeners.ItemEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.PlayerListeners.PlayerEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.TestListeners.PlayerBreakingBlockListener;
@@ -81,6 +83,8 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ItemEvents(instance), instance);
         getServer().getPluginManager().registerEvents(new PlayerEvents(instance), instance);
         getServer().getPluginManager().registerEvents(new MobEvents(instance), instance);
+        getServer().getPluginManager().registerEvents(new VillagerEvents(instance), instance);
+        getServer().getPluginManager().registerEvents(new FancyNPCEvents(instance), instance);
 
         log.info(TextUtil.format("<green>Listeners Registered!</green>"));
     }
