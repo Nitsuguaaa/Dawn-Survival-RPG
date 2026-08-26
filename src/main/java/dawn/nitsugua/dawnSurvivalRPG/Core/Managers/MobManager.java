@@ -3,13 +3,20 @@ package dawn.nitsugua.dawnSurvivalRPG.Core.Managers;
 import com.destroystokyo.paper.entity.ai.Goal;
 import com.destroystokyo.paper.entity.ai.MobGoals;
 import com.destroystokyo.paper.entity.ai.VanillaGoal;
+import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemFactory;
+import dawn.nitsugua.dawnSurvivalRPG.Mobs.CustomMob;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.DawnKeys;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
+import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+import org.w3c.dom.Attr;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -17,6 +24,7 @@ import java.util.stream.Collectors;
 public class MobManager {
     private final DawnSurvivalRPG plugin;
     private final CustomItemFactory itemFactory;
+    private final DawnRegistry dawnRegistry = DawnRegistry.getInstance();
 
     public MobManager(DawnSurvivalRPG plugin) {
         this.plugin = plugin;
@@ -70,5 +78,32 @@ public class MobManager {
 
     public static void spawnDungeonMobs(DawnSurvivalRPG plugin) {
         //do something
+    }
+
+    public Mob spawnCustomMob(Location location, String mobName) {
+        CustomMob blueprint = dawnRegistry.getCustomMob(mobName.toUpperCase());
+        if(blueprint == null) {
+            plugin.getLog().info(TextUtil.sendLogInfo("MobManager", TextUtil.LogInfo.ERROR, "Attempted to spawn unknown mob: <white>" + mobName));
+            return null;
+        }
+
+        Mob entity = (Mob) location.getWorld().spawnEntity(location, blueprint.getParentType());
+
+        entity.customName(blueprint.getDisplayName());
+        entity.setCustomNameVisible(true);
+
+        entity.getAttribute(Attribute.MAX_HEALTH).setBaseValue(blueprint.getMaxHealth());
+        entity.setHealth(blueprint.getMaxHealth()); //pretty sure setting max health only sets but not heal so I added this
+        entity.getAttribute(Attribute.ATTACK_DAMAGE).setBaseValue(blueprint.getAttackDamage());
+        entity.getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(blueprint.getMovementSpeed());
+        //entity.getAttribute(Attribute.ATTACK_SPEED).setBaseValue(blueprint.getAttackDamage());
+        entity.getAttribute(Attribute.FOLLOW_RANGE).setBaseValue(blueprint.getFollowRange());
+
+        PersistentDataContainer pdc = entity.getPersistentDataContainer();
+        pdc.set(DawnKeys.DAWN_MOB, PersistentDataType.BOOLEAN, true);
+
+        stripGenericMobGoal(entity);
+
+        return entity;
     }
 }

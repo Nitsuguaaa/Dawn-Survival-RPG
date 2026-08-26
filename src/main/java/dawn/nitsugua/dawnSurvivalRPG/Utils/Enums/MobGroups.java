@@ -1,8 +1,9 @@
 package dawn.nitsugua.dawnSurvivalRPG.Utils.Enums;
 
 public enum MobGroups {
-    UNDEAD,
-    ARACHNID,
-    ENDER_BORN,
-    NETHER_BORN
+    COMMON,
+    ELITE,
+    EPIC,
+    LEGENDARY,
+    MYTHICAL
 }

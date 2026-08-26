@@ -14,6 +14,7 @@ import dawn.nitsugua.dawnSurvivalRPG.Listeners.EntityListeners.VillagerEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.PlayerListeners.ItemEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.PlayerListeners.PlayerEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.TestListeners.PlayerBreakingBlockListener;
+import dawn.nitsugua.dawnSurvivalRPG.Mobs.CustomMobLoader;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.*;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
@@ -95,6 +96,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         DawnKeys.init(instance);
         CustomItemLoader.initialize(instance);
         SkillLoader.initialize(instance);
+        CustomMobLoader.initialize(instance);
         log.info(TextUtil.format("<green>Managers and Loaders Registered!</green>"));
     }
 

@@ -142,14 +142,6 @@ public class CustomItemLoader {
                     item.setInteractable(true, skillType, manaCost, cooldown);
                 }
 
-                //check if it is rollable
-                if(config.contains("chances")) {
-                    double dropChance = config.getDouble("chances.drop-chance");
-                    int maxDropCount = config.getInt("chances.max-drop-count");
-
-                    item.setRollable(dropChance, maxDropCount);
-                }
-
                 //check for decorative addons
                 if(config.contains("glinting")) {
                     item.toggleGlint();

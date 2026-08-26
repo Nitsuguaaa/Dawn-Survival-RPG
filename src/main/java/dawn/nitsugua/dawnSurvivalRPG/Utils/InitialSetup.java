@@ -29,7 +29,7 @@ public class InitialSetup {
             plugin.getLogger().info("Created Mob Folder");
         }
 
-        File mobDropFolder = new File(mobFolder, "drops");
+        File mobDropFolder = new File(mobFolder, "common");
         if(!mobDropFolder.exists()) {
             mobDropFolder.mkdirs();
             plugin.getLogger().info("Created Mob drops Folder");
@@ -76,27 +76,24 @@ public class InitialSetup {
             }
         }
 
-        File sampleMobDrop = new File(mobDropFolder, "enderman.yml");
+        File sampleMobDrop = new File(mobDropFolder, "graveyard-zombie.yml");
         if(!sampleMobDrop.exists()) {
             try {
                 YamlConfiguration yaml = new YamlConfiguration();
 
-                yaml.set("parent-mob", "ENDERMAN");
+                yaml.set("name", "GRAVEYARD_ZOMBIE");
+                yaml.set("parent-mob", "ZOMBIE");
+                yaml.set("display-name", "<red>Graveyard Zombie");
+
+                yaml.set("stats.max-health", 20.0);
+                yaml.set("stats.attack-damage", 3.0);
+                yaml.set("stats.movement-speed", 1.5);
+                yaml.set("stats.movement-range", 16.0);
+                yaml.set("stats.attack-speed", 4.0);
                 //yaml.set("rarity", "RARE");
-                yaml.set("name", "Enderman");
-
-                List<Map<String, Object>> dropList = new ArrayList<>();
-
-                Map<String, Object> drop1 = new HashMap<>();
-                drop1.put("item", "CONCENTRATED_EYE");
-                drop1.put("chance", 0.01);
-                drop1.put("max", 1);
-                dropList.add(drop1);
-
-                yaml.set("drops", dropList);
 
                 yaml.save(sampleMobDrop);
-                plugin.getLogger().info("Created a sample item: enderman.yml");
+                plugin.getLogger().info("Created a sample item: graveyard-zombie.yml");
 
             } catch (IOException e) {
                 plugin.getLogger().info("Failed to create sample item: " + e.getMessage());

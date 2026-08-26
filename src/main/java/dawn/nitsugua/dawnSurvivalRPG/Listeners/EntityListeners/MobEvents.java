@@ -11,9 +11,9 @@ import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.spawner.SpawnRule;
@@ -27,6 +27,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.EntitiesLoadEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 public class MobEvents implements Listener {
@@ -114,23 +115,71 @@ public class MobEvents implements Listener {
 //            zombie.getPersistentDataContainer().set(DawnKeys.DAWN_MOB, PersistentDataType.BOOLEAN, true);
         } else if(e.getAction() == Action.LEFT_CLICK_AIR) {
             if (cachedLocation == null) {
-                player.sendMessage("<red>No location cached! Right-click a block first.");
+                player.sendMessage(TextUtil.format("<red>No location cached! Right-click a block first."));
                 return;
             }
 
-            Zombie zombie = cachedLocation.getWorld().spawn(cachedLocation, Zombie.class);
-            zombie.setPersistent(true);
-            zombie.setRemoveWhenFarAway(false);
-            zombie.setBaby();
-            zombie.customName(TextUtil.format("<green><b>Gary"));
-            zombie.setCustomNameVisible(true);
-            zombie.getPersistentDataContainer().set(
-                    DawnKeys.DAWN_MOB, PersistentDataType.BOOLEAN, true);
-
-            player.sendMessage("<green>Zombie spawned at cached location!");
-            player.sendMessage("<gray>Chunk loaded: <white>" +
-                    cachedLocation.getChunk().isLoaded());
+            //spawn mob here
+            Mob mob = mobManager.spawnCustomMob(cachedLocation, "GRAVEYARD_ZOMBIE");
         }
+    }
+
+    @EventHandler
+    public void onDebugHit(EntityDamageByEntityEvent e) {
+        if (!(e.getDamager() instanceof Player player)) return;
+        if (!(e.getEntity() instanceof Mob mob)) return;
+
+        // 1. Check if they are holding the "spawner-tester" stick
+        ItemStack hand = player.getInventory().getItemInMainHand();
+        if (hand.getType() == Material.AIR || !hand.hasItemMeta()) return;
+
+        Component nameComp = hand.getItemMeta().displayName();
+        if (nameComp == null) return;
+        String itemName = PlainTextComponentSerializer.plainText().serialize(nameComp);
+        if (!itemName.equals("mob-tester")) return;
+
+        // 2. Cancel the damage so you don't accidentally kill the mob while debugging!
+        e.setCancelled(true);
+
+        // 3. Print the debug info
+        printMobDebugInfo(player, mob);
+    }
+
+    private void printMobDebugInfo(Player player, Mob mob) {
+        player.sendMessage("<gold><b>--- " + mob.getType().name() + " DEBUG ---");
+
+        // --- ATTRIBUTES ---
+        player.sendMessage("<yellow>Attributes:");
+        // Loop through all possible attributes in the game
+        for (Attribute attribute : Registry.ATTRIBUTE) {
+            AttributeInstance instance = mob.getAttribute(attribute);
+            // If the mob actually has this attribute, print it!
+            if (instance != null) {
+                player.sendMessage("<gray> • " + attribute.getKey().getKey() + ": <white>" + instance.getBaseValue());
+            }
+        }
+
+        // --- PDC TAGS ---
+        player.sendMessage("<yellow>PDC Tags:");
+        PersistentDataContainer pdc = mob.getPersistentDataContainer();
+        if (pdc.getKeys().isEmpty()) {
+            player.sendMessage("<gray> • No tags found.");
+        } else {
+            for (NamespacedKey key : pdc.getKeys()) {
+                String value = extractPdcValue(pdc, key);
+                player.sendMessage("<gray> • " + key.asString() + ": <white>" + value);
+            }
+        }
+    }
+
+    // Helper method to safely extract PDC values without knowing the type
+    private String extractPdcValue(PersistentDataContainer pdc, NamespacedKey key) {
+        if (pdc.has(key, PersistentDataType.STRING)) return pdc.get(key, PersistentDataType.STRING);
+        if (pdc.has(key, PersistentDataType.INTEGER)) return String.valueOf(pdc.get(key, PersistentDataType.INTEGER));
+        if (pdc.has(key, PersistentDataType.DOUBLE)) return String.valueOf(pdc.get(key, PersistentDataType.DOUBLE));
+        if (pdc.has(key, PersistentDataType.BOOLEAN)) return String.valueOf(pdc.get(key, PersistentDataType.BOOLEAN));
+        if (pdc.has(key, PersistentDataType.LONG)) return String.valueOf(pdc.get(key, PersistentDataType.LONG));
+        return "[Complex Type]";
     }
 
     @EventHandler

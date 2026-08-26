@@ -5,10 +5,14 @@ import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItem;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.Enums.MobGroups;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
+import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.EntityType;
+import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,42 +45,45 @@ public class CustomMobLoader {
         if (file.getName().endsWith(".yml")) {
             ConfigurationSection config = YamlConfiguration.loadConfiguration(file);
 
-            CustomMob mob = null;
-            List<CustomItem> drops = new ArrayList<>();
-
-            String parentMobName = config.getString("parent-mob");
             String mobName = config.getString("name");
-            ConfigurationSection dropsSection = config.getConfigurationSection("drops");
+            String parentMobName = config.getString("parent-mob");
+            String displayNameStr = config.getString("display-name", "<white>" + mobName);
 
-            // Check for required fields
-            if (parentMobName == null || mobName == null || dropsSection == null) {
-                plugin.getLog().info(TextUtil.format("<red>Missing required fields in: " + file.getName()));
+            if(mobName == null || parentMobName == null) {
+                plugin.getLog().info(TextUtil.sendLogInfo("CustomMobLoader", TextUtil.LogInfo.ERROR, "Missing required fields in: <white>" + file.getName()));
+            }
+
+            EntityType parentType;
+            try {
+                parentType = EntityType.valueOf(parentMobName.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                plugin.getLog().info(TextUtil.sendLogInfo("CustomMobLoader", TextUtil.LogInfo.ERROR, "Invalid parent mob in: <white>" + file.getName()));
                 return;
             }
 
-            // Convert parentMobName to NamespacedKey
-            NamespacedKey parentMob = new NamespacedKey(plugin, parentMobName);
-
-            // Parse drops
-            for (String key : dropsSection.getKeys(false)) {
-                ConfigurationSection drop = dropsSection.getConfigurationSection(key);
-                String item = drop.getString("item");
-                double chance = drop.getDouble("chance");
-                int max = drop.getInt("max");
-
-                CustomItem customItem = dawnRegistry.getCustomItem(item);
-                if (customItem != null) {
-                    drops.add(customItem);
-                } else {
-                    plugin.getLog().info(TextUtil.format("<red>Drop item not found: " + item));
-                }
+            MobGroups group;
+            try {
+                group = MobGroups.valueOf(parentFileName.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                group = MobGroups.COMMON; // Fallback
             }
-            // Register custom mob
-            mob = new CustomMob(parentMob, mobName, MobGroups.valueOf(parentFileName.toUpperCase()));
-            mob.setCustomDrops(drops);
-            dawnRegistry.registerCustomMob(mob);
 
-            plugin.getLog().info(TextUtil.sendLogInfo("CustomMobLoader", TextUtil.LogInfo.INFO, "Registered custom mob: " + mobName));
+
+            ConfigurationSection stats = config.getConfigurationSection("stats");
+            double maxHealth = stats != null ? stats.getDouble("max-health", 20.0) : 20.0;
+            double attackDamage = stats != null ? stats.getDouble("attack-damage", 3.0) : 3.0;
+            double movementSpeed = stats != null ? stats.getDouble("movement-speed", 0.23) : 0.23;
+            double followRange = stats != null ? stats.getDouble("follow-range", 16.0) : 16.0;
+            double attackSpeed = stats != null ? stats.getDouble("attack-speed", 4.0) : 4.0;
+
+            Component displayName = TextUtil.format(displayNameStr);
+
+            CustomMob mob = new CustomMob(
+              mobName, parentType, group, displayName, maxHealth, attackDamage, movementSpeed, followRange, attackSpeed
+            );
+
+            dawnRegistry.registerCustomMob(mob);
+            plugin.getLog().info(TextUtil.sendLogInfo("CustomMobLoader", TextUtil.LogInfo.INFO, "Registered custom mob: <white>" + mobName));
         }
     }
 }
