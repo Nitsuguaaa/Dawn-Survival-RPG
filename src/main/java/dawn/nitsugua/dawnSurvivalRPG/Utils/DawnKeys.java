@@ -7,6 +7,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import javax.naming.Name;
+
 public class DawnKeys {
     public static NamespacedKey DAWN_OBJECT;
     public static NamespacedKey ITEM_ID;
@@ -23,6 +25,10 @@ public class DawnKeys {
     public static NamespacedKey USES;
     public static NamespacedKey CATEGORY;
     public static NamespacedKey SUB_CATEGORY;
+
+    //for entities
+    public static NamespacedKey DAWN_MOB; //bool
+    public static NamespacedKey DAWN_MOB_TYPE; //string
 
     //Attributes
     public static NamespacedKey INTELLIGENCE;
@@ -45,6 +51,9 @@ public class DawnKeys {
         SUB_CATEGORY = new NamespacedKey(plugin, "sub-category");
 
         INTELLIGENCE = new NamespacedKey(plugin, "intelligence");
+
+        DAWN_MOB = new NamespacedKey(plugin, "dawn_mob");
+        DAWN_MOB_TYPE = new NamespacedKey(plugin, "dawn_mob_type");
     }
 
     public static boolean isDawnObject(ItemStack item) {

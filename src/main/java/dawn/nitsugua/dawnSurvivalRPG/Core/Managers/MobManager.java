@@ -6,6 +6,7 @@ import com.destroystokyo.paper.entity.ai.VanillaGoal;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemFactory;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -39,31 +40,35 @@ public class MobManager {
             plugin.getServer().getMobGoals().removeGoal(creature, VanillaGoal.MOVE_THROUGH_VILLAGE);
             plugin.getServer().getMobGoals().removeGoal(creature, VanillaGoal.MOVE_BACK_TO_VILLAGE);
 
-            if(creature instanceof Zombie zombie) {
+            /*if(creature instanceof Zombie zombie) {
                 zombie.getAttribute(Attribute.FOLLOW_RANGE).setBaseValue(3);
-            }
+            }*/
 
             // 2. Grab all remaining goals (Returns a Collection<Goal<Mob>>)
-            Collection<Goal<Mob>> remainingGoals = plugin.getServer().getMobGoals().getAllGoals(creature);
-            String goalNames = remainingGoals.stream()
-                    // 1. goal.getKey() -> returns GoalKey
-                    // 2. .getNamespacedKey() -> returns NamespacedKey
-                    // 3. .getKey() -> returns the String name (e.g. "random_stroll")
-                    .map(goal -> goal.getKey().getNamespacedKey().asString())
-                    .collect(Collectors.joining(", "));
+//            Collection<Goal<Mob>> remainingGoals = plugin.getServer().getMobGoals().getAllGoals(creature);
+//            String goalNames = remainingGoals.stream()
+//                    // 1. goal.getKey() -> returns GoalKey
+//                    // 2. .getNamespacedKey() -> returns NamespacedKey
+//                    // 3. .getKey() -> returns the String name (e.g. "random_stroll")
+//                    .map(goal -> goal.getKey().getNamespacedKey().asString())
+//                    .collect(Collectors.joining(", "));
 
             // 4. Send it to the player!
-            Player player = plugin.getServer().getPlayer("Nitsuguaaa");
-            if (player != null) {
-                player.sendMessage(MessagesUtil.sendInfo(
-                        MessagesUtil.commonMessages.SUCCESS,
-                        "Remaining goals for " + creature.getType() + ": [" + goalNames + "]"
-                ));
-            } else {
-                plugin.getLogger().info("Remaining goals for " + creature.getType() + ": [" + goalNames + "]");
-            }
+//            Player player = plugin.getServer().getPlayer("Nitsuguaaa");
+//            if (player != null) {
+//                player.sendMessage(MessagesUtil.sendInfo(
+//                        MessagesUtil.commonMessages.SUCCESS,
+//                        "Remaining goals for " + creature.getType() + ": [" + goalNames + "]"
+//                ));
+//            } else {
+//                plugin.getLogger().info("Remaining goals for " + creature.getType() + ": [" + goalNames + "]");
+//            }
         }
 
 
+    }
+
+    public static void spawnDungeonMobs(DawnSurvivalRPG plugin) {
+        //do something
     }
 }

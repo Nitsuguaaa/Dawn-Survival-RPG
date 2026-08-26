@@ -7,12 +7,13 @@ import dawn.nitsugua.dawnSurvivalRPG.Utils.ScheduledTask;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TaskManager {
     private final DawnRegistry dawnRegistry = DawnRegistry.getInstance();
     //Why not just go straight to registry? Because I might add other logic, defeats the purpose of a registry that just handles storage
-    public void removeTask(String name) {
-        dawnRegistry.removeTask(name);
+    public void removeTask(ScheduledTask task) {
+        dawnRegistry.removeTask(task.getTaskName());
     }
 
     public void registerTask(ScheduledTask task) {
@@ -20,7 +21,7 @@ public class TaskManager {
     }
 
     public void processTasks(GlobalTimer time) {
-        HashMap<String, ScheduledTask> tasks = dawnRegistry.getAllTasks();
+        Map<String, ScheduledTask> tasks = dawnRegistry.getAllTasks();
         List<String> toRemove = new ArrayList<>();
         for(ScheduledTask task : tasks.values()) {
             if (shouldRun(task, time)) {

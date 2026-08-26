@@ -49,6 +49,13 @@ public class GlobalTimer {
             if (second >= 60) {
                 second = 0;
                 minute++;
+
+                // Resync every 5 minutes (300 seconds)
+                if (minute % 5 == 0) {
+                    syncToSystem();
+                    return; // Skip manual incrementing after resync
+                }
+
                 if (minute >= 60) {
                     minute = 0;
                     hour++;

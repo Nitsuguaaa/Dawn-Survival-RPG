@@ -15,6 +15,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class ManaManager {
@@ -36,7 +37,7 @@ public class ManaManager {
     }
 
     public static void regenMana() {
-        HashMap<UUID, DawnPlayer> dawnPlayers = DawnRegistry.getInstance().getAllPlayers();
+        Map<UUID, DawnPlayer> dawnPlayers = DawnRegistry.getInstance().getAllPlayers();
         if (dawnPlayers == null) return;
 
         for(DawnPlayer dawnPlayer : dawnPlayers.values()) {

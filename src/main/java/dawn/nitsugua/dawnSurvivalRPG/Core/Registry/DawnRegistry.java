@@ -8,21 +8,19 @@ import dawn.nitsugua.dawnSurvivalRPG.Utils.ScheduledTask;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DawnRegistry {
     private static final DawnRegistry INSTANCE = new DawnRegistry();
-    private static final HashMap<String, CustomItem> customItems = new HashMap<>(); //Custom Items
-    private static final HashMap<String, Skill> skills = new HashMap<>();
-    private static final HashMap<UUID, DawnPlayer> playerData = new HashMap<>();
-    private static final HashMap<String, CustomMob> customMobs = new HashMap<>();
+    private final ConcurrentHashMap<String, CustomItem> customItems = new ConcurrentHashMap<>(); //Custom Items
+    private final ConcurrentHashMap<String, Skill> skills = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, DawnPlayer> playerData = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, CustomMob> customMobs = new ConcurrentHashMap<>();
 
-    private static final HashMap<String, ScheduledTask> tasks = new HashMap<>();
+    private final ConcurrentHashMap<String, ScheduledTask> tasks = new ConcurrentHashMap<>();
 
-    public DawnRegistry() {}
+    private DawnRegistry() {}
     public static DawnRegistry getInstance() {return INSTANCE;};
 
     public void registerItem(CustomItem customItem) {
@@ -45,13 +43,13 @@ public class DawnRegistry {
     @Nullable
     public DawnPlayer getDawnPlayer(UUID player) { return playerData.get(player);}
     public void removePlayer(UUID player) {playerData.remove(player);}
-    public HashMap<UUID, DawnPlayer> getAllPlayers() {return playerData;}
+    public Map<UUID, DawnPlayer> getAllPlayers() {return Collections.unmodifiableMap(playerData);}
 
     public void registerTask(String name, ScheduledTask task) { tasks.put(name, task);}
     @Nullable
     public ScheduledTask getTask(String name) { return tasks.get(name);}
     public void removeTask(String name) { tasks.remove(name);}
-    public HashMap<String, ScheduledTask> getAllTasks() {return tasks;}
+    public Map<String, ScheduledTask> getAllTasks() {return Collections.unmodifiableMap(tasks);}
 
     public void registerCustomMob(CustomMob customMob) {customMobs.put(customMob.getMobName(), customMob);}
     @Nullable

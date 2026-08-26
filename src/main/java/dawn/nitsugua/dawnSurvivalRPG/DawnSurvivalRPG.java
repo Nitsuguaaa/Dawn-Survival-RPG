@@ -4,6 +4,7 @@ import dawn.nitsugua.dawnSurvivalRPG.API.DawnAPI;
 import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.ItemCommand;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.TaskManager;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
+import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.DungeonTasks;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.ManaTasks;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemLoader;
 import dawn.nitsugua.dawnSurvivalRPG.Items.Skills.SkillLoader;
@@ -98,7 +99,10 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     }
 
     private void registerTasks() {
+        log.info(TextUtil.format("<yellow>Tasks...</yellow>"));
         ManaTasks.initManaTasks(instance);
+        DungeonTasks.runDungeonMobSpawning(instance);
+        log.info(TextUtil.format("<green>Tasks Registered!</green>"));
     }
 
     @NotNull

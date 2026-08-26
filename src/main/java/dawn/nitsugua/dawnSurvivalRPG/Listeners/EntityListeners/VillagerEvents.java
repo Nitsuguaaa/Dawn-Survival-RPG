@@ -21,7 +21,7 @@ public class VillagerEvents implements Listener {
         this.customItemFactory = new CustomItemFactory(this.plugin);
     }
 
-    @EventHandler
+    /*@EventHandler
     public void onTradeAcquire(VillagerAcquireTradeEvent e) {
         MerchantRecipe recipe = e.getRecipe();
 
@@ -38,5 +38,5 @@ public class VillagerEvents implements Listener {
         replacement.setPriceMultiplier(0.05f);
 
         e.setRecipe(replacement);
-    }
+    }*/
 }
