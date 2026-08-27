@@ -35,8 +35,7 @@ public class SpawnArea {
     public World getWorld() {return world;}
     public Map<UUID, Location> getNodes() {return Collections.unmodifiableMap(nodes);}
 
-    public void setNode(Location location) {
-        UUID nodeId = UUID.randomUUID();
-        nodes.put(nodeId, location);
+    public void addNode(UUID uuid, Location location) {
+        nodes.put(uuid, location);
     }
 }
