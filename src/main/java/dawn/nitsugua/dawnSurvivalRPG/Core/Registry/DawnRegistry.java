@@ -1,6 +1,7 @@
 package dawn.nitsugua.dawnSurvivalRPG.Core.Registry;
 
 import dawn.nitsugua.dawnSurvivalRPG.Core.Skills.Skill;
+import dawn.nitsugua.dawnSurvivalRPG.Dungeons.SpawnArea;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItem;
 import dawn.nitsugua.dawnSurvivalRPG.Mobs.CustomMob;
 import dawn.nitsugua.dawnSurvivalRPG.Player.DawnPlayer;
@@ -17,6 +18,7 @@ public class DawnRegistry {
     private final ConcurrentHashMap<String, Skill> skills = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<UUID, DawnPlayer> playerData = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, CustomMob> customMobs = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, SpawnArea> dawnSpawners = new ConcurrentHashMap<>();
 
     private final ConcurrentHashMap<String, ScheduledTask> tasks = new ConcurrentHashMap<>();
 
@@ -54,4 +56,9 @@ public class DawnRegistry {
     public void registerCustomMob(CustomMob customMob) {customMobs.put(customMob.getMobName(), customMob);}
     @Nullable
     public CustomMob getCustomMob(String customMob) {return customMobs.get(customMob);}
+
+    public void registerDawnSpawner(SpawnArea spawnArea) {dawnSpawners.put(spawnArea.getUuid(), spawnArea);}
+    @Nullable
+    public SpawnArea getSpawner(UUID uuid) {return dawnSpawners.get(uuid);}
+    public Map<UUID, SpawnArea> getAllSpawners() {return Collections.unmodifiableMap(dawnSpawners);}
 }

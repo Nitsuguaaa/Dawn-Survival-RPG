@@ -1,6 +1,7 @@
 package dawn.nitsugua.dawnSurvivalRPG;
 
 import dawn.nitsugua.dawnSurvivalRPG.API.DawnAPI;
+import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.DungeonCommand;
 import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.ItemCommand;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.TaskManager;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
@@ -72,6 +73,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
             final Commands commands = event.registrar();
 
             new ItemCommand(instance).register(commands);
+            new DungeonCommand(instance).register(commands);
         });
 
         log.info(TextUtil.format("<green>Commands Registered!</green>"));

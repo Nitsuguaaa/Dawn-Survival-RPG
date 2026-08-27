@@ -15,3 +15,8 @@ Custom Items:
 
  TaskManager and Global timer:
  - DONE: factor in half second tasks
+
+ Dungeons:
+ - create /dungeon command
+ - create /dungeon spawner
+ - mob spawning, spatial stuff
