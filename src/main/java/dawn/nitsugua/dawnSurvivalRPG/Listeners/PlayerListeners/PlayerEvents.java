@@ -13,7 +13,7 @@ public class PlayerEvents implements Listener {
 
     public PlayerEvents(DawnSurvivalRPG plugin) {
         this.plugin = plugin;
-        this.playerManager = new PlayerManager(plugin);
+        this.playerManager = new PlayerManager(plugin, plugin.getManaManager());
     }
 
     @EventHandler

@@ -18,7 +18,7 @@ public class AddNodeCommand {
 
     public AddNodeCommand(DawnSurvivalRPG plugin) {
         this.plugin = plugin;
-        this.dungeonManager = new DungeonManager(this.plugin);
+        this.dungeonManager = plugin.getDungeonManager();
     }
 
     @NotNull

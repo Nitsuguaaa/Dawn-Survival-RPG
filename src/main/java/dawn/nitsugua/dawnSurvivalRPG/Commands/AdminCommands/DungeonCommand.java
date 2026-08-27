@@ -2,6 +2,7 @@ package dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.DungeonSubcommands.AddNodeCommand;
 import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.DungeonSubcommands.CreateCommand;
 import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.GiveSubcommands.GiveCommand;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
@@ -26,6 +27,7 @@ public class DungeonCommand {
                     return Command.SINGLE_SUCCESS;
                 })
                 .then(new CreateCommand(plugin).build())
+                .then(new AddNodeCommand(plugin).build())
                 .build();
 
         commands.register(

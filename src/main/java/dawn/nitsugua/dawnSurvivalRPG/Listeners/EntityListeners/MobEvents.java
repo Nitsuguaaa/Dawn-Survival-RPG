@@ -38,7 +38,7 @@ public class MobEvents implements Listener {
 
     public MobEvents(DawnSurvivalRPG plugin) {
         this.plugin = plugin;
-        this.mobManager = new MobManager(plugin);
+        this.mobManager = plugin.getMobManager();
     }
 
     @EventHandler

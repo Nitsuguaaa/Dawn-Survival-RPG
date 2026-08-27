@@ -9,10 +9,11 @@ import dawn.nitsugua.dawnSurvivalRPG.Utils.ScheduledTask;
 
 public class DungeonTasks {
     private static final DawnRegistry dawnRegistry = DawnRegistry.getInstance();
-    private static final TaskManager taskManager = new TaskManager();
     private static ScheduledTask spawnDungeonMobs;
+    private static TaskManager taskManager;
 
     public static void runDungeonMobSpawning(DawnSurvivalRPG plugin) {
+        taskManager = plugin.getTaskManager();
         spawnDungeonMobs = new ScheduledTask("SPAWN_DUNGEON_MOBS_TASK", () -> MobManager.spawnDungeonMobs(plugin))
                 .setInterval(5)
                 .setTimeUnit(TimeUnit.SECOND);

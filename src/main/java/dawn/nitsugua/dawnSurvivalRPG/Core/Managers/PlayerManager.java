@@ -14,9 +14,9 @@ public class PlayerManager {
     private final ManaManager manaManager;
     private final DawnSurvivalRPG plugin;
 
-    public PlayerManager(DawnSurvivalRPG plugin) {
+    public PlayerManager(DawnSurvivalRPG plugin, ManaManager manaManager) {
         this.plugin = plugin;
-        this.manaManager = new ManaManager(plugin);
+        this.manaManager = manaManager;
     }
 
     public void playerJoinEvent(Player player) {

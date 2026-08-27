@@ -14,9 +14,9 @@ public class SkillManager {
     private final DawnSurvivalRPG plugin;
     private final ManaManager manaManager;
 
-    public SkillManager(DawnSurvivalRPG plugin) {
+    public SkillManager(DawnSurvivalRPG plugin, ManaManager manaManager) {
         this.plugin = plugin;
-        this.manaManager = new ManaManager(plugin);
+        this.manaManager = manaManager;
     }
 
     public void onUse(Player player, ItemStack item, PersistentDataContainer pdc) {

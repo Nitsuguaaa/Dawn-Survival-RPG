@@ -19,7 +19,7 @@ public class CreateCommand {
 
     public CreateCommand(DawnSurvivalRPG plugin) {
         this.plugin = plugin;
-        this.dungeonManager = new DungeonManager(this.plugin);
+        this.dungeonManager = plugin.getDungeonManager();
     }
 
     @NotNull

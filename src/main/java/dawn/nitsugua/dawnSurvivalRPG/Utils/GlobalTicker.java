@@ -12,11 +12,11 @@ public class GlobalTicker implements Runnable {
     private final int TICK_INTERVAL = 10;
     private int globalTicker;
 
-    public GlobalTicker(DawnSurvivalRPG plugin) {
+    public GlobalTicker(DawnSurvivalRPG plugin, TaskManager taskManager) {
         this.plugin = plugin;
         this.timer = new GlobalTimer(plugin);
         this.timer.syncToSystem();
-        this.taskManager = new TaskManager();
+        this.taskManager = taskManager;
     }
 
     public void start() {
@@ -46,9 +46,5 @@ public class GlobalTicker implements Runnable {
 
     public GlobalTimer getTimer() {
         return timer;
-    }
-
-    public TaskManager getTaskManager() {
-        return this.taskManager;
     }
 }

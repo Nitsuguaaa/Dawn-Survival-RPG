@@ -26,8 +26,8 @@ public class ItemEvents implements Listener {
 
     public ItemEvents(DawnSurvivalRPG plugin) {
         this.plugin = plugin;
-        this.manaManager = new ManaManager(plugin);
-        this.cooldownManager = new CooldownManager(plugin);
+        this.manaManager = plugin.getManaManager();
+        this.cooldownManager = plugin.getCooldownManager();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -44,7 +44,7 @@ public class ItemEvents implements Listener {
 
     @EventHandler
     public void onSkillUse(PlayerInteractEvent e) {
-        SkillManager skillManager = new SkillManager(plugin);
+        SkillManager skillManager = new SkillManager(plugin, plugin.getManaManager());
 
         Player player = e.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
