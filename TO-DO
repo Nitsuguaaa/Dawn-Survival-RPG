@@ -20,3 +20,13 @@ Custom Items:
  - create /dungeon command
  - create /dungeon spawner
  - mob spawning, spatial stuff
+ - make passive mobs aggressive in dungeons
+
+ Others:
+ - XP bottling command
+ - add repair item to repair armor and weapons
+ - add alternatives to making Elytra usable and netherite upgrading.
+
+ Experimental:
+ - Ban food regen
+ - custom potions

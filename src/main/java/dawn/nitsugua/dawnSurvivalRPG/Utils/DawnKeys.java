@@ -33,6 +33,9 @@ public class DawnKeys {
     //Attributes
     public static NamespacedKey INTELLIGENCE;
 
+    //for Elytra
+    public static NamespacedKey FIXED;
+
     public static void init(DawnSurvivalRPG plugin) {
         DAWN_OBJECT = new NamespacedKey(plugin, "dawn_object");
         ITEM_ID = new NamespacedKey(plugin, "item_id");
@@ -54,6 +57,8 @@ public class DawnKeys {
 
         DAWN_MOB = new NamespacedKey(plugin, "dawn_mob");
         DAWN_MOB_TYPE = new NamespacedKey(plugin, "dawn_mob_type");
+
+        FIXED = new NamespacedKey(plugin, "is_fixed");
     }
 
     public static boolean isDawnObject(ItemStack item) {
