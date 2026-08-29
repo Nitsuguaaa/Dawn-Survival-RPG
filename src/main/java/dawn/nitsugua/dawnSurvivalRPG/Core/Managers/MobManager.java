@@ -90,7 +90,11 @@ public class MobManager {
 
         entity.getAttribute(Attribute.MAX_HEALTH).setBaseValue(blueprint.getMaxHealth());
         entity.setHealth(blueprint.getMaxHealth()); //pretty sure setting max health only sets but not heal so I added this
-        entity.getAttribute(Attribute.ATTACK_DAMAGE).setBaseValue(blueprint.getAttackDamage());
+
+        if(blueprint.isPassive()) {
+            entity.getAttribute(Attribute.ATTACK_DAMAGE).setBaseValue(blueprint.getAttackDamage());
+        }
+
         entity.getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(blueprint.getMovementSpeed());
         //entity.getAttribute(Attribute.ATTACK_SPEED).setBaseValue(blueprint.getAttackDamage());
         entity.getAttribute(Attribute.FOLLOW_RANGE).setBaseValue(blueprint.getFollowRange());

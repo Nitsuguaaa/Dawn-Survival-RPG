@@ -19,6 +19,8 @@ public class CustomMob {
     private double followRange;
     private double attackSpeed;
 
+    private boolean passive = false;
+
     public CustomMob(String mobName, EntityType parentType, MobGroups mobGroup,
                      Component displayName, double maxHealth, double attackDamage,
                      double movementSpeed, double followRange, double attackSpeed) {
@@ -38,6 +40,7 @@ public class CustomMob {
     public EntityType getParentType() { return parentType; }
     public MobGroups getMobGroup() { return mobGroup; }
     public Component getDisplayName() { return displayName; }
+    public boolean isPassive() {return passive;}
 
     public double getMaxHealth() { return maxHealth; }
     public double getAttackDamage() { return attackDamage; }
@@ -46,6 +49,7 @@ public class CustomMob {
     public double getAttackSpeed() { return attackSpeed; }
 
     // Setters for Hot-Reloading!
+    public void setPassive() { this.passive = true; }
     public void setDisplayName(Component displayName) { this.displayName = displayName; }
     public void setMaxHealth(double maxHealth) { this.maxHealth = maxHealth; }
     public void setAttackDamage(double attackDamage) { this.attackDamage = attackDamage; }

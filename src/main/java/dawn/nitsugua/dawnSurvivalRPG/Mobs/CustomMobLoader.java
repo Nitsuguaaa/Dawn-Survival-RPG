@@ -48,6 +48,7 @@ public class CustomMobLoader {
             String mobName = config.getString("name");
             String parentMobName = config.getString("parent-mob");
             String displayNameStr = config.getString("display-name", "<white>" + mobName);
+            boolean isPassive = config.getBoolean("is-passive", false);
 
             if(mobName == null || parentMobName == null) {
                 plugin.getLog().info(TextUtil.sendLogInfo("CustomMobLoader", TextUtil.LogInfo.ERROR, "Missing required fields in: <white>" + file.getName()));
@@ -81,6 +82,14 @@ public class CustomMobLoader {
             CustomMob mob = new CustomMob(
               mobName, parentType, group, displayName, maxHealth, attackDamage, movementSpeed, followRange, attackSpeed
             );
+
+            if(!isPassive) {
+                //plugin.getLog().info(TextUtil.format("<green>This is a passive mob!"));
+                mob.setPassive();
+            }
+
+            //plugin.getLog().info(TextUtil.format("<green>mob: " + mobName + " is: " + mob.isHostile()));
+
 
             dawnRegistry.registerCustomMob(mob);
             plugin.getLog().info(TextUtil.sendLogInfo("CustomMobLoader", TextUtil.LogInfo.INFO, "Registered custom mob: <white>" + mobName));

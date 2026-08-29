@@ -1,8 +1,10 @@
 package dawn.nitsugua.dawnSurvivalRPG.Listeners.EntityListeners;
 
+import com.destroystokyo.paper.entity.Pathfinder;
 import com.destroystokyo.paper.entity.ai.Goal;
 import com.destroystokyo.paper.entity.ai.GoalType;
 import com.destroystokyo.paper.entity.ai.MobGoals;
+import com.destroystokyo.paper.entity.ai.VanillaGoal;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.MobManager;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Mobs.MobGoals.FleeFromPlayerGoal;
@@ -120,8 +122,20 @@ public class MobEvents implements Listener {
             }
 
             //spawn mob here
-            Mob mob = mobManager.spawnCustomMob(cachedLocation, "GRAVEYARD_ZOMBIE");
+            Mob mob = mobManager.spawnCustomMob(cachedLocation, "MAD_COW");
+            MobGoals mobGoal = plugin.getServer().getMobGoals();
+
+            if(mob instanceof Animals animal) {
+                mobGoal.removeGoal(animal, VanillaGoal.TEMPT);
+                //plugin.getLog().info(TextUtil.format("<green>is an animal"));
+            }
+
         }
+    }
+
+    @EventHandler
+    public void onBreed(EntityBreedEvent e) {
+        if(e.getEntity().getPersistentDataContainer().has(DawnKeys.DAWN_MOB)) e.setCancelled(true);
     }
 
     @EventHandler
