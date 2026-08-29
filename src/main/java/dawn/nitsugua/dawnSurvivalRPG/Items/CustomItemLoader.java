@@ -110,7 +110,8 @@ public class CustomItemLoader {
                     plugin.getLog().info(TextUtil.format("<green>Registering Tool"));
                     break;
                 case "usable":
-                    plugin.getLog().info(TextUtil.format("<green>Registering Usable item"));
+                    item = new CustomItem(customMaterial, finalRarity, name, parentMaterial, category, subCategory, lore, null);
+                    plugin.getLog().info(TextUtil.sendLogInfo("CustomItemLoader", TextUtil.LogInfo.INFO, "Registering usable: <white>" + customMaterial));
                     break;
                 case "materials": //normal item, used only as an ingredient
                     item = new CustomItem(customMaterial, finalRarity, name, parentMaterial, category, subCategory, lore, null);

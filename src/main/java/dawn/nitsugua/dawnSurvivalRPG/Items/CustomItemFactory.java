@@ -41,7 +41,9 @@ public class CustomItemFactory {
         ItemStack finalItem;
 
         //debug: plugin.getLog().info("Got data: {}", item);
-        CustomItem customItem = dawnRegistry.getCustomItem(item);
+        if(dawnRegistry.getCustomItem(item.toUpperCase()) == null) return null;
+
+        CustomItem customItem = dawnRegistry.getCustomItem(item.toUpperCase());
 
         //assert customItem != null;
         Material itemMaterial = customItem.getParentMaterial();

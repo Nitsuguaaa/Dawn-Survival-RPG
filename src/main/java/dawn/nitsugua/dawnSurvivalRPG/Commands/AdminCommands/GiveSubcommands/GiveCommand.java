@@ -1,6 +1,7 @@
 package dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.GiveSubcommands;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
@@ -22,6 +23,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+
 public class GiveCommand {
 
     private final DawnSurvivalRPG plugin;
@@ -35,97 +38,42 @@ public class GiveCommand {
     @NotNull
     public LiteralArgumentBuilder<CommandSourceStack> build() {
         return Commands.literal("give")
-                //Argument 1 <item>
-                .then(Commands.literal("static-item")
-                    .executes(ctx -> {
-                        if(!(ctx.getSource().getSender() instanceof Player player)) {
-                            ctx.getSource().getSender().sendMessage("For player's only");
-                            return Command.SINGLE_SUCCESS;
-                        }
+                .then(Commands.argument("player", StringArgumentType.word())
+                        .then(Commands.argument("custom-item", StringArgumentType.word())
+                                .then(Commands.argument("amount", IntegerArgumentType.integer(1))
+                                        .executes(ctx -> {
+                                            if(!(ctx.getSource().getSender() instanceof Player player)) {
+                                                ctx.getSource().getSender().sendMessage("For player's only");
+                                                return Command.SINGLE_SUCCESS;
+                                            }
 
-                        /*
-                            This will be removed once Custom Item is finished
+                                            String playerName = ctx.getArgument("player", String.class);
+                                            Player target = plugin.getServer().getPlayer(playerName) == null ? player : plugin.getServer().getPlayer(playerName);
 
-                            TODO:
-                                - remove static custom item and replace with item factory
-                                - Fix attribute shit IDK
-                         */
-                        player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.SUCCESS, "Running give command"));
+                                            String itemKey = ctx.getArgument("custom-item", String.class);
+                                            int amount = ctx.getArgument("amount", int.class);
 
-                        ItemStack item = new ItemStack(Material.DIAMOND_SWORD, 1);
-                        Inventory inventory = player.getInventory();
+                                            Inventory inventory = target.getInventory();
+                                            //check also if inventory is full
+                                            ItemStack finalItem = customItemFactory.createCustomItem(itemKey, amount);
 
-                        ItemMeta itemMeta = item.getItemMeta();
+                                            if(finalItem == null) {
+                                                target.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.FAILURE, "Custom item doesn't exist"));
+                                                return 0;
+                                            }
 
-                        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-                        itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                                            HashMap<Integer, ItemStack> overflow = inventory.addItem(finalItem);
+                                            if(!overflow.isEmpty()) {
+                                                for(ItemStack item : overflow.values()) {
+                                                    target.getWorld().dropItemNaturally(target.getLocation(), item);
+                                                }
+                                            }
 
-                        itemMeta.displayName(TextUtil.setItemRarity(TextUtil.ItemRarity.RARE, "End Sword"));
-                        AttributeModifier newAttr = new AttributeModifier(
-                                NamespacedKey.minecraft("base_attack_damage"),
-                                9,
-                                AttributeModifier.Operation.ADD_NUMBER,
-                                EquipmentSlotGroup.MAINHAND
-                        );
-                        itemMeta.addAttributeModifier(Attribute.ATTACK_DAMAGE, newAttr);
-                        item.setItemMeta(itemMeta);
-
-
-                        inventory.addItem(item);
-                        player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.SUCCESS, "Gave you x" + item.getAmount() + " " + PlainTextComponentSerializer.plainText().serialize(item.displayName())));
-
-                        return Command.SINGLE_SUCCESS;
-                    })
-                )
-                .then(Commands.literal("info")
-                        .then(Commands.argument("name", StringArgumentType.word())
-                                .executes(ctx -> {
-                                    if(!(ctx.getSource().getSender() instanceof Player player)) {
-                                        ctx.getSource().getSender().sendMessage("For player's only");
-                                        return Command.SINGLE_SUCCESS;
-                                    }
-
-                                    String itemKey = ctx.getArgument("name", String.class);
-                                    Inventory inventory = player.getInventory();
-
-                                    inventory.addItem(customItemFactory.createCustomItem(itemKey, 1));
-
-                                    //CustomItemFactory.createCustomItem(itemKey);
-
-                                    /*CustomItem customItem = customItemManager.getCustomItem(itemKey);
-                                    player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "You are trying to get: " + itemKey));
-                                    if(customItem == null) {
-                                        player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.FAILURE, "Custom Item not found!"));
-                                        return Command.SINGLE_SUCCESS;
-                                    }
-
-                                    player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "Taking info: " + customItem.getItemName() +
-                                            "\n rarity: " + customItem.getRarity() +
-                                            "\n category: " + customItem.getCategory() +
-                                            "\n sub-category: " + customItem.getSubCategory() +
-                                            "\n material:" + customItem.getCustomMaterial() +
-                                            "\n parent-material: " + customItem.getParentMaterial().name() +
-                                            "\n lore:"));
-
-                                    for(Component loreLine : customItem.getLore()) {
-                                        player.sendMessage(loreLine);
-                                    }*/
-
-                                    return Command.SINGLE_SUCCESS;
-                                })
+                                            return Command.SINGLE_SUCCESS;
+                                        })
+                                )
                         )
-                        /*.executes(ctx -> {
+                );
 
-                        })*/
-                )
-                //Runs if item is not stated
-                .executes(ctx -> {
-                    if(!(ctx.getSource().getSender() instanceof Player player)) {
-                        ctx.getSource().getSender().sendMessage("For player's only");
-                        return Command.SINGLE_SUCCESS;
-                    }
-                    player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.FAILURE, "Please provide an item!"));
-                    return Command.SINGLE_SUCCESS;
-                });
     }
 }

@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
@@ -87,5 +88,18 @@ public class ItemEvents implements Listener {
         if(item == null && previousItem == null) {return;}
 
         manaManager.calculateMaxIntelligenceFromItem(player, item, previousItem);
+    }
+
+    @EventHandler
+    public void onPrepareCraft(PrepareItemCraftEvent e) {
+        if(DawnKeys.isDawnObject(e.getInventory().getResult())) return;
+        for(ItemStack ingredient : e.getInventory().getMatrix()) {
+            if(ingredient == null || ingredient.getType() == Material.AIR) continue;
+
+            if(DawnKeys.isDawnObject(ingredient)) {
+                e.getInventory().setResult(null);
+                return;
+            }
+        }
     }
 }
