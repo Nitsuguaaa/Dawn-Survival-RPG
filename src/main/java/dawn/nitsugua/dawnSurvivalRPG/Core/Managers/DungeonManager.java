@@ -1,25 +1,31 @@
 package dawn.nitsugua.dawnSurvivalRPG.Core.Managers;
 
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
+import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.DungeonTasks;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Dungeons.SpawnArea;
 import dawn.nitsugua.dawnSurvivalRPG.Mobs.CustomMob;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.DawnKeys;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class DungeonManager {
     private final DawnSurvivalRPG plugin;
     private final DawnRegistry dawnRegistry = DawnRegistry.getInstance();
+    //private final TaskManager taskManager;
 
     private final File pluginFolder;
     private File dungeonFolder;
@@ -28,8 +34,36 @@ public class DungeonManager {
     public DungeonManager(DawnSurvivalRPG plugin) {
         this.plugin = plugin;
         this.pluginFolder = plugin.getDataFolder();
+        //this.taskManager = plugin.getTaskManager();
         initializeDungeons();
         loadDungeons();
+        dawnRegistry.registerDungeonWorld("world");
+    }
+
+    public boolean isDungeonWorld(String worldName) {
+        return dawnRegistry.getDungeonWorlds().containsKey(worldName);
+    }
+
+    public void addPlayerToWorld(String worldName) {
+        int count = dawnRegistry.getDungeonWorlds().get(worldName);
+        count++;
+        dawnRegistry.getDungeonWorlds().put(worldName, count);
+
+        if(count == 1) {
+            DungeonTasks.runDungeonMobSpawning(plugin);
+        }
+    }
+
+    public void removePlayerFromWorld(String worldName) {
+        int count = dawnRegistry.getDungeonWorlds().get(worldName);
+        count --;
+
+        if(count < 0) count = 0;
+        dawnRegistry.getDungeonWorlds().put(worldName, count);
+
+        if(count == 0) {
+            DungeonTasks.pauseDungeonMobSpawning(plugin);
+        }
     }
 
     public void createDungeon(Player player, String name, String mobName, int maxSpawn) {
@@ -102,6 +136,7 @@ public class DungeonManager {
                 String name = yaml.getString(uuidString + ".name");
                 String mobName = yaml.getString(uuidString + ".dawn-mob");
                 int maxSpawn = yaml.getInt(uuidString + ".max-spawn");
+                boolean staged = yaml.getBoolean(uuidString + ".staged");
 
                 String worldName = yaml.getString(uuidString + ".world");
                 double x = yaml.getDouble(uuidString + ".center-x");
@@ -122,6 +157,7 @@ public class DungeonManager {
                 }
 
                 SpawnArea area = new SpawnArea(uuid, name, blueprint, maxSpawn, center, world);
+                area.setStaged(staged);
 
                 ConfigurationSection nodesSection = yaml.getConfigurationSection(uuidString + ".nodes");
                 if (nodesSection != null) {
@@ -159,6 +195,7 @@ public class DungeonManager {
             yaml.set(basePath + ".name", area.getSpawnerName());
             yaml.set(basePath + ".dawn-mob", area.getCustomMob().getMobName());
             yaml.set(basePath + ".max-spawn", area.getMaxSpawns());
+            yaml.set(basePath + ".staged", area.isStaged());
 
             // Manual coordinate saving is the safest way to prevent world-loading bugs on startup
             Location center = area.getCenter();
@@ -199,5 +236,87 @@ public class DungeonManager {
             }
         }
         return null; // Not found
+    }
+
+    public void toggleStage(Player player, String spawnerName) {
+        SpawnArea area = getSpawnerByName(spawnerName);
+        if (area == null) {
+            player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.FAILURE, "Spawner not found: <white>" + spawnerName));
+            return;
+        }
+
+        // Check if it has any nodes before staging!
+        if (!area.isStaged() && area.getNodes().isEmpty()) {
+            player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.FAILURE, "Cannot stage <white>" + spawnerName + "<red>! It has 0 nodes. Add nodes first."));
+            return;
+        }
+
+        // Toggle!
+        area.setStaged(!area.isStaged());
+        saveSpawner(area);
+
+        if (area.isStaged()) {
+            player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.SUCCESS, "Spawner <white>" + spawnerName + " <green>is now ACTIVE! Mobs will begin spawning."));
+        } else {
+            player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.SUCCESS, "Spawner <white>" + spawnerName + " <yellow>is now INACTIVE. Mobs will stop spawning."));
+        }
+    }
+
+    public static void spawnDungeonMobs(DawnSurvivalRPG plugin, DawnRegistry dawnRegistry) {
+        MobManager mobManager = plugin.getMobManager();
+        if(mobManager == null) return;
+
+        for(SpawnArea area : dawnRegistry.getAllSpawners().values()) {
+            if(!area.isStaged()) continue;
+            if(area.getNodes().isEmpty()) continue;
+
+            Location center = area.getCenter();
+
+            if(center.getNearbyPlayers(50.0).isEmpty()) {
+                plugin.getLog().info(TextUtil.format("<red>No nearby players found in: <white>" + area.getSpawnerName())); //DEBUG
+                continue;
+            }
+
+            Set<UUID> occupiedNodes = new HashSet<>();
+            for(Entity entity : center.getNearbyEntities(50.0, 50.0, 50.0)) {
+                if(!(entity instanceof Mob)) continue;
+
+                PersistentDataContainer pdc = entity.getPersistentDataContainer();
+                String spawnerID = pdc.get(DawnKeys.SPAWNER_UUID, PersistentDataType.STRING);
+
+                if(spawnerID != null && spawnerID.equals(area.getUuid().toString())) {
+                    String nodeIdStr = pdc.get(DawnKeys.NODE_ID_STRING, PersistentDataType.STRING);
+                    if(nodeIdStr != null) {
+                        try {
+                            plugin.getLog().info(TextUtil.format("<red>Node already occupied: <white>" + area.getSpawnerName()));
+                            occupiedNodes.add(UUID.fromString(nodeIdStr));
+                        } catch (IllegalArgumentException ignored) {}
+                    }
+                }
+            }
+
+            int spawnedThisTick = 0;
+            for(Map.Entry<UUID, Location> nodeEntry : area.getNodes().entrySet()) {
+                if(spawnedThisTick >= area.getMaxSpawns()) break;
+
+                UUID nodeId = nodeEntry.getKey();
+                Location nodeLoc = nodeEntry.getValue();
+
+                if(!occupiedNodes.contains(nodeId)) {
+                    Mob mob = mobManager.spawnCustomMob(nodeLoc, area.getCustomMob().getMobName());
+
+                    if(mob != null) {
+                        plugin.getLog().info(TextUtil.format("<green>Spawning mob in: <white>" + nodeId)); //DEBUG
+                        PersistentDataContainer pdc = mob.getPersistentDataContainer();
+                        pdc.set(DawnKeys.SPAWNER_UUID, PersistentDataType.STRING, area.getUuid().toString());
+                        pdc.set(DawnKeys.NODE_ID_STRING, PersistentDataType.STRING, nodeId.toString());
+
+                        spawnedThisTick++;
+                    }
+                }
+            }
+
+
+        }
     }
 }

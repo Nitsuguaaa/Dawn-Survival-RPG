@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.DungeonSubcommands.AddNodeCommand;
 import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.DungeonSubcommands.CreateCommand;
+import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.DungeonSubcommands.StageCommand;
 import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.GiveSubcommands.GiveCommand;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -28,6 +29,7 @@ public class DungeonCommand {
                 })
                 .then(new CreateCommand(plugin).build())
                 .then(new AddNodeCommand(plugin).build())
+                .then(new StageCommand(plugin).build())
                 .build();
 
         commands.register(

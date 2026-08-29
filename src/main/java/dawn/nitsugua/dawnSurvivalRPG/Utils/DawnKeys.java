@@ -30,6 +30,9 @@ public class DawnKeys {
     public static NamespacedKey DAWN_MOB; //bool
     public static NamespacedKey DAWN_MOB_TYPE; //string
 
+    public static NamespacedKey SPAWNER_UUID;
+    public static NamespacedKey NODE_ID_STRING;
+
     //Attributes
     public static NamespacedKey INTELLIGENCE;
 
@@ -58,6 +61,8 @@ public class DawnKeys {
         DAWN_MOB = new NamespacedKey(plugin, "dawn_mob");
         DAWN_MOB_TYPE = new NamespacedKey(plugin, "dawn_mob_type");
 
+        SPAWNER_UUID = new NamespacedKey(plugin, "spawner_uuid");
+        NODE_ID_STRING = new NamespacedKey(plugin, "node_id_string");
         FIXED = new NamespacedKey(plugin, "is_fixed");
     }
 

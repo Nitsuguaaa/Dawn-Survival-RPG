@@ -76,10 +76,6 @@ public class MobManager {
 
     }
 
-    public static void spawnDungeonMobs(DawnSurvivalRPG plugin) {
-        //do something
-    }
-
     public Mob spawnCustomMob(Location location, String mobName) {
         CustomMob blueprint = dawnRegistry.getCustomMob(mobName.toUpperCase());
         if(blueprint == null) {

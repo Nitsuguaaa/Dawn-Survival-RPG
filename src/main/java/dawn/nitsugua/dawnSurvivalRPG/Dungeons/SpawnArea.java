@@ -17,6 +17,8 @@ public class SpawnArea {
     private World world;
     private HashMap<UUID, Location> nodes;
 
+    private boolean staged;
+
     public SpawnArea(UUID uuid, String name, CustomMob customMob, int maxSpawn, Location center, World world) {
         this.uuid = uuid;
         this.name = name;
@@ -25,6 +27,7 @@ public class SpawnArea {
         this.center = center;
         this.world = world;
         this.nodes = new HashMap<>();
+        this.staged = false;
     }
 
     public UUID getUuid() {return uuid;}
@@ -34,7 +37,9 @@ public class SpawnArea {
     public Location getCenter() {return center;}
     public World getWorld() {return world;}
     public Map<UUID, Location> getNodes() {return Collections.unmodifiableMap(nodes);}
+    public boolean isStaged() {return staged;}
 
+    public void setStaged(boolean staged) {this.staged = staged;}
     public void addNode(UUID uuid, Location location) {
         nodes.put(uuid, location);
     }

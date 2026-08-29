@@ -19,6 +19,7 @@ public class DawnRegistry {
     private final ConcurrentHashMap<UUID, DawnPlayer> playerData = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, CustomMob> customMobs = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<UUID, SpawnArea> dawnSpawners = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Integer> dungeonWorlds = new ConcurrentHashMap<>();
 
     private final ConcurrentHashMap<String, ScheduledTask> tasks = new ConcurrentHashMap<>();
 
@@ -61,4 +62,7 @@ public class DawnRegistry {
     @Nullable
     public SpawnArea getSpawner(UUID uuid) {return dawnSpawners.get(uuid);}
     public Map<UUID, SpawnArea> getAllSpawners() {return Collections.unmodifiableMap(dawnSpawners);}
+
+    public void registerDungeonWorld(String worldName) {dungeonWorlds.put(worldName, 0);}
+    public Map<String, Integer> getDungeonWorlds() {return dungeonWorlds;}
 }

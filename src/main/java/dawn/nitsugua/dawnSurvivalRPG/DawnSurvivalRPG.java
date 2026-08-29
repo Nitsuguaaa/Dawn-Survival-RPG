@@ -138,7 +138,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     private void registerTasks() {
         log.info(TextUtil.format("<yellow>Tasks...</yellow>"));
         ManaTasks.initManaTasks(instance);
-        DungeonTasks.runDungeonMobSpawning(instance);
+        //DungeonTasks.runDungeonMobSpawning(instance);
         log.info(TextUtil.format("<green>Tasks Registered!</green>"));
     }
 
