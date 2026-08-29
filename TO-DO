@@ -16,6 +16,10 @@ Custom Items:
  TaskManager and Global timer:
  - DONE: factor in half second tasks
 
+Economy:
+ - bank
+ - land claim taxes
+
  Dungeons:
  - create /dungeon command
  - create /dungeon spawner

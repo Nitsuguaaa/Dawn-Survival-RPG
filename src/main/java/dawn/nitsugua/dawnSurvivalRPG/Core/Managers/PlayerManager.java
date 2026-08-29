@@ -36,7 +36,7 @@ public class PlayerManager {
             initializePlayer(player);
         }, 1L);
 
-        plugin.getLog().info(TextUtil.format("<green>Player <white>" + player.getName() + " <green>joined in world: <aqua>" + player.getWorld().getName()));
+        //plugin.getLog().info(TextUtil.format("<green>Player <white>" + player.getName() + " <green>joined in world: <aqua>" + player.getWorld().getName()));
         if(dungeonManager.isDungeonWorld(player.getWorld().getName())) dungeonManager.addPlayerToWorld(player.getWorld().getName());
     }
 

@@ -37,7 +37,7 @@ public class DungeonManager {
         //this.taskManager = plugin.getTaskManager();
         initializeDungeons();
         loadDungeons();
-        dawnRegistry.registerDungeonWorld("world");
+        dawnRegistry.registerDungeonWorld("dungeon-1");
     }
 
     public boolean isDungeonWorld(String worldName) {
@@ -273,7 +273,7 @@ public class DungeonManager {
             Location center = area.getCenter();
 
             if(center.getNearbyPlayers(50.0).isEmpty()) {
-                plugin.getLog().info(TextUtil.format("<red>No nearby players found in: <white>" + area.getSpawnerName())); //DEBUG
+                //plugin.getLog().info(TextUtil.format("<red>No nearby players found in: <white>" + area.getSpawnerName())); //DEBUG
                 continue;
             }
 
@@ -288,7 +288,7 @@ public class DungeonManager {
                     String nodeIdStr = pdc.get(DawnKeys.NODE_ID_STRING, PersistentDataType.STRING);
                     if(nodeIdStr != null) {
                         try {
-                            plugin.getLog().info(TextUtil.format("<red>Node already occupied: <white>" + area.getSpawnerName()));
+                            //plugin.getLog().info(TextUtil.format("<red>Node already occupied: <white>" + area.getSpawnerName()));
                             occupiedNodes.add(UUID.fromString(nodeIdStr));
                         } catch (IllegalArgumentException ignored) {}
                     }
@@ -306,7 +306,7 @@ public class DungeonManager {
                     Mob mob = mobManager.spawnCustomMob(nodeLoc, area.getCustomMob().getMobName());
 
                     if(mob != null) {
-                        plugin.getLog().info(TextUtil.format("<green>Spawning mob in: <white>" + nodeId)); //DEBUG
+                        //plugin.getLog().info(TextUtil.format("<green>Spawning mob in: <white>" + nodeId)); //DEBUG
                         PersistentDataContainer pdc = mob.getPersistentDataContainer();
                         pdc.set(DawnKeys.SPAWNER_UUID, PersistentDataType.STRING, area.getUuid().toString());
                         pdc.set(DawnKeys.NODE_ID_STRING, PersistentDataType.STRING, nodeId.toString());

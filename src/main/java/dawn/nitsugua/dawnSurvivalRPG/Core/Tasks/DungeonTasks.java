@@ -26,13 +26,13 @@ public class DungeonTasks {
                 .setTimeUnit(TimeUnit.SECOND);
         taskManager.registerTask(spawnDungeonMobs);
 
-        plugin.getLog().info(TextUtil.format("<green>DUNGEON TASKS RUNNING!"));
+        //plugin.getLog().info(TextUtil.format("<green>DUNGEON TASKS RUNNING!")); //DEBUG
     }
 
     public static void pauseDungeonMobSpawning(DawnSurvivalRPG plugin) {
         if(spawnDungeonMobs == null) return;
         taskManager.removeTask(spawnDungeonMobs);
         spawnDungeonMobs = null;
-        plugin.getLog().info(TextUtil.format("<red>DUNGEON TASKS STOPPED!"));
+        //plugin.getLog().info(TextUtil.format("<red>DUNGEON TASKS STOPPED!")); //DEBUG
     }
 }
