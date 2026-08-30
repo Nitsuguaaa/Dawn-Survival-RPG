@@ -3,6 +3,7 @@ Custom Items:
  - Needs World Item updating whenever config changes.
  - Item conflicts (when both custom item has the same ID)
  - make custom items hot reloadable
+ - DONE: Custom recipes
 
  Skills:
  - DONE: add cooldown
@@ -16,6 +17,11 @@ Custom Items:
 
  TaskManager and Global timer:
  - DONE: factor in half second tasks
+
+ GUI:
+ - DONE (WTF): Build home brew GUI
+ - Create forge/compactor GUI
+ - Shop GUI
 
 Economy:
  - bank

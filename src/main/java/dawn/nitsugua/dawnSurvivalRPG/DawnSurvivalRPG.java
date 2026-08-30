@@ -3,6 +3,7 @@ package dawn.nitsugua.dawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.API.DawnRPGAPI;
 import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.DungeonCommand;
 import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.ItemCommand;
+import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.MenuCommand;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.*;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.DungeonTasks;
@@ -15,6 +16,7 @@ import dawn.nitsugua.dawnSurvivalRPG.Listeners.AntiMendingListener;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.EntityListeners.FancyNPCEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.EntityListeners.MobEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.EntityListeners.VillagerEvents;
+import dawn.nitsugua.dawnSurvivalRPG.Listeners.GuiListeners.GuiEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.PlayerListeners.ItemEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.PlayerListeners.PlayerEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.TestListeners.PlayerBreakingBlockListener;
@@ -48,6 +50,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     private CustomItemFactory customItemFactory;
     private LootManager lootManager;
     private CustomRecipeManager customRecipeManager;
+    private GuiManager guiManager;
 
     @Override
     public void onEnable() {
@@ -100,7 +103,8 @@ public final class DawnSurvivalRPG extends JavaPlugin {
             final Commands commands = event.registrar();
 
             new ItemCommand(instance).register(commands);
-            new DungeonCommand(instance).register(commands  );
+            new DungeonCommand(instance).register(commands);
+            new MenuCommand(instance).register(commands);
         });
 
         log.info(TextUtil.format("<green>Commands Registered!</green>"));
@@ -118,6 +122,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new FancyNPCEvents(instance), instance);
         getServer().getPluginManager().registerEvents(new AntiMendingListener(), instance);
         getServer().getPluginManager().registerEvents(new AntiEndGameListener(), instance);
+        getServer().getPluginManager().registerEvents(new GuiEvents(), instance);
 
         log.info(TextUtil.format("<green>Listeners Registered!</green>"));
     }
@@ -140,6 +145,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         playerManager = new PlayerManager(instance, getManaManager());
         skillManager = new SkillManager(instance, getManaManager());
         taskManager = new TaskManager();
+        guiManager = new GuiManager();
 
 
         log.info(TextUtil.format("<green>Managers and Loaders Registered!</green>"));
@@ -172,6 +178,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     public SkillManager getSkillManager() {return skillManager;}
     public TaskManager getTaskManager() {return taskManager;}
     public CustomRecipeManager getCustomRecipeManager() {return customRecipeManager;}
+    public GuiManager getGuiManager() {return guiManager;}
 
 
     @NotNull
