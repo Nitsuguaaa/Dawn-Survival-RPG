@@ -41,6 +41,18 @@ public class InitialSetup {
             plugin.getLogger().info("Created Weapons Folder");
         }
 
+//        File lootFolder = new File(pluginFolder, "loots");
+//        if (!lootFolder.exists()) {
+//            lootFolder.mkdirs();
+//            plugin.getLogger().info("Created Loots Folder");
+//        }
+//
+//        File recipeFolder = new File(pluginFolder, "recipes");
+//        if (!recipeFolder.exists()) {
+//            recipeFolder.mkdirs();
+//            plugin.getLogger().info("Created Recipes Folder");
+//        }
+
         File sampleItem = new File(weaponsFolder, "end_sword.yml");
         if(!sampleItem.exists()) {
             try {

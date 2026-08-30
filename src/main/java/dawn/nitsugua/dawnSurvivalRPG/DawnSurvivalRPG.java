@@ -47,6 +47,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     private TaskManager taskManager;
     private CustomItemFactory customItemFactory;
     private LootManager lootManager;
+    private CustomRecipeManager customRecipeManager;
 
     @Override
     public void onEnable() {
@@ -135,6 +136,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         manaManager = new ManaManager(instance);
         lootManager = new LootManager(instance);
         mobManager  = new MobManager(instance);
+        customRecipeManager = new CustomRecipeManager(instance);
         playerManager = new PlayerManager(instance, getManaManager());
         skillManager = new SkillManager(instance, getManaManager());
         taskManager = new TaskManager();
@@ -169,6 +171,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     public PlayerManager getPlayerManager() {return playerManager;}
     public SkillManager getSkillManager() {return skillManager;}
     public TaskManager getTaskManager() {return taskManager;}
+    public CustomRecipeManager getCustomRecipeManager() {return customRecipeManager;}
 
 
     @NotNull
