@@ -7,6 +7,7 @@ import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.*;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.DungeonTasks;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.ManaTasks;
+import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemFactory;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemLoader;
 import dawn.nitsugua.dawnSurvivalRPG.Items.Skills.SkillLoader;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.AntiEndGameListener;
@@ -17,6 +18,7 @@ import dawn.nitsugua.dawnSurvivalRPG.Listeners.EntityListeners.VillagerEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.PlayerListeners.ItemEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.PlayerListeners.PlayerEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.TestListeners.PlayerBreakingBlockListener;
+import dawn.nitsugua.dawnSurvivalRPG.Loots.LootTableLoader;
 import dawn.nitsugua.dawnSurvivalRPG.Mobs.CustomMobLoader;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.*;
 import io.papermc.paper.command.brigadier.Commands;
@@ -43,6 +45,8 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     private PlayerManager playerManager;
     private SkillManager skillManager;
     private TaskManager taskManager;
+    private CustomItemFactory customItemFactory;
+    private LootManager lootManager;
 
     @Override
     public void onEnable() {
@@ -123,14 +127,18 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         CustomItemLoader.initialize(instance);
         SkillLoader.initialize(instance);
         CustomMobLoader.initialize(instance);
+        LootTableLoader.initialize(instance);
 
+        customItemFactory = new CustomItemFactory(instance);
         cooldownManager = new CooldownManager(instance);
         dungeonManager = new DungeonManager(instance);
         manaManager = new ManaManager(instance);
+        lootManager = new LootManager(instance);
         mobManager  = new MobManager(instance);
         playerManager = new PlayerManager(instance, getManaManager());
         skillManager = new SkillManager(instance, getManaManager());
         taskManager = new TaskManager();
+
 
         log.info(TextUtil.format("<green>Managers and Loaders Registered!</green>"));
     }
@@ -154,11 +162,14 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     //public CustomItemManager getCustomItemManager() {return customItemManager;}
     public CooldownManager getCooldownManager() {return cooldownManager;}
     public DungeonManager getDungeonManager() {return dungeonManager;}
-    public MobManager getMobManager() {return mobManager;}
+    public CustomItemFactory getCustomItemFactory() {return customItemFactory;}
+    public LootManager getLootManager() {return lootManager;} //loot manager needs custom item factory
+    public MobManager getMobManager() {return mobManager;} //mob manager needs loot manager
     public ManaManager getManaManager() {return manaManager;}
     public PlayerManager getPlayerManager() {return playerManager;}
     public SkillManager getSkillManager() {return skillManager;}
     public TaskManager getTaskManager() {return taskManager;}
+
 
     @NotNull
     public ComponentLogger getLog() {return log;}

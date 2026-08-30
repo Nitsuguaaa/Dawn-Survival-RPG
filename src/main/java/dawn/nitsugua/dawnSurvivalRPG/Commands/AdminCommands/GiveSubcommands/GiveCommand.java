@@ -32,7 +32,7 @@ public class GiveCommand {
 
     public GiveCommand(@NotNull DawnSurvivalRPG plugin) {
         this.plugin = plugin;
-        customItemFactory = new CustomItemFactory(this.plugin);
+        customItemFactory = plugin.getCustomItemFactory();
     }
 
     @NotNull

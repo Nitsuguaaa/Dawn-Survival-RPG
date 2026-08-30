@@ -6,6 +6,7 @@ import com.destroystokyo.paper.entity.ai.VanillaGoal;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemFactory;
+import dawn.nitsugua.dawnSurvivalRPG.Loots.LootTable;
 import dawn.nitsugua.dawnSurvivalRPG.Mobs.CustomMob;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.DawnKeys;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
@@ -23,18 +24,28 @@ import java.util.stream.Collectors;
 
 public class MobManager {
     private final DawnSurvivalRPG plugin;
-    private final CustomItemFactory itemFactory;
+    private final LootManager lootManager;
     private final DawnRegistry dawnRegistry = DawnRegistry.getInstance();
 
     public MobManager(DawnSurvivalRPG plugin) {
         this.plugin = plugin;
-        this.itemFactory = new CustomItemFactory(plugin);
+        this.lootManager = plugin.getLootManager();
     }
 
-    public void onMobDeath(EntityDeathEvent e, Entity entity, Player damager) {
-        if(entity instanceof Enderman) {
-            e.getDrops().clear();
-            e.getDrops().add(itemFactory.createCustomItem("CONCENTRATED_EYE", 10));
+    public void onMobDeath(EntityDeathEvent event, Entity entity, Player damager) {
+        PersistentDataContainer pdc = entity.getPersistentDataContainer();
+        if(!pdc.has(DawnKeys.DAWN_MOB, PersistentDataType.BOOLEAN)) return;
+
+        String mobName = pdc.get(DawnKeys.DAWN_MOB_NAME, PersistentDataType.STRING);
+        if(mobName == null) return;
+
+        event.getDrops().clear();
+
+        LootTable table = dawnRegistry.getLootTable(mobName);
+
+        if(table != null) {
+            event.getDrops().addAll(lootManager.rollLoot(table));
+            event.setDroppedExp(table.rollExp());
         }
     }
 
@@ -101,6 +112,7 @@ public class MobManager {
 
         PersistentDataContainer pdc = entity.getPersistentDataContainer();
         pdc.set(DawnKeys.DAWN_MOB, PersistentDataType.BOOLEAN, true);
+        pdc.set(DawnKeys.DAWN_MOB_NAME, PersistentDataType.STRING, blueprint.getMobName());
 
         stripGenericMobGoal(entity);
 

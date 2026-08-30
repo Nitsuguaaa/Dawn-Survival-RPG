@@ -85,6 +85,7 @@ public class MobEvents implements Listener {
     @EventHandler
     public void onHit(PlayerInteractEvent e) {
         Player player = e.getPlayer();
+        if(!player.isOp()) return;
         ItemStack item = player.getInventory().getItemInMainHand();
         // 1. Only trigger on Right-Clicking a block (prevents double-firing)
         if (item.getType() == Material.AIR || !item.hasItemMeta()) return;
@@ -122,7 +123,7 @@ public class MobEvents implements Listener {
             }
 
             //spawn mob here
-            Mob mob = mobManager.spawnCustomMob(cachedLocation, "MAD_COW");
+            Mob mob = mobManager.spawnCustomMob(cachedLocation, "GRAVEYARD_ZOMBIE");
             MobGoals mobGoal = plugin.getServer().getMobGoals();
 
             if(mob instanceof Animals animal) {
@@ -141,6 +142,7 @@ public class MobEvents implements Listener {
     @EventHandler
     public void onDebugHit(EntityDamageByEntityEvent e) {
         if (!(e.getDamager() instanceof Player player)) return;
+        if(!player.isOp()) return;
         if (!(e.getEntity() instanceof Mob mob)) return;
 
         // 1. Check if they are holding the "spawner-tester" stick

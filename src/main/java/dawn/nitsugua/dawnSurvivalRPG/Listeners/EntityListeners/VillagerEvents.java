@@ -18,7 +18,7 @@ public class VillagerEvents implements Listener {
 
     public VillagerEvents(DawnSurvivalRPG plugin) {
         this.plugin = plugin;
-        this.customItemFactory = new CustomItemFactory(this.plugin);
+        this.customItemFactory = plugin.getCustomItemFactory();
     }
 
     /*@EventHandler

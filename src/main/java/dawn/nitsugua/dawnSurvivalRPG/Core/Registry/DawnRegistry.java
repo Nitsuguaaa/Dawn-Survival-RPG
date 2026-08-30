@@ -3,6 +3,8 @@ package dawn.nitsugua.dawnSurvivalRPG.Core.Registry;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Skills.Skill;
 import dawn.nitsugua.dawnSurvivalRPG.Dungeons.SpawnArea;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItem;
+import dawn.nitsugua.dawnSurvivalRPG.Loots.LootTable;
+import dawn.nitsugua.dawnSurvivalRPG.Loots.LootTableEntry;
 import dawn.nitsugua.dawnSurvivalRPG.Mobs.CustomMob;
 import dawn.nitsugua.dawnSurvivalRPG.Player.DawnPlayer;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.ScheduledTask;
@@ -20,6 +22,7 @@ public class DawnRegistry {
     private final ConcurrentHashMap<String, CustomMob> customMobs = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<UUID, SpawnArea> dawnSpawners = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Integer> dungeonWorlds = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, LootTable> lootTables = new ConcurrentHashMap<>();
 
     private final ConcurrentHashMap<String, ScheduledTask> tasks = new ConcurrentHashMap<>();
 
@@ -65,4 +68,8 @@ public class DawnRegistry {
 
     public void registerDungeonWorld(String worldName) {dungeonWorlds.put(worldName, 0);}
     public Map<String, Integer> getDungeonWorlds() {return dungeonWorlds;}
+
+    public void registerLootTable(LootTable lootTable) {lootTables.put(lootTable.getId(), lootTable);}
+    @Nullable
+    public LootTable getLootTable(String name) {return lootTables.get(name);}
 }

@@ -2,9 +2,10 @@ Custom Items:
  - Needs dynamic lore instead of static lore.
  - Needs World Item updating whenever config changes.
  - Item conflicts (when both custom item has the same ID)
+ - make custom items hot reloadable
 
  Skills:
- - add cooldown
+ - DONE: add cooldown
 
  EndSwordSkill:
  - fix the Y issue
@@ -21,15 +22,21 @@ Economy:
  - land claim taxes
 
  Dungeons:
- - create /dungeon command
- - create /dungeon spawner
- - mob spawning, spatial stuff
- - make passive mobs aggressive in dungeons
+ - DONE: create /dungeon command
+ - DONE: create /dungeon spawner
+ - DONE: mob spawning, spatial stuff
+ - HALTED: make passive mobs aggressive in dungeons
+ - make dungeons hot reloadable
+
+ Loot:
+ - DONE: custom loot tables
+ - DONE: make it for entities, chests, and custom stuff
 
  Others:
  - XP bottling command
  - add repair item to repair armor and weapons
  - add alternatives to making Elytra usable and netherite upgrading.
+ - MAKE ALL LOADERS HOT RELOADABLE
 
  Experimental:
  - Ban food regen
