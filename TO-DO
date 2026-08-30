@@ -23,6 +23,9 @@ Custom Items:
  - Create forge/compactor GUI
  - Shop GUI
 
+ SPAWN:
+ - IF PLAYERS DIE, RETURN TO SPAWN NO WORLD SPAWN
+
 Economy:
  - bank
  - land claim taxes

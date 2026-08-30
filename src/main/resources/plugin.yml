@@ -4,3 +4,7 @@ version: '${version}'
 main: dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG
 api-version: '26.1.2'
 load: POSTWORLD
+
+softdepend:
+  - ExcellentEconomy
+  - FancyNpcs

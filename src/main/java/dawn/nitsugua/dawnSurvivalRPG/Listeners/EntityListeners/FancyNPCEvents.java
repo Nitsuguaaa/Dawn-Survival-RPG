@@ -13,15 +13,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FancyNPCEvents implements Listener {
-
     private DawnSurvivalRPG plugin;
-
     private final List<String> dawnNPCList = new ArrayList<>();
-    private final String TEST_NPC = "test-npc";
+
+    public static boolean isAvailable() {
+        try {
+            Class.forName("de.oliver.fancynpcs.api.events.NpcInteractEvent");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
 
     public FancyNPCEvents(DawnSurvivalRPG plugin) {
         this.plugin = plugin;
-        dawnNPCList.add("test");
     }
 
     @EventHandler
@@ -29,10 +34,12 @@ public class FancyNPCEvents implements Listener {
         Player player = e.getPlayer();
         Npc npc = e.getNpc();
 
-        if(!npc.getData().getName().equals(TEST_NPC)) return;
+        if(!npc.getData().getName().equals("test-npc")) return;
 
         e.setCancelled(true);
-
-        player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "Why hello there traveller!"));
+        player.sendMessage(MessagesUtil.sendInfo(
+                MessagesUtil.commonMessages.MESSAGE,
+                "Why hello there traveller!"
+        ));
     }
 }

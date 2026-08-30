@@ -8,6 +8,7 @@ import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.*;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.DungeonTasks;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.ManaTasks;
+import dawn.nitsugua.dawnSurvivalRPG.ExcellentEconomy.DawnExcellentEconomy;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemFactory;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemLoader;
 import dawn.nitsugua.dawnSurvivalRPG.Items.Skills.SkillLoader;
@@ -51,6 +52,9 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     private LootManager lootManager;
     private CustomRecipeManager customRecipeManager;
     private GuiManager guiManager;
+
+    //External plugins
+    private DawnExcellentEconomy economyAPI;
 
     @Override
     public void onEnable() {
@@ -119,10 +123,11 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerEvents(instance), instance);
         getServer().getPluginManager().registerEvents(new MobEvents(instance), instance);
         getServer().getPluginManager().registerEvents(new VillagerEvents(instance), instance);
-        getServer().getPluginManager().registerEvents(new FancyNPCEvents(instance), instance);
         getServer().getPluginManager().registerEvents(new AntiMendingListener(), instance);
         getServer().getPluginManager().registerEvents(new AntiEndGameListener(), instance);
         getServer().getPluginManager().registerEvents(new GuiEvents(), instance);
+
+        Bukkit.getScheduler().runTaskLater(this, this::hookOptionalPlugins, 1L);
 
         log.info(TextUtil.format("<green>Listeners Registered!</green>"));
     }
@@ -147,6 +152,9 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         taskManager = new TaskManager();
         guiManager = new GuiManager();
 
+        //External plugins
+        economyAPI = new DawnExcellentEconomy(instance);
+
 
         log.info(TextUtil.format("<green>Managers and Loaders Registered!</green>"));
     }
@@ -156,6 +164,15 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         ManaTasks.initManaTasks(instance);
         //DungeonTasks.runDungeonMobSpawning(instance);
         log.info(TextUtil.format("<green>Tasks Registered!</green>"));
+    }
+
+    private void hookOptionalPlugins() {
+        if (Bukkit.getPluginManager().isPluginEnabled("FancyNpcs")) {
+            getServer().getPluginManager().registerEvents(new FancyNPCEvents(instance), instance);
+            log.info(TextUtil.format("<green>FancyNpcs hooked!</green>"));
+        }
+
+        economyAPI.init();
     }
 
     @NotNull
