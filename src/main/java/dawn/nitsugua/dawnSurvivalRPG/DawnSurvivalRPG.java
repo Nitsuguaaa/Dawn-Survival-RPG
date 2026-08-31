@@ -8,6 +8,7 @@ import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.*;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.DungeonTasks;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.ManaTasks;
+import dawn.nitsugua.dawnSurvivalRPG.Database.BankDAO;
 import dawn.nitsugua.dawnSurvivalRPG.ExcellentEconomy.DawnExcellentEconomy;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemFactory;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemLoader;
@@ -33,6 +34,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import su.nightexpress.excellenteconomy.api.ExcellentEconomyAPI;
 
 public final class DawnSurvivalRPG extends JavaPlugin {
     private static ComponentLogger log;
@@ -55,6 +57,10 @@ public final class DawnSurvivalRPG extends JavaPlugin {
 
     //External plugins
     private DawnExcellentEconomy economyAPI;
+
+    //Databases
+    private DatabaseManager databaseManager;
+    private BankDAO bankDAO;
 
     @Override
     public void onEnable() {
@@ -98,6 +104,10 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         if(ticker != null) {
             ticker.stop();
         }
+
+        if(databaseManager != null) {
+            databaseManager.shutdown();
+        }
     }
 
     private void registerCommands() {
@@ -118,7 +128,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     private void registerListeners() {
         log.info(TextUtil.format("<yellow>Registering Listeners...</yellow>"));
 
-        getServer().getPluginManager().registerEvents(new PlayerBreakingBlockListener(), instance);
+        //getServer().getPluginManager().registerEvents(new PlayerBreakingBlockListener(instance), instance);
         getServer().getPluginManager().registerEvents(new ItemEvents(instance), instance);
         getServer().getPluginManager().registerEvents(new PlayerEvents(instance), instance);
         getServer().getPluginManager().registerEvents(new MobEvents(instance), instance);
@@ -134,6 +144,11 @@ public final class DawnSurvivalRPG extends JavaPlugin {
 
     private void registerManagersAndLoaders() {
         log.info(TextUtil.format("<yellow>Registering Managers and Loaders...</yellow>"));
+
+        databaseManager = new DatabaseManager(instance);
+        databaseManager.initialize();
+        bankDAO = new BankDAO(instance);
+
         DawnKeys.init(instance);
         CustomItemLoader.initialize(instance);
         SkillLoader.initialize(instance);
@@ -172,7 +187,11 @@ public final class DawnSurvivalRPG extends JavaPlugin {
             log.info(TextUtil.format("<green>FancyNpcs hooked!</green>"));
         }
 
-        economyAPI.init();
+        if (Bukkit.getPluginManager().isPluginEnabled("ExcellentEconomy")) {
+            economyAPI.init();
+            getServer().getPluginManager().registerEvents(new PlayerBreakingBlockListener(instance), instance);
+            log.info(TextUtil.format("<green>ExcellentEconomy hooked!</green>"));
+        }
     }
 
     @NotNull
@@ -196,7 +215,9 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     public TaskManager getTaskManager() {return taskManager;}
     public CustomRecipeManager getCustomRecipeManager() {return customRecipeManager;}
     public GuiManager getGuiManager() {return guiManager;}
-
+    public DawnExcellentEconomy getEconomyAPI() {return economyAPI;}
+    public DatabaseManager getDatabaseManager() {return databaseManager;}
+    public BankDAO getBankDAO() {return bankDAO;}
 
     @NotNull
     public ComponentLogger getLog() {return log;}
