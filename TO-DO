@@ -28,6 +28,7 @@ Custom Items:
 
 Economy:
  - bank
+ - /bank
  - land claim taxes
 
  Dungeons:

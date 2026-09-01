@@ -1,6 +1,7 @@
 package dawn.nitsugua.dawnSurvivalRPG;
 
 import dawn.nitsugua.dawnSurvivalRPG.API.DawnRPGAPI;
+import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.BankCommand;
 import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.DungeonCommand;
 import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.ItemCommand;
 import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.MenuCommand;
@@ -120,6 +121,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
             new ItemCommand(instance).register(commands);
             new DungeonCommand(instance).register(commands);
             new MenuCommand(instance).register(commands);
+            new BankCommand(instance).register(commands);
         });
 
         log.info(TextUtil.format("<green>Commands Registered!</green>"));
@@ -190,7 +192,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
 
         if (Bukkit.getPluginManager().isPluginEnabled("ExcellentEconomy")) {
             economyAPI.init();
-            getServer().getPluginManager().registerEvents(new PlayerBreakingBlockListener(instance), instance);
+            //getServer().getPluginManager().registerEvents(new PlayerBreakingBlockListener(instance), instance);
             log.info(TextUtil.format("<green>ExcellentEconomy hooked!</green>"));
         }
     }
