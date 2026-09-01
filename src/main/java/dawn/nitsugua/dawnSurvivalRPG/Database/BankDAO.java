@@ -2,11 +2,13 @@ package dawn.nitsugua.dawnSurvivalRPG.Database;
 
 import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.DatabaseManager;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
+import dawn.nitsugua.dawnSurvivalRPG.Economy.Bank;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class BankDAO {
     private final DawnSurvivalRPG plugin;
@@ -17,31 +19,34 @@ public class BankDAO {
         this.db = plugin.getDatabaseManager();
     }
 
-    //READ FROM DATABASE
-    public double getBalance(UUID uuid) {
-        String sql = "SELECT balance FROM banks WHERE player_uuid = ?";
-        try(PreparedStatement stmt = db.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, uuid.toString());
-            ResultSet rs = stmt.executeQuery();
-
-            if(rs.next()) {
-                return rs.getDouble("balance");
+    public CompletableFuture<Bank> loadBankAsync(UUID uuid) {
+        return CompletableFuture.supplyAsync(() -> {
+            String sql = "SELECT balance, tier, last_interest FROM banks WHERE player_uuid = ?";
+            try(PreparedStatement stmt = db.getConnection().prepareStatement(sql)) {
+                stmt.setString(1, uuid.toString());
+                ResultSet rs = stmt.executeQuery();
+                if(rs.next()) {
+                    return new Bank(uuid, rs.getDouble("balance"), rs.getString("tier"), rs.getLong("last_interest"));
+                }
+            } catch(Exception e) {
+                plugin.getLog().error("Failed to load bank for: " + uuid + ":" + e.getMessage());
             }
-        } catch (SQLException e) {
-            plugin.getLog().error("Failed to get balance for " + uuid + ": " + e.getMessage());
-        }
-        return 0.0;
+            return new Bank(uuid);
+        }, db.getDbExecutor());
     }
 
-    //WRITE to Database (Upsert - Insert if new, Replace if exists)
-    public void saveBalance(UUID uuid, double balance) {
-        String sql = "INSERT OR REPLACE INTO banks (player_uuid, balance) VALUES (?, ?)";
-        try(PreparedStatement stmt = db.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, uuid.toString());
-            stmt.setDouble(2, balance);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            plugin.getLog().error("Failed to save balance for " + uuid + ": " + e.getMessage());
-        }
+    public CompletableFuture<Void> saveBankAsync(Bank bank) {
+        return CompletableFuture.runAsync(() -> {
+            String sql = "INSERT OR REPLACE INTO banks (player_uuid, balance, tier, last_interest) VALUES (?,?,?,?)";
+            try(PreparedStatement stmt = db.getConnection().prepareStatement(sql)) {
+                stmt.setString(1, bank.getOwnerUuid().toString());
+                stmt.setDouble(2, bank.getBalance());
+                stmt.setString(3, bank.getTier());
+                stmt.setLong(4, bank.getLastInterest());
+                stmt.executeUpdate();
+            } catch (Exception e) {
+                plugin.getLog().error("Failed to save bank for " + bank.getOwnerUuid() + ": " + e.getMessage());
+            }
+        }, db.getDbExecutor());
     }
 }

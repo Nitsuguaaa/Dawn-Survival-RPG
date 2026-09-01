@@ -8,10 +8,19 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class DatabaseManager {
     private final DawnSurvivalRPG plugin;
     private Connection connection;
+    
+    private final ExecutorService dbExecutor = Executors.newSingleThreadExecutor(runnable -> {
+        Thread thread = new Thread(runnable, "Dawn-DB-Executor");
+        thread.setDaemon(true);
+        return thread;
+    });
 
     public DatabaseManager(DawnSurvivalRPG plugin) {
         this.plugin = plugin;
@@ -36,7 +45,6 @@ public class DatabaseManager {
 
     private void createTables() {
         try(Statement stmt = connection.createStatement()) {
-
             //Create players table
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS players (
@@ -63,11 +71,18 @@ public class DatabaseManager {
         }
     }
 
-    public Connection getConnection() {
-        return connection;
-    }
+    public Connection getConnection() {return connection;}
+    public ExecutorService getDbExecutor () {return dbExecutor;}
 
     public void shutdown() {
+        dbExecutor.shutdown();
+        try {
+            if(!dbExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
+                dbExecutor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            dbExecutor.shutdownNow();
+        }
         try {
             if(connection != null && !connection.isClosed()) {
                 connection.close();

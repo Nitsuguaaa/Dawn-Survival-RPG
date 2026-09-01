@@ -6,6 +6,7 @@ import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.ItemCommand;
 import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.MenuCommand;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.*;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
+import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.BankAutoSaveTask;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.DungeonTasks;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.ManaTasks;
 import dawn.nitsugua.dawnSurvivalRPG.Database.BankDAO;
@@ -177,7 +178,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     private void registerTasks() {
         log.info(TextUtil.format("<yellow>Tasks...</yellow>"));
         ManaTasks.initManaTasks(instance);
-        //DungeonTasks.runDungeonMobSpawning(instance);
+        BankAutoSaveTask.runBankAutoSave(instance);
         log.info(TextUtil.format("<green>Tasks Registered!</green>"));
     }
 

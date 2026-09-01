@@ -1,7 +1,10 @@
 package dawn.nitsugua.dawnSurvivalRPG.Listeners.TestListeners;
 
+import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
+import dawn.nitsugua.dawnSurvivalRPG.Economy.Bank;
 import dawn.nitsugua.dawnSurvivalRPG.ExcellentEconomy.DawnExcellentEconomy;
+import dawn.nitsugua.dawnSurvivalRPG.Player.DawnPlayer;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import org.bukkit.attribute.Attribute;
@@ -38,11 +41,19 @@ public class PlayerBreakingBlockListener implements Listener {
 //        double balance = api.getBalance(player, "money");
 //        player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.SUCCESS, "Your current balance is: " + balance));
 
-        double currentBalance = plugin.getBankDAO().getBalance(player.getUniqueId());
-        double newBalance = currentBalance + 10.0;
-        plugin.getBankDAO().saveBalance(player.getUniqueId(), newBalance);
+        DawnPlayer dp = DawnRegistry.getInstance().getDawnPlayer(player.getUniqueId());
 
-        player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.SUCCESS, "+10$ Bank deposit! New Balance: " + plugin.getBankDAO().getBalance(player.getUniqueId())));
+        if(dp == null || dp.getBank() == null) {
+            player.sendMessage("Hold up, database still loading");
+            e.setCancelled(true);
+            return;
+        }
+
+        Bank bank = dp.getBank();
+
+        bank.setBalance(bank.getBalance() + 10.0);
+
+        player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.SUCCESS, "+10$ Bank deposit! New Balance: " + bank.getBalance()));
 
     }
 

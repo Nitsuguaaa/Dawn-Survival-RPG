@@ -3,6 +3,7 @@ package dawn.nitsugua.dawnSurvivalRPG.Core.Managers;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Player.DawnPlayer;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -29,8 +30,15 @@ public class PlayerManager {
     public void playerJoinEvent(Player player) {
         UUID playerId = player.getUniqueId();
         DawnPlayer dawnPlayer = new DawnPlayer(playerId);
-
+        dawnPlayer.setUsername(player.getName());
         dawnRegistry.registerPlayer(playerId, dawnPlayer);
+
+        plugin.getBankDAO().loadBankAsync(playerId).thenAccept(bank -> {
+           Bukkit.getScheduler().runTask(plugin, () -> {
+               dawnPlayer.setBank(bank);
+               player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.SUCCESS, "Bank data loaded! Balance: <yellow>" + bank.getBalance()));
+           });
+        });
 
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             initializePlayer(player);
@@ -42,6 +50,13 @@ public class PlayerManager {
 
     public void playerLeaveEvent(Player player) {
         UUID playerId = player.getUniqueId();
+        DawnPlayer dp = dawnRegistry.getDawnPlayer(playerId);
+
+        if(dp != null && dp.getBank() != null) {
+            if(dp.getBank().isDirty()) {
+                plugin.getBankDAO().saveBankAsync(dp.getBank());
+            }
+        }
 
         dawnRegistry.removePlayer(playerId);
         if(dungeonManager.isDungeonWorld(player.getWorld().getName())) dungeonManager.removePlayerFromWorld(player.getWorld().getName());

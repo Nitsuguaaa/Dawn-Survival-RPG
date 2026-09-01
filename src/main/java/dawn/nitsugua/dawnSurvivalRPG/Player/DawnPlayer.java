@@ -1,12 +1,22 @@
 package dawn.nitsugua.dawnSurvivalRPG.Player;
 
+import dawn.nitsugua.dawnSurvivalRPG.Economy.Bank;
+import dawn.nitsugua.dawnSurvivalRPG.Economy.Bounty;
 import org.bukkit.inventory.EquipmentSlot;
 
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class DawnPlayer {
     private final UUID playerId;
+    private String username;
+
+    //database caches
+    private Bank bank;
+    private final List<Bounty> activeBounties = new ArrayList<>();
 
 
     //Attributes
@@ -25,6 +35,15 @@ public class DawnPlayer {
     }
 
     public UUID getPlayerId() {return playerId;}
+
+    public UUID getUuid() { return playerId; }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+
+    public Bank getBank() { return bank; }
+    public void setBank(Bank bank) { this.bank = bank; }
+
+    public List<Bounty> getActiveBounties() { return activeBounties; }
 
     public int getIntelligence() {return intelligence;}
     public void addIntelligence(int intelligence) {
