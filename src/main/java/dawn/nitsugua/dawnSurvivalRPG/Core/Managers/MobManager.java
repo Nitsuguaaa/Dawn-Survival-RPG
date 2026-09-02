@@ -33,13 +33,13 @@ public class MobManager {
     }
 
     public void onMobDeath(EntityDeathEvent event, Entity entity, Player damager) {
+        event.setDroppedExp(0);
         PersistentDataContainer pdc = entity.getPersistentDataContainer();
         if(!pdc.has(DawnKeys.DAWN_MOB, PersistentDataType.BOOLEAN)) return;
+        event.getDrops().clear();
 
         String mobName = pdc.get(DawnKeys.DAWN_MOB_NAME, PersistentDataType.STRING);
         if(mobName == null) return;
-
-        event.getDrops().clear();
 
         LootTable table = dawnRegistry.getLootTable(mobName);
 
@@ -109,6 +109,8 @@ public class MobManager {
         entity.getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(blueprint.getMovementSpeed());
         //entity.getAttribute(Attribute.ATTACK_SPEED).setBaseValue(blueprint.getAttackDamage());
         entity.getAttribute(Attribute.FOLLOW_RANGE).setBaseValue(blueprint.getFollowRange());
+
+
 
         PersistentDataContainer pdc = entity.getPersistentDataContainer();
         pdc.set(DawnKeys.DAWN_MOB, PersistentDataType.BOOLEAN, true);

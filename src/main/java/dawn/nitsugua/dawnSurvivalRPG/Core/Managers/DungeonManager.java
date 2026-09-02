@@ -37,7 +37,7 @@ public class DungeonManager {
         //this.taskManager = plugin.getTaskManager();
         initializeDungeons();
         loadDungeons();
-        dawnRegistry.registerDungeonWorld("dungeon-1");
+        dawnRegistry.registerDungeonWorld("world");
     }
 
     public boolean isDungeonWorld(String worldName) {

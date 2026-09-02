@@ -1,6 +1,7 @@
 package dawn.nitsugua.dawnSurvivalRPG.Listeners.EntityListeners;
 
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
+import dawn.nitsugua.dawnSurvivalRPG.GUI.DawnGuis.KeyExchangeGui;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import de.oliver.fancynpcs.api.events.NpcInteractEvent;
@@ -34,6 +35,7 @@ public class FancyNPCEvents implements Listener {
         Player player = e.getPlayer();
         Npc npc = e.getNpc();
 
+        openKeyExchange(player, npc);
         if(!npc.getData().getName().equals("test-npc")) return;
 
         e.setCancelled(true);
@@ -41,5 +43,11 @@ public class FancyNPCEvents implements Listener {
                 MessagesUtil.commonMessages.MESSAGE,
                 "Why hello there traveller!"
         ));
+    }
+
+    private void openKeyExchange(Player player, Npc npc) {
+        if(!npc.getData().getName().equals("key-exchange")) return;
+
+        plugin.getGuiManager().open(player, new KeyExchangeGui());
     }
 }

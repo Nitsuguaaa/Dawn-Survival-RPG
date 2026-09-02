@@ -6,7 +6,9 @@ import com.destroystokyo.paper.entity.ai.GoalType;
 import com.destroystokyo.paper.entity.ai.MobGoals;
 import com.destroystokyo.paper.entity.ai.VanillaGoal;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.MobManager;
+import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
+import dawn.nitsugua.dawnSurvivalRPG.Mobs.CustomMob;
 import dawn.nitsugua.dawnSurvivalRPG.Mobs.MobGoals.FleeFromPlayerGoal;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.DawnKeys;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
@@ -35,6 +37,7 @@ import org.bukkit.persistence.PersistentDataType;
 public class MobEvents implements Listener {
     private final DawnSurvivalRPG plugin;
     private final MobManager mobManager;
+    private final DawnRegistry dawnRegistry = DawnRegistry.getInstance();
 
     private Location cachedLocation = null;
 
@@ -80,6 +83,35 @@ public class MobEvents implements Listener {
                 mobManager.stripGenericMobGoal(creature);
             }
         }
+    }
+
+    @EventHandler
+    public void onArrowHit(EntityDamageByEntityEvent event) {
+        // 1. Check if damager is an arrow
+        if (!(event.getDamager() instanceof Arrow arrow)) return;
+
+        // 2. Check if shooter is a custom mob
+        if (!(arrow.getShooter() instanceof Mob shooter)) return;
+        if (!(event.getEntity() instanceof Player)) return;
+
+        // 3. Check if it's a Dawn custom mob
+        if (!shooter.getPersistentDataContainer().has(DawnKeys.DAWN_MOB, PersistentDataType.BOOLEAN)) return;
+
+        // 4. Get the mob name
+        String mobName = shooter.getPersistentDataContainer().get(
+                DawnKeys.DAWN_MOB_NAME,
+                PersistentDataType.STRING
+        );
+
+        if (mobName == null) return;
+
+        // 5. Get the custom mob blueprint
+        CustomMob blueprint = dawnRegistry.getCustomMob(mobName.toUpperCase());
+        if (blueprint == null) return;
+
+        // 6. Override arrow damage with the custom attack damage
+        double customDamage = blueprint.getAttackDamage();
+        event.setDamage(customDamage);
     }
 
     @EventHandler

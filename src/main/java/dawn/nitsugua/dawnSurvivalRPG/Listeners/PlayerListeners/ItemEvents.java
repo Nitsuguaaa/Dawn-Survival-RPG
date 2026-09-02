@@ -92,6 +92,7 @@ public class ItemEvents implements Listener {
 
     @EventHandler
     public void onPrepareCraft(PrepareItemCraftEvent e) {
+        bannedItems(e);
         if(DawnKeys.isDawnObject(e.getInventory().getResult())) return;
         for(ItemStack ingredient : e.getInventory().getMatrix()) {
             if(ingredient == null || ingredient.getType() == Material.AIR) continue;
@@ -100,6 +101,13 @@ public class ItemEvents implements Listener {
                 e.getInventory().setResult(null);
                 return;
             }
+        }
+    }
+
+    private void bannedItems(PrepareItemCraftEvent e) {
+        if(e.getInventory().getResult() == null) return;
+        if(e.getInventory().getResult().getType() == Material.TNT_MINECART) {
+            e.getInventory().setResult(null);
         }
     }
 }
