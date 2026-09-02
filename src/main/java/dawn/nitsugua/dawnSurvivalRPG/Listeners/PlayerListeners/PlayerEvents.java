@@ -4,6 +4,8 @@ import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.PlayerManager;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -26,6 +28,9 @@ public class PlayerEvents implements Listener {
     public void onPlayerLeave(PlayerQuitEvent e) {
         playerManager.playerLeaveEvent(e.getPlayer());
     }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent e) {playerManager.onPLayerDeath(e);}
 
     @EventHandler
     public void onPlayerSwitchWorld(PlayerChangedWorldEvent e) { playerManager.playerSwitchWorldEvent(e.getPlayer(), e.getFrom(), e.getPlayer().getWorld());}

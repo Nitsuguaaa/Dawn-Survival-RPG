@@ -8,7 +8,9 @@ import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
+import su.nightexpress.excellenteconomy.api.ExcellentEconomyAPI;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -19,12 +21,10 @@ public class PlayerManager {
     private final DawnSurvivalRPG plugin;
     private final DungeonManager dungeonManager;
 
-
     public PlayerManager(DawnSurvivalRPG plugin, ManaManager manaManager) {
         this.plugin = plugin;
         this.manaManager = manaManager;
         this.dungeonManager = plugin.getDungeonManager();
-
     }
 
     public void playerJoinEvent(Player player) {
@@ -36,7 +36,7 @@ public class PlayerManager {
         plugin.getBankDAO().loadBankAsync(playerId).thenAccept(bank -> {
            Bukkit.getScheduler().runTask(plugin, () -> {
                dawnPlayer.setBank(bank);
-               player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.SUCCESS, "Bank data loaded! Balance: <yellow>" + bank.getBalance()));
+               //player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.SUCCESS, "Bank data loaded! Balance: <yellow>" + bank.getBalance()));
            });
         });
 
@@ -74,6 +74,31 @@ public class PlayerManager {
             dungeonManager.addPlayerToWorld(toWorld);
         }
     }
+
+    public void onPLayerDeath(PlayerDeathEvent e) {
+        //economy
+        Player player = e.getPlayer();
+        ExcellentEconomyAPI execo = plugin.getEconomyAPI().getEconomyAPI();
+        double balance = execo.getBalance(player, "money");
+
+        if(balance <= 0) return;
+
+        double lossPercentage;
+
+        if(e.getDamageSource().getCausingEntity() instanceof Player) {
+            lossPercentage = 0.20;
+        } else {
+            lossPercentage = 0.50;
+        }
+
+        double lossAmount = Math.round(balance * lossPercentage * 100.0) / 100.0;
+        execo.withdraw(player, "money", lossAmount);
+
+        String message = String.format("You died and lost %.2f coins.", lossAmount);
+        player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, message));
+
+    }
+
     public void initializePlayer(Player player) {
         //get armor too but for now just main hand item
 

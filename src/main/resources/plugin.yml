@@ -8,3 +8,4 @@ load: POSTWORLD
 softdepend:
   - ExcellentEconomy
   - FancyNpcs
+  - PlaceholderAPI

@@ -8,12 +8,14 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.fancyinnovations.com/releases")
     maven ("https://repo.nightexpressdev.com/releases")
+    maven ("https://repo.extendedclip.com/releases/")
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:26.1.2.build.+")
     compileOnly("de.oliver:FancyNpcs:2.9.2")
     compileOnly("su.nightexpress.excellenteconomy:ExcellentEconomy:2.8.0")
+    compileOnly("me.clip:placeholderapi:2.12.3")
 }
 
 java {

@@ -27,6 +27,7 @@ import dawn.nitsugua.dawnSurvivalRPG.Listeners.TestListeners.PlayerBreakingBlock
 import dawn.nitsugua.dawnSurvivalRPG.Loots.LootTableLoader;
 import dawn.nitsugua.dawnSurvivalRPG.Mobs.CustomMobLoader;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.*;
+import dawn.nitsugua.dawnSurvivalRPG.placeholders.DawnBankPlaceholder;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
@@ -194,6 +195,11 @@ public final class DawnSurvivalRPG extends JavaPlugin {
             economyAPI.init();
             //getServer().getPluginManager().registerEvents(new PlayerBreakingBlockListener(instance), instance);
             log.info(TextUtil.format("<green>ExcellentEconomy hooked!</green>"));
+        }
+
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new DawnBankPlaceholder(instance).register();
+            log.info(TextUtil.format("<green>PlaceholderAPI hooked!</green>"));
         }
     }
 
