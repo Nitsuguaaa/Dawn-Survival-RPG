@@ -8,8 +8,7 @@ public class TextUtil {
 
     public enum ItemRarity {
         COMMON("<gray>"),
-        UNCOMMON("<green>"),
-        RARE("<blue>"),
+        ELITE("<blue>"),
         EPIC("<dark_purple>"),
         LEGENDARY("<yellow>"),
         MYTHICAL("<light_purple>");

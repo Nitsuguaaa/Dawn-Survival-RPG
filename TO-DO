@@ -1,3 +1,7 @@
+General:
+ - Make sure multiverse core is correctly configured
+ - reset overworld, nether, and the end
+
 Custom Items:
  - Needs dynamic lore instead of static lore.
  - Needs World Item updating whenever config changes.
@@ -20,15 +24,15 @@ Custom Items:
 
  GUI:
  - DONE (WTF): Build home brew GUI
- - Create forge/compactor GUI
+ - DONE: Create forge/compactor GUI
  - Shop GUI
 
  SPAWN:
  - IF PLAYERS DIE, RETURN TO SPAWN NO WORLD SPAWN
 
 Economy:
- - bank
- - /bank
+ - DONE: bank
+ - DONE: /bank
  - land claim taxes
 
  Dungeons:
@@ -51,3 +55,4 @@ Economy:
  Experimental:
  - Ban food regen
  - custom potions
+ - DONE: Ban TNT minecarts

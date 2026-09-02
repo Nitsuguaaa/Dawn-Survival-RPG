@@ -28,6 +28,8 @@ public class CustomItem {
     private Double manaCost;
     private Double cooldown;
 
+    private boolean oneTimeUse = false;
+
     //Decorative
     private boolean glinting = false;
 
@@ -76,6 +78,9 @@ public class CustomItem {
     public String getInteractableType() {return interactableType;}
     public Double getManaCost() {return manaCost;}
     public Double getCooldown() {return cooldown;}
+
+    public void toggleOneTimeUse() {this.oneTimeUse = true;}
+    public boolean isOneTimeUse() {return oneTimeUse;}
 
     public String getCustomMaterial() { return customMaterial; }
     public CustomItem setCustomMaterial(String customMaterial) {

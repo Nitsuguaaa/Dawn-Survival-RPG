@@ -99,9 +99,19 @@ public class CustomItemFactory {
             case "ARMOR":
                 plugin.getLog().info(TextUtil.sendLogInfo("CustomItemFactory", TextUtil.LogInfo.WARNING, "Custom Armor not set."));
                 break;
+            case "USABLE":
+                plugin.getLog().info(TextUtil.sendLogInfo("CustomItemFactory", TextUtil.LogInfo.SUCCESS, "Usable item registered! asddsadsadsa"));
+                return customUsable(finalItem);
             default:
                 return finalItem;
         }
+        return finalItem;
+    }
+
+    private ItemStack customUsable(ItemStack finalItem) {
+        ItemMeta itemMeta = finalItem.getItemMeta();
+        itemMeta.getPersistentDataContainer().set(DawnKeys.USES, PersistentDataType.BOOLEAN, true);
+        finalItem.setItemMeta(itemMeta);
         return finalItem;
     }
 
