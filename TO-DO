@@ -16,6 +16,12 @@ Custom Items:
  - fix the Y issue
  - make skill dynamically get data on config
 
+ PvP:
+ - Make PvP damage -50%
+
+ Parties:
+ - make parties
+
  Utils:
  - DONE: add global ticker
 
@@ -51,6 +57,7 @@ Economy:
  - add repair item to repair armor and weapons
  - add alternatives to making Elytra usable and netherite upgrading.
  - MAKE ALL LOADERS HOT RELOADABLE
+ - invisibility shows no killer in the death message
 
  Experimental:
  - Ban food regen

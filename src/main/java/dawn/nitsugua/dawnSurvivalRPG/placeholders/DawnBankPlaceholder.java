@@ -21,7 +21,7 @@ public class DawnBankPlaceholder extends PlaceholderExpansion {
         // Format numbers with commas (e.g., 1,000,000 instead of 1000000.0)
         this.formatter = NumberFormat.getNumberInstance(Locale.US);
         formatter.setMaximumFractionDigits(2);
-        plugin.getLog().info("DAWN BANK PLACEHOLDER REGISTERED!");
+        //plugin.getLog().info("DAWN BANK PLACEHOLDER REGISTERED!");
     }
 
     @Override
@@ -46,7 +46,7 @@ public class DawnBankPlaceholder extends PlaceholderExpansion {
 
     @Override
     public @Nullable String onRequest(OfflinePlayer player, @NotNull String params) {
-        plugin.getLog().info("You're running me?");
+        //plugin.getLog().info("You're running me?");
         if(player == null) return null;
 
         final DawnPlayer dp = dawnRegistry.getDawnPlayer(player.getUniqueId());
