@@ -72,7 +72,7 @@ public class KeyExchangeGui extends DawnGui {
             int shards = InventoryUtil.countCustomItems(viewer.getInventory(), "ELITE_KEY_SHARD");
 
             if(shards >= 25) {
-                InventoryUtil.removeCustomItems(viewer.getInventory(), "ELITE_KEY_SHARD", 10);
+                InventoryUtil.removeCustomItems(viewer.getInventory(), "ELITE_KEY_SHARD", 25);
                 String command = String.format("crates key give %s elite 1", viewer.getName());
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
 
@@ -80,7 +80,7 @@ public class KeyExchangeGui extends DawnGui {
                 viewer.playSound(viewer.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.5f);
 
             } else {
-                viewer.sendMessage(TextUtil.format("<red>You need <white>10 <red>Elite Key Shards! (You have <white>" + shards + "<red>)"));
+                viewer.sendMessage(TextUtil.format("<red>You need <white>25 <red>Elite Key Shards! (You have <white>" + shards + "<red>)"));
                 viewer.playSound(viewer.getLocation(), Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
             }
         }));
