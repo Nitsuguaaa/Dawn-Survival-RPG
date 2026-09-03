@@ -8,6 +8,7 @@ import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemFactory;
 import dawn.nitsugua.dawnSurvivalRPG.Loots.LootTable;
 import dawn.nitsugua.dawnSurvivalRPG.Mobs.CustomMob;
+import dawn.nitsugua.dawnSurvivalRPG.Mobs.CustomMobLoader;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.DawnKeys;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
@@ -119,5 +120,10 @@ public class MobManager {
         stripGenericMobGoal(entity);
 
         return entity;
+    }
+
+    public void reload() {
+        dawnRegistry.clearCustomMobs();
+        CustomMobLoader.initialize(plugin);
     }
 }

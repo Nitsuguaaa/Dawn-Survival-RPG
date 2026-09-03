@@ -5,6 +5,7 @@ import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemFactory;
 import dawn.nitsugua.dawnSurvivalRPG.Loots.LootTable;
 import dawn.nitsugua.dawnSurvivalRPG.Loots.LootTableEntry;
+import dawn.nitsugua.dawnSurvivalRPG.Loots.LootTableLoader;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -47,5 +48,10 @@ public class LootManager {
 
         plugin.getLog().info(TextUtil.sendLogInfo("LootManager", TextUtil.LogInfo.ERROR,"Unknown loot item: <white>" + key));
         return null;
+    }
+
+    public void reload() {
+        dawnRegistry.clearLootTables();
+        LootTableLoader.initialize(plugin);
     }
 }

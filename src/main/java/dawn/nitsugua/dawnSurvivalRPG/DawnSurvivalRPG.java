@@ -55,6 +55,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     private LootManager lootManager;
     private CustomRecipeManager customRecipeManager;
     private GuiManager guiManager;
+    private CustomItemManager customItemManager;
 
     //loaders with managers
     private SellLoader sellLoader;
@@ -125,6 +126,8 @@ public final class DawnSurvivalRPG extends JavaPlugin {
             new MenuCommand(instance).register(commands);
             new BankCommand(instance).register(commands);
             new SellCommand(instance).register(commands);
+            new MobCommand(instance).register(commands);
+            new LootCommand(instance).register(commands);
         });
 
         log.info(TextUtil.format("<green>Commands Registered!</green>"));
@@ -161,6 +164,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         CustomMobLoader.initialize(instance);
         LootTableLoader.initialize(instance);
 
+        customItemManager = new CustomItemManager(instance);
         customItemFactory = new CustomItemFactory(instance);
         cooldownManager = new CooldownManager(instance);
         dungeonManager = new DungeonManager(instance);
@@ -233,6 +237,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     public DatabaseManager getDatabaseManager() {return databaseManager;}
     public BankDAO getBankDAO() {return bankDAO;}
     public SellLoader getSellLoader() {return sellLoader;}
+    public CustomItemManager getCustomItemManager() {return customItemManager;}
 
     @NotNull
     public ComponentLogger getLog() {return log;}

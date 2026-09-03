@@ -3,6 +3,7 @@ package dawn.nitsugua.dawnSurvivalRPG.Core.Managers;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItem;
+import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemLoader;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,5 +16,10 @@ public class CustomItemManager {
 
     public CustomItemManager(DawnSurvivalRPG plugin) {
         this.plugin = plugin;
+    }
+
+    public void reload() {
+        dawnRegistry.clearCustomItems();
+        CustomItemLoader.initialize(plugin);
     }
 }

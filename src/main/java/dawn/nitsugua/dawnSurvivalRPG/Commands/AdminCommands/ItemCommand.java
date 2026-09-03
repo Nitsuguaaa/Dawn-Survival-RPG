@@ -26,6 +26,10 @@ public class ItemCommand {
                     sendPluginInfo(ctx.getSource());
                     return Command.SINGLE_SUCCESS;
                 })
+                .then(Commands.literal("reload").executes(ctx -> {
+                    plugin.getCustomItemManager().reload();
+                    return Command.SINGLE_SUCCESS;
+                }))
                 .then(new GiveCommand(plugin).build())
                 .build();
 
