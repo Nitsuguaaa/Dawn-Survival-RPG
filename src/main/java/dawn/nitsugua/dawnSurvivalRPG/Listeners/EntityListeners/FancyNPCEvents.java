@@ -35,19 +35,31 @@ public class FancyNPCEvents implements Listener {
         Player player = e.getPlayer();
         Npc npc = e.getNpc();
 
-        openKeyExchange(player, npc);
-        if(!npc.getData().getName().equals("test-npc")) return;
+        switch (npc.getData().getName()) {
+            case "key-exchange":
+                openKeyExchange(player, npc);
+                break;
+            case "test-npc":
+                greg(player, npc);
+                break;
+            case "sell-npc":
+                sellNpc(player, npc);
+                break;
+        }
 
-        e.setCancelled(true);
-        player.sendMessage(MessagesUtil.sendInfo(
-                MessagesUtil.commonMessages.MESSAGE,
-                "Why hello there traveller!"
-        ));
+    }
+
+    private void greg(Player player, Npc npc) {
+        player.sendMessage(TextUtil.sendLogInfo("Greg", TextUtil.LogInfo.SUCCESS,
+                "Welcome to Dawn <white>" + player.getName() + "<green>!"
+                ));
     }
 
     private void openKeyExchange(Player player, Npc npc) {
-        if(!npc.getData().getName().equals("key-exchange")) return;
-
         plugin.getGuiManager().open(player, new KeyExchangeGui());
+    }
+
+    private void sellNpc(Player player, Npc npc) {
+        plugin.getSellLoader().sellAllItems(player);
     }
 }

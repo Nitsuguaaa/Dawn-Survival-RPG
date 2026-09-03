@@ -4,11 +4,9 @@ import dawn.nitsugua.dawnSurvivalRPG.Core.Skills.Skill;
 import dawn.nitsugua.dawnSurvivalRPG.Dungeons.SpawnArea;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItem;
 import dawn.nitsugua.dawnSurvivalRPG.Loots.LootTable;
-import dawn.nitsugua.dawnSurvivalRPG.Loots.LootTableEntry;
 import dawn.nitsugua.dawnSurvivalRPG.Mobs.CustomMob;
 import dawn.nitsugua.dawnSurvivalRPG.Player.DawnPlayer;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.ScheduledTask;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -23,6 +21,7 @@ public class DawnRegistry {
     private final ConcurrentHashMap<UUID, SpawnArea> dawnSpawners = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Integer> dungeonWorlds = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, LootTable> lootTables = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Double> sellPrices = new ConcurrentHashMap<>();
 
     private final ConcurrentHashMap<String, ScheduledTask> tasks = new ConcurrentHashMap<>();
 
@@ -36,6 +35,10 @@ public class DawnRegistry {
     public CustomItem getCustomItem(String customMaterial) {
         return customItems.get(customMaterial);
     }
+
+    public void registerPrice(String item, double price) {sellPrices.put(item.toUpperCase(), price);}
+    public double getSellPrice(String item) {return sellPrices.get(item.toUpperCase());}
+    public Map<String, Double> getAllPrices() {return sellPrices;}
 
     public void registerSkill(Skill skill) {
         skills.put(skill.getId(), skill);

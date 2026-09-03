@@ -1,16 +1,14 @@
 package dawn.nitsugua.dawnSurvivalRPG;
 
 import dawn.nitsugua.dawnSurvivalRPG.API.DawnRPGAPI;
-import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.BankCommand;
-import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.DungeonCommand;
-import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.ItemCommand;
-import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.MenuCommand;
+import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.*;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.*;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.BankAutoSaveTask;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.DungeonTasks;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.ManaTasks;
 import dawn.nitsugua.dawnSurvivalRPG.Database.BankDAO;
+import dawn.nitsugua.dawnSurvivalRPG.Economy.SellLoader;
 import dawn.nitsugua.dawnSurvivalRPG.ExcellentEconomy.DawnExcellentEconomy;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemFactory;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemLoader;
@@ -57,6 +55,9 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     private LootManager lootManager;
     private CustomRecipeManager customRecipeManager;
     private GuiManager guiManager;
+
+    //loaders with managers
+    private SellLoader sellLoader;
 
     //External plugins
     private DawnExcellentEconomy economyAPI;
@@ -123,6 +124,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
             new DungeonCommand(instance).register(commands);
             new MenuCommand(instance).register(commands);
             new BankCommand(instance).register(commands);
+            new SellCommand(instance).register(commands);
         });
 
         log.info(TextUtil.format("<green>Commands Registered!</green>"));
@@ -167,9 +169,12 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         mobManager  = new MobManager(instance);
         customRecipeManager = new CustomRecipeManager(instance);
         playerManager = new PlayerManager(instance, getManaManager());
+        sellLoader = new SellLoader(instance);
         skillManager = new SkillManager(instance, getManaManager());
         taskManager = new TaskManager();
         guiManager = new GuiManager();
+
+        sellLoader.initialize();
 
         //External plugins
         economyAPI = new DawnExcellentEconomy(instance);
@@ -227,6 +232,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     public DawnExcellentEconomy getEconomyAPI() {return economyAPI;}
     public DatabaseManager getDatabaseManager() {return databaseManager;}
     public BankDAO getBankDAO() {return bankDAO;}
+    public SellLoader getSellLoader() {return sellLoader;}
 
     @NotNull
     public ComponentLogger getLog() {return log;}
