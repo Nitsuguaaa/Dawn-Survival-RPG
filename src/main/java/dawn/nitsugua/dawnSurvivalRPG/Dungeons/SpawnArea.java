@@ -10,7 +10,7 @@ public class SpawnArea {
 
     private UUID uuid;
     private String name;
-    private CustomMob customMob;
+    private String customMob;
     private int maxSpawn;
 
     private Location center;
@@ -19,7 +19,7 @@ public class SpawnArea {
 
     private boolean staged;
 
-    public SpawnArea(UUID uuid, String name, CustomMob customMob, int maxSpawn, Location center, World world) {
+    public SpawnArea(UUID uuid, String name, String customMob, int maxSpawn, Location center, World world) {
         this.uuid = uuid;
         this.name = name;
         this.customMob = customMob;
@@ -32,7 +32,7 @@ public class SpawnArea {
 
     public UUID getUuid() {return uuid;}
     public String getSpawnerName() {return name;}
-    public CustomMob getCustomMob() {return customMob;}
+    public String getCustomMob() {return customMob;}
     public int getMaxSpawns() {return maxSpawn;}
     public Location getCenter() {return center;}
     public World getWorld() {return world;}

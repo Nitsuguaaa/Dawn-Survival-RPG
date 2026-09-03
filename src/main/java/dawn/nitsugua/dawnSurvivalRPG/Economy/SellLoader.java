@@ -43,7 +43,7 @@ public class SellLoader {
             return;
         }
 
-        dr.getAllPrices().clear();
+        dr.clearSellPrices();
         for(String key : pricesSection.getKeys(false)) {
             double price = pricesSection.getDouble(key);
             dr.registerPrice(key.toUpperCase(), price);
@@ -109,7 +109,7 @@ public class SellLoader {
     }
 
     public void reload() {
-        dr.getAllPrices().clear();
+        dr.clearSellPrices();
         initialize();
     }
 }

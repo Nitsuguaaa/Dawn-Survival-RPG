@@ -66,8 +66,8 @@ public class DungeonManager {
         }
     }
 
-    public void createDungeon(Player player, String name, String mobName, int maxSpawn) {
-        CustomMob blueprint = dawnRegistry.getCustomMob(mobName.toUpperCase());
+    public void createDungeon(Player player, String name, String blueprint, int maxSpawn) {
+        //CustomMob blueprint = dawnRegistry.getCustomMob(mobName.toUpperCase());
 
         for (SpawnArea existingArea : dawnRegistry.getAllSpawners().values()) {
             if (existingArea.getSpawnerName().equalsIgnoreCase(name)) {
@@ -76,8 +76,8 @@ public class DungeonManager {
             }
         }
 
-        if(blueprint == null) {
-            player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.FAILURE, "Dawn mob not found: <white>" + mobName));
+        if(!dawnRegistry.getAllMobs().containsKey(blueprint)) {
+            player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.FAILURE, "Dawn mob not found: <white>" + blueprint));
             return;
         }
 
@@ -134,7 +134,7 @@ public class DungeonManager {
             try {
                 UUID uuid = UUID.fromString(uuidString);
                 String name = yaml.getString(uuidString + ".name");
-                String mobName = yaml.getString(uuidString + ".dawn-mob");
+                String blueprint = yaml.getString(uuidString + ".dawn-mob");
                 int maxSpawn = yaml.getInt(uuidString + ".max-spawn");
                 boolean staged = yaml.getBoolean(uuidString + ".staged");
 
@@ -150,9 +150,8 @@ public class DungeonManager {
                 }
 
                 Location center = new Location(world, x, y, z);
-                CustomMob blueprint = dawnRegistry.getCustomMob(mobName);
-                if(blueprint == null) {
-                    plugin.getLog().info(TextUtil.sendLogInfo("DungeonManager", TextUtil.LogInfo.ERROR,"Mob not found: " + mobName));
+                if(!dawnRegistry.getAllMobs().containsKey(blueprint)) {
+                    plugin.getLog().info(TextUtil.sendLogInfo("DungeonManager", TextUtil.LogInfo.ERROR,"Mob not found: " + blueprint));
                     continue;
                 }
 
@@ -186,6 +185,24 @@ public class DungeonManager {
         plugin.getLog().info(TextUtil.sendLogInfo("DungeonManager", TextUtil.LogInfo.SUCCESS, "Dungeons loaded into cache!"));
     }
 
+    public void reload() {
+        boolean playersAreInside = false;
+
+        for(int count : dawnRegistry.getDungeonWorlds().values()) {
+            if(count > 0) {
+                playersAreInside = true;
+                break;
+            }
+        }
+
+        DungeonTasks.pauseDungeonMobSpawning(plugin);
+        dawnRegistry.clearDawnSpawners();
+        loadDungeons();
+
+        if(playersAreInside) DungeonTasks.runDungeonMobSpawning(plugin);
+
+    }
+
     public void saveSpawner(SpawnArea area) {
         try {
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(dungeons);
@@ -193,7 +210,7 @@ public class DungeonManager {
 
             // 2. Inject the data
             yaml.set(basePath + ".name", area.getSpawnerName());
-            yaml.set(basePath + ".dawn-mob", area.getCustomMob().getMobName());
+            yaml.set(basePath + ".dawn-mob", area.getCustomMob());
             yaml.set(basePath + ".max-spawn", area.getMaxSpawns());
             yaml.set(basePath + ".staged", area.isStaged());
 
@@ -303,7 +320,7 @@ public class DungeonManager {
                 Location nodeLoc = nodeEntry.getValue();
 
                 if(!occupiedNodes.contains(nodeId)) {
-                    Mob mob = mobManager.spawnCustomMob(nodeLoc, area.getCustomMob().getMobName());
+                    Mob mob = mobManager.spawnCustomMob(nodeLoc, area.getCustomMob());
 
                     if(mob != null) {
                         //plugin.getLog().info(TextUtil.format("<green>Spawning mob in: <white>" + nodeId)); //DEBUG

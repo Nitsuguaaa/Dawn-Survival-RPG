@@ -38,7 +38,7 @@ public class DawnRegistry {
 
     public void registerPrice(String item, double price) {sellPrices.put(item.toUpperCase(), price);}
     public double getSellPrice(String item) {return sellPrices.get(item.toUpperCase());}
-    public Map<String, Double> getAllPrices() {return sellPrices;}
+    public Map<String, Double> getAllPrices() {return Collections.unmodifiableMap(sellPrices);}
 
     public void registerSkill(Skill skill) {
         skills.put(skill.getId(), skill);
@@ -63,11 +63,13 @@ public class DawnRegistry {
     public void registerCustomMob(CustomMob customMob) {customMobs.put(customMob.getMobName(), customMob);}
     @Nullable
     public CustomMob getCustomMob(String customMob) {return customMobs.get(customMob);}
+    public Map<String, CustomMob> getAllMobs() {return Collections.unmodifiableMap(customMobs);}
 
     public void registerDawnSpawner(SpawnArea spawnArea) {dawnSpawners.put(spawnArea.getUuid(), spawnArea);}
     @Nullable
     public SpawnArea getSpawner(UUID uuid) {return dawnSpawners.get(uuid);}
     public Map<UUID, SpawnArea> getAllSpawners() {return Collections.unmodifiableMap(dawnSpawners);}
+
 
     public void registerDungeonWorld(String worldName) {dungeonWorlds.put(worldName, 0);}
     public Map<String, Integer> getDungeonWorlds() {return dungeonWorlds;}
@@ -75,4 +77,30 @@ public class DawnRegistry {
     public void registerLootTable(LootTable lootTable) {lootTables.put(lootTable.getId(), lootTable);}
     @Nullable
     public LootTable getLootTable(String name) {return lootTables.get(name);}
+
+    // --- RELOAD METHODS ---
+
+    public void clearCustomItems() {
+        customItems.clear();
+    }
+
+    public void clearSkills() {
+        skills.clear();
+    }
+
+    public void clearCustomMobs() {
+        customMobs.clear();
+    }
+
+    public void clearDawnSpawners() {
+        dawnSpawners.clear();
+    }
+
+    public void clearLootTables() {
+        lootTables.clear();
+    }
+
+    public void clearSellPrices() {
+        sellPrices.clear();
+    }
 }

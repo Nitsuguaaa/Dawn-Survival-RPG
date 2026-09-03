@@ -27,6 +27,12 @@ public class DungeonCommand {
                     sendPluginInfo(ctx.getSource());
                     return Command.SINGLE_SUCCESS;
                 })
+                .then(Commands.literal("reload")
+                        .executes(ctx -> {
+                            plugin.getDungeonManager().reload();
+                            return Command.SINGLE_SUCCESS;
+                        })
+                )
                 .then(new CreateCommand(plugin).build())
                 .then(new AddNodeCommand(plugin).build())
                 .then(new StageCommand(plugin).build())
