@@ -128,6 +128,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
             new SellCommand(instance).register(commands);
             new MobCommand(instance).register(commands);
             new LootCommand(instance).register(commands);
+            new GuiTesterCommand(instance).register(commands);
         });
 
         log.info(TextUtil.format("<green>Commands Registered!</green>"));

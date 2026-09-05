@@ -2,7 +2,9 @@ package dawn.nitsugua.dawnSurvivalRPG.GUI.DawnGuis;
 
 import dawn.nitsugua.dawnSurvivalRPG.GUI.DawnGui;
 import dawn.nitsugua.dawnSurvivalRPG.GUI.DawnGuiHolder;
+import dawn.nitsugua.dawnSurvivalRPG.GUI.GUIRegistries.CompactorRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.GUI.GuiButton;
+import dawn.nitsugua.dawnSurvivalRPG.GUI.Utils.ExchangeRecipe;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.InventoryUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import net.kyori.adventure.text.Component;
@@ -12,11 +14,12 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
+import java.util.ArrayList; 
 import java.util.List;
 
 public class CompactorGui extends DawnGui {
     public CompactorGui() {super("compactor");}
+    private static final int ITEMS_PER_PAGE = 26;
 
     @Override
     public Component title(Player viewer) {
@@ -31,7 +34,60 @@ public class CompactorGui extends DawnGui {
     @Override
     public void populate(DawnGuiHolder holder) {
         Player viewer = holder.getViewer();
+        int currentPage = holder.getPage();
 
         holder.fillBorder();
+
+        // 2. Calculate which items to show on this page
+        int startIndex = currentPage * ITEMS_PER_PAGE;
+        int endIndex = Math.min(startIndex + ITEMS_PER_PAGE, CompactorRegistry.RECIPES.size());
+
+        int currentSlot = 10;
+
+        for(int i = startIndex; i < endIndex; i++) {
+            ExchangeRecipe recipe = CompactorRegistry.RECIPES.get(i);
+
+            ItemStack displayItem = new ItemStack(recipe.icon());
+            displayItem.setItemMeta(holder.itemBuilder(
+                    displayItem.getItemMeta(),
+                    recipe.displayName(),
+                    DawnGuiHolder.parseLore(recipe.lore())
+            ));
+
+            holder.setButton(currentSlot, new GuiButton(displayItem, e -> {
+                recipe.action().accept(viewer);
+            }));
+
+            currentSlot++;
+            if(currentSlot % 9 == 8) {
+                currentSlot += 2;
+            }
+        }
+
+        setupPagination(holder, currentPage);
+    }
+
+    private void setupPagination(DawnGuiHolder holder, int currentPage) {
+        int totalPages = (int) Math.ceil((double) CompactorRegistry.RECIPES.size() / ITEMS_PER_PAGE);
+
+        if(currentPage > 0) {
+            ItemStack prev = new ItemStack(Material.ARROW);
+            prev.setItemMeta(holder.itemBuilder(prev.getItemMeta(), "<aqua><- Previous Page", null));
+            holder.setButton(45, new GuiButton(prev, e -> {
+                holder.setPage(currentPage - 1);
+                // Run 1 tick later to prevent client-side ghost items
+                Bukkit.getScheduler().runTask(Bukkit.getPluginManager().getPlugin("YourPluginName"), holder::refresh);
+            }));
+        }
+
+        if(currentPage < totalPages - 1) {
+            ItemStack next = new ItemStack(Material.ARROW);
+            next.setItemMeta(holder.itemBuilder(next.getItemMeta(), "<aqua>Next Page ->", null));
+            holder.setButton(53, new GuiButton(next, e -> {
+                holder.setPage(currentPage + 1);
+                // Run 1 tick later to prevent client-side ghost items
+                Bukkit.getScheduler().runTask(Bukkit.getPluginManager().getPlugin("YourPluginName"), holder::refresh);
+            }));
+        }
     }
 }

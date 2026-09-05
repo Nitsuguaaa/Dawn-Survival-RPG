@@ -1,0 +1,16 @@
+package dawn.nitsugua.dawnSurvivalRPG.GUI.Utils;
+
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+
+import java.util.List;
+import java.util.function.Consumer;
+
+public record ExchangeRecipe(
+        String displayName,
+        List<String> lore,
+        Material icon,
+        String costItemId,
+        int costAmount,
+        Consumer<Player> action
+) {}

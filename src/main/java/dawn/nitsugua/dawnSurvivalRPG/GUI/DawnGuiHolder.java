@@ -120,4 +120,10 @@ public class DawnGuiHolder implements InventoryHolder {
         buttons.clear();
         inventory.clear();
     }
+
+    public void refresh() {
+        inventory.clear();
+        buttons.clear();
+        gui.populate(this);
+    }
 }
