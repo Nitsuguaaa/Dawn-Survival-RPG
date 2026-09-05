@@ -16,7 +16,7 @@ public class MainMenuGui extends DawnGui {
 
     @Override
     public Component title(Player viewer) {
-        return TextUtil.format("<gold>Dawn SMP");
+        return TextUtil.format("<dark_gray>Dawn SMP");
     }
 
     @Override

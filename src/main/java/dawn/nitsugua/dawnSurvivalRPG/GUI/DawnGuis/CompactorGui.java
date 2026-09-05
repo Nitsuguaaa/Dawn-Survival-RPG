@@ -23,7 +23,7 @@ public class CompactorGui extends DawnGui {
 
     @Override
     public Component title(Player viewer) {
-        return TextUtil.format("<gold>Compactor");
+        return TextUtil.format("<dark_gray>Compactor");
     }
 
     @Override

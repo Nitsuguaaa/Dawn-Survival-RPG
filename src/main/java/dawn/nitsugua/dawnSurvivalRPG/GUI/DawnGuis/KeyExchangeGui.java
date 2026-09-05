@@ -19,7 +19,7 @@ public class KeyExchangeGui extends DawnGui {
     public KeyExchangeGui() {super("key_exchange");}
 
     @Override
-    public Component title(Player viewer) {return TextUtil.format("<aqua>Key Exchange");}
+    public Component title(Player viewer) {return TextUtil.format("<dark_gray>Key Exchange");}
 
     @Override
     public int rows() {return 3;}

@@ -143,7 +143,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerEvents(instance), instance);
         getServer().getPluginManager().registerEvents(new MobEvents(instance), instance);
         getServer().getPluginManager().registerEvents(new VillagerEvents(instance), instance);
-        getServer().getPluginManager().registerEvents(new AntiMendingListener(), instance);
+        getServer().getPluginManager().registerEvents(new AntiMendingListener(instance), instance);
         getServer().getPluginManager().registerEvents(new AntiEndGameListener(), instance);
         getServer().getPluginManager().registerEvents(new GuiEvents(), instance);
 
