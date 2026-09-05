@@ -24,7 +24,7 @@ public class CustomItemFactory {
     //this is where the items gets put into the world
 
     //set defaults just in case?
-    private final List<Component> defaultLore = new ArrayList<>();
+
     private int defaultWeaponDamage;
 
     private final DawnSurvivalRPG plugin;
@@ -34,10 +34,10 @@ public class CustomItemFactory {
 
     public CustomItemFactory(DawnSurvivalRPG plugin) {
         this.plugin = plugin;
-        this.defaultLore.add(TextUtil.setItemLore("<gray>Custom Item"));
     }
 
     public ItemStack createCustomItem(String item, int amount) {
+        plugin.getLogger().info("[Factory] Creating item: " + item.toUpperCase());
         ItemStack finalItem;
 
         //debug: plugin.getLog().info("Got data: {}", item);
@@ -88,6 +88,9 @@ public class CustomItemFactory {
         if(customItem.getLore() != null) { //if the weapon has custom lore
             itemMeta.lore(customItem.getLore());
         } else {
+            List<Component> defaultLore = new ArrayList<>();
+            defaultLore.add(TextUtil.setItemLore(" "));
+            defaultLore.add(TextUtil.setItemRarity(customItem.getRarity(), "<bold>" + customItem.getRarity().name().toLowerCase().replace('_', ' ') + " " + customItem.getSubCategory().toLowerCase().replace('_', ' ')));
             itemMeta.lore(defaultLore);
         }
 

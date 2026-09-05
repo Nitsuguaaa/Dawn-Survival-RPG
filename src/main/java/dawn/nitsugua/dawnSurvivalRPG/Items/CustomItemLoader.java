@@ -86,8 +86,12 @@ public class CustomItemLoader {
                 return;
             }
 
-            List<Component> lore = parseLore(config.getStringList("lore"));
-            lore.add(TextUtil.setItemRarity(finalRarity, "<bold>" + rarity.toLowerCase().replace('_', ' ') + " " + subCategory.toLowerCase().replace('_', ' ')));
+            List<Component> lore = null;
+            if(config.contains("lore")) {
+                lore = parseLore(config.getStringList("lore"));
+                lore.add(TextUtil.setItemRarity(finalRarity, "<bold>" + rarity.toLowerCase().replace('_', ' ') + " " + subCategory.toLowerCase().replace('_', ' ')));
+            }
+
 
             //plugin.getLog().info(TextUtil.format("<aqua>This YAML's name is: </aqua><white>" + config.getString("name")));
 
@@ -166,11 +170,5 @@ public class CustomItemLoader {
         }
 
         return componentLore;
-    }
-
-
-    public static void reloadCustomItem() {
-        //run something
-        //has to check if the item it scanned already exists then just update it
     }
 }

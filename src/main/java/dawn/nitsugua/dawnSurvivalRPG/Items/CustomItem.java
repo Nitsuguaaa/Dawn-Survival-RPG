@@ -107,7 +107,8 @@ public class CustomItem {
         return this;
     }
 
-    public List<Component> getLore() {return lore.isEmpty() ? null : Collections.unmodifiableList(lore);}
+    @Nullable
+    public List<Component> getLore() {return lore == null || lore.isEmpty() ? null : Collections.unmodifiableList(lore);}
     public CustomItem setLore(List<Component> lore) {
         this.lore = new ArrayList<>(lore);
         return this;
