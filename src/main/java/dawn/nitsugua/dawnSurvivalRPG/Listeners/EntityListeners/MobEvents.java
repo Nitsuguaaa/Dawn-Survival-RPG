@@ -34,6 +34,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.List;
+import java.util.Set;
+
 public class MobEvents implements Listener {
     private final DawnSurvivalRPG plugin;
     private final MobManager mobManager;
@@ -237,5 +240,39 @@ public class MobEvents implements Listener {
         if(!entity.getPersistentDataContainer().has(DawnKeys.DAWN_MOB)) return;
 
         e.setCancelled(true);
+    }
+
+    private final Set<CreatureSpawnEvent.SpawnReason> ALLOWED_REASONS = Set.of(
+            CreatureSpawnEvent.SpawnReason.SPAWNER,
+            CreatureSpawnEvent.SpawnReason.TRIAL_SPAWNER,
+            CreatureSpawnEvent.SpawnReason.BUILD_IRONGOLEM,
+            CreatureSpawnEvent.SpawnReason.BUILD_COPPERGOLEM,
+            CreatureSpawnEvent.SpawnReason.COMMAND,
+            CreatureSpawnEvent.SpawnReason.CUSTOM,
+            CreatureSpawnEvent.SpawnReason.SPAWNER_EGG,
+            CreatureSpawnEvent.SpawnReason.OMINOUS_ITEM_SPAWNER,
+            CreatureSpawnEvent.SpawnReason.BUILD_SNOWMAN,
+            CreatureSpawnEvent.SpawnReason.SPELL,
+            CreatureSpawnEvent.SpawnReason.ENCHANTMENT
+    );
+
+    private final Set<String> ALLOWED_WORLDS = Set.of(
+            "world",
+            "world_nether",
+            "world_the_end"
+    );
+
+    @EventHandler
+    public void stopNaturalSpawn(CreatureSpawnEvent e) {
+        if(!ALLOWED_WORLDS.contains(e.getEntity().getWorld().getName())) return;
+
+        CreatureSpawnEvent.SpawnReason reason = e.getSpawnReason();
+
+        if(ALLOWED_REASONS.contains(reason)) {
+            //plugin.getLog().info("Allowed spawn for: " + e.getEntity().getName() + ". Spawn Reason: " + e.getEntity().getEntitySpawnReason().name());
+        } else {
+            e.setCancelled(true);
+            //plugin.getLog().info("Banned spawn for: " + e.getEntity().getName() + ". Spawn Reason: " + e.getEntity().getEntitySpawnReason().name());
+        }
     }
 }
