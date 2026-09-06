@@ -1,0 +1,6 @@
+minecraft:ancient_city:
+  min-y: -64
+  max-y: -40
+minecraft:trial_chambers:
+  min-y: -64
+  max-y: 40

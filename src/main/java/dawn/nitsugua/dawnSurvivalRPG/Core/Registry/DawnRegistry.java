@@ -22,6 +22,9 @@ public class DawnRegistry {
     private final ConcurrentHashMap<String, Integer> dungeonWorlds = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, LootTable> lootTables = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Double> sellPrices = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, int[]>protectedChunks = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, String> chunkStructure = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, int[]> structureYRanges = new ConcurrentHashMap<>();
 
     private final ConcurrentHashMap<String, ScheduledTask> tasks = new ConcurrentHashMap<>();
 
@@ -78,7 +81,47 @@ public class DawnRegistry {
     @Nullable
     public LootTable getLootTable(String name) {return lootTables.get(name);}
 
+    public void protectChunk(String worldName, int chunkX, int chunkZ, int minY, int maxY, String structureKey) {
+        String key = worldName + ":" + chunkX + ":" + chunkZ;
+        protectedChunks.put(key, new int[]{minY, maxY});
+        chunkStructure.put(key, structureKey); //For chest replenishing and mob scaling
+    }
+    public boolean isProtected(String worldName, int chunkX, int chunkZ) {
+        String key = worldName + ":" + chunkX + ":" + chunkZ;
+        return protectedChunks.containsKey(key);
+    }
+    public int[] getYRange(String worldName, int chunkX, int chunkZ) {
+        String key = worldName + ":" + chunkX + ":" + chunkZ;
+        return protectedChunks.get(key); // Returns null if not found
+    }
+    public int updateYRangeForStructure(String structureKey, int newMinY, int newMaxY) {
+        int updatedCount = 0;
+        // Loop through all known structures
+        for (Map.Entry<String, String> entry : chunkStructure.entrySet()) {
+            // If this chunk belongs to the structure we want to update
+            if (entry.getValue().equals(structureKey)) {
+                String chunkKey = entry.getKey();
+                // Overwrite the Y-range in the protectedChunks map
+                protectedChunks.put(chunkKey, new int[]{newMinY, newMaxY});
+                updatedCount++;
+            }
+        }
+        return updatedCount;
+    }
+    public String getStructure(String worldName, int chunkX, int chunkZ) {
+        String key = worldName + ":" + chunkX + ":" + chunkZ;
+        return chunkStructure.get(key);
+    }
+
+    public void setStructureYRange(String structure, int[] ranges) {
+        structureYRanges.put(structure, ranges);
+    }
+    public int[] getProtectionYRange(String structure) {
+        return structureYRanges.get(structure);
+    }
+
     // --- RELOAD METHODS ---
+    public void clearStructureYRanges() {structureYRanges.clear();}
 
     public void clearCustomItems() {
         customItems.clear();

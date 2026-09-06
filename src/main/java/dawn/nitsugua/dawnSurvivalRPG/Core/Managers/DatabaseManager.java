@@ -51,7 +51,7 @@ public class DatabaseManager {
                     uuid VARCHAR(36) PRIMARY KEY,
                     username VARCHAR(16) NOT NULL,
                     first_join INTEGER NOT NULL,
-                    last_seen INTERGER NOT NULL
+                    last_seen INTEGER NOT NULL
                 )
             """);
 
@@ -62,6 +62,19 @@ public class DatabaseManager {
                     balance REAL DEFAULT 0.0,
                     tier VARCHAR(50) DEFAULT 'COMMON',
                     last_interest INTEGER DEFAULT 0
+                )
+            """);
+
+            //create protected chunk table
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS protected_chunks (
+                    world_name VARCHAR(50) NOT NULL,
+                    chunk_x INTEGER NOT NULL,
+                    chunk_z INTEGER NOT NULL,
+                    min_y INTEGER NOT NULL,
+                    max_y INTEGER NOT NULL,
+                    structure_key VARCHAR(100) NOT NULL,
+                    PRIMARY KEY (world_name, chunk_x, chunk_z)
                 )
             """);
 

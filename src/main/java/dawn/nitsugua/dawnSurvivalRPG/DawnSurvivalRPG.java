@@ -8,6 +8,7 @@ import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.BankAutoSaveTask;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.DungeonTasks;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.ManaTasks;
 import dawn.nitsugua.dawnSurvivalRPG.Database.BankDAO;
+import dawn.nitsugua.dawnSurvivalRPG.Database.ProtectedChunkDAO;
 import dawn.nitsugua.dawnSurvivalRPG.Economy.SellLoader;
 import dawn.nitsugua.dawnSurvivalRPG.ExcellentEconomy.DawnExcellentEconomy;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemFactory;
@@ -21,6 +22,7 @@ import dawn.nitsugua.dawnSurvivalRPG.Listeners.EntityListeners.VillagerEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.GuiListeners.GuiEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.PlayerListeners.ItemEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.PlayerListeners.PlayerEvents;
+import dawn.nitsugua.dawnSurvivalRPG.Listeners.StructureListeners.StructureEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.TestListeners.PlayerBreakingBlockListener;
 import dawn.nitsugua.dawnSurvivalRPG.Loots.LootTableLoader;
 import dawn.nitsugua.dawnSurvivalRPG.Mobs.CustomMobLoader;
@@ -31,11 +33,14 @@ import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.excellenteconomy.api.ExcellentEconomyAPI;
+
+import java.util.List;
 
 public final class DawnSurvivalRPG extends JavaPlugin {
     private static ComponentLogger log;
@@ -66,6 +71,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     //Databases
     private DatabaseManager databaseManager;
     private BankDAO bankDAO;
+    private ProtectedChunkDAO chunkDAO;
 
     @Override
     public void onEnable() {
@@ -129,6 +135,8 @@ public final class DawnSurvivalRPG extends JavaPlugin {
             new MobCommand(instance).register(commands);
             new LootCommand(instance).register(commands);
             new GuiTesterCommand(instance).register(commands);
+            new RecipeCommand(instance).register(commands);
+            new ChunkCommand(instance).register(commands);
         });
 
         log.info(TextUtil.format("<green>Commands Registered!</green>"));
@@ -146,6 +154,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new AntiMendingListener(instance), instance);
         getServer().getPluginManager().registerEvents(new AntiEndGameListener(), instance);
         getServer().getPluginManager().registerEvents(new GuiEvents(), instance);
+        getServer().getPluginManager().registerEvents(new StructureEvents(instance), instance);
 
         Bukkit.getScheduler().runTaskLater(this, this::hookOptionalPlugins, 1L);
 
@@ -158,12 +167,26 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         databaseManager = new DatabaseManager(instance);
         databaseManager.initialize();
         bankDAO = new BankDAO(instance);
+        chunkDAO = new ProtectedChunkDAO(instance);
+
+        try{
+            List<ProtectedChunkDAO.ProtectedChunkData> loadedChunks = chunkDAO.loadAllChunksAsync().get();
+
+            for(ProtectedChunkDAO.ProtectedChunkData data : loadedChunks) {
+                DawnRegistry.getInstance().protectChunk(data.worldName(), data.chunkX(), data.chunkZ(), data.minY(), data.maxY(), data.structureKey());
+            }
+
+            getLog().info(TextUtil.sendLogInfo("ProtectedChunks", TextUtil.LogInfo.SUCCESS, "Loaded " + loadedChunks.size() + " protected chunks from database."));
+        } catch (Exception e) {
+            getLogger().severe("CRITICAL: Failed to load protected chunks on startup! " + e.getMessage());
+        }
 
         DawnKeys.init(instance);
         CustomItemLoader.initialize(instance);
         SkillLoader.initialize(instance);
         CustomMobLoader.initialize(instance);
         LootTableLoader.initialize(instance);
+        OverworldManager.loadStructureYRanges(instance);
 
         customItemManager = new CustomItemManager(instance);
         customItemFactory = new CustomItemFactory(instance);
@@ -237,6 +260,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     public DawnExcellentEconomy getEconomyAPI() {return economyAPI;}
     public DatabaseManager getDatabaseManager() {return databaseManager;}
     public BankDAO getBankDAO() {return bankDAO;}
+    public ProtectedChunkDAO getChunkDAO() {return chunkDAO;}
     public SellLoader getSellLoader() {return sellLoader;}
     public CustomItemManager getCustomItemManager() {return customItemManager;}
 
