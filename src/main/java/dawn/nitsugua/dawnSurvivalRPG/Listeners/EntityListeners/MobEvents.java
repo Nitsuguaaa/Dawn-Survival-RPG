@@ -171,6 +171,10 @@ public class MobEvents implements Listener {
 
     @EventHandler
     public void onBreed(EntityBreedEvent e) {
+        if(e.getEntity() instanceof Villager) {
+            e.setCancelled(true);
+            return;
+        }
         if(e.getEntity().getPersistentDataContainer().has(DawnKeys.DAWN_MOB)) e.setCancelled(true);
     }
 
@@ -269,6 +273,11 @@ public class MobEvents implements Listener {
         if(!ALLOWED_WORLDS.contains(e.getEntity().getWorld().getName())) return;
 
         CreatureSpawnEvent.SpawnReason reason = e.getSpawnReason();
+
+        if(e.getEntity() instanceof Villager) {
+            e.setCancelled(true);
+            return;
+        }
 
         if(ALLOWED_REASONS.contains(reason)) {
             //plugin.getLog().info("Allowed spawn for: " + e.getEntity().getName() + ". Spawn Reason: " + e.getEntity().getEntitySpawnReason().name());

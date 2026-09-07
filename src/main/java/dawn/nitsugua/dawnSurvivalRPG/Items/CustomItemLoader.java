@@ -101,6 +101,8 @@ public class CustomItemLoader {
                     if (damage <= 0) damage = 10.0; // Never allow 0 or negative
                     int weaponDurability = config.getInt("weapon-durability", 0); // Default 0
 
+                    lore.add(TextUtil.setItemLore("Tradeable"));
+
                     item = new CustomWeapon(customMaterial, finalRarity, name, parentMaterial, category, subCategory, damage, weaponDurability, lore, null);
                     plugin.getLog().info(TextUtil.sendLogInfo("CustomItemLoader", TextUtil.LogInfo.INFO, "Registering weapon: <white>" + customMaterial));
                     break;
