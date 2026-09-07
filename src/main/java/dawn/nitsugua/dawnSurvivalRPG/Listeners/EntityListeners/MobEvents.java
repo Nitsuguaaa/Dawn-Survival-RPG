@@ -264,6 +264,8 @@ public class MobEvents implements Listener {
 
     @EventHandler
     public void stopNaturalSpawn(CreatureSpawnEvent e) {
+        if(e.getEntity() instanceof EnderDragon || e.getEntity() instanceof Warden || e.getEntity() instanceof Wither) return;
+
         if(!ALLOWED_WORLDS.contains(e.getEntity().getWorld().getName())) return;
 
         CreatureSpawnEvent.SpawnReason reason = e.getSpawnReason();

@@ -51,6 +51,7 @@ public class MobManager {
     }
 
     public void stripGenericMobGoal(LivingEntity entity) {
+        if(entity instanceof EnderDragon || entity instanceof Wither || entity instanceof Warden) return;
 
         if(entity instanceof Creature creature) {
 
@@ -84,8 +85,6 @@ public class MobManager {
 //                plugin.getLogger().info("Remaining goals for " + creature.getType() + ": [" + goalNames + "]");
 //            }
         }
-
-
     }
 
     public Mob spawnCustomMob(Location location, String mobName) {

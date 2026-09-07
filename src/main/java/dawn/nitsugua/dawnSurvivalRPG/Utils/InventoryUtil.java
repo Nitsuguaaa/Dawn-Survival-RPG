@@ -1,11 +1,20 @@
 package dawn.nitsugua.dawnSurvivalRPG.Utils;
 
+import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
+import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 public class InventoryUtil {
+
+    /**
+     * TODO: consider player inventory and armor/offhand slots
+     * @param inv
+     * @param itemId
+     * @return
+     */
 
     public static int countCustomItems(Inventory inv, String itemId) {
         int count = 0;
@@ -47,5 +56,16 @@ public class InventoryUtil {
                 }
             }
         }
+    }
+
+    public static ItemStack resolveItem(DawnSurvivalRPG plugin, String key, int amount) {
+        ItemStack custom = plugin.getCustomItemFactory().createCustomItem(key, amount);
+        if(custom != null) return custom;
+
+        Material material = Material.matchMaterial(key);
+        if(material != null) return new ItemStack(material, amount);
+
+        plugin.getLog().info(TextUtil.sendLogInfo("LootManager", TextUtil.LogInfo.ERROR,"Unknown loot item: <white>" + key));
+        return null;
     }
 }

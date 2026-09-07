@@ -2,13 +2,16 @@ package dawn.nitsugua.dawnSurvivalRPG.Listeners.StructureListeners;
 
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.InventoryUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.RNGManager;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Waterlogged;
+import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -20,9 +23,12 @@ import org.bukkit.event.world.AsyncStructureGenerateEvent;
 import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.generator.structure.Structure;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.loot.LootTable;
 import org.bukkit.util.BoundingBox;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -172,15 +178,24 @@ public class StructureEvents implements Listener {
 
             if(blockY >= yRange[0] && blockY <= yRange[1]) {
                 e.setCancelled(true);
-                e.getPlayer().sendMessage("The ground here is protected.");
+                if(e.getPlayer() != null) {
+                    e.getPlayer().sendMessage("The ground here is protected.");
+                }
             }
         }
     }
 
     @EventHandler
     public void onLootGenerate(LootGenerateEvent e) {
+        LootTable table = e.getLootTable();
+        if (table == null || table.getKey() == null) return;
+
         InventoryHolder holder = e.getInventoryHolder();
         if(!(holder instanceof BlockState blockState)) return;
+
+        List<ItemStack> loot = e.getLoot();
+        List<ItemStack> customLoot = generateCustomLoot(loot);
+        e.setLoot(customLoot);
 
         Block block = blockState.getBlock();
         int chunkX = block.getChunk().getX();
@@ -188,8 +203,6 @@ public class StructureEvents implements Listener {
 
         if(!dawnRegistry.isProtected(e.getWorld().getName(), chunkX, chunkZ)) return;
 
-        LootTable table = e.getLootTable();
-        if (table == null || table.getKey() == null) return;
 
         String lootTableKey = table.getKey().asString();
         String worldName = block.getWorld().getName();
@@ -199,6 +212,26 @@ public class StructureEvents implements Listener {
 
         plugin.getChestDAO().saveChestAsync(worldName, x, y, z, lootTableKey);
         plugin.getLog().info("[ChestTracker] Tracked: " + lootTableKey + " at [" + worldName + " " + x + ", " + y + ", " + z + "]");
+    }
+
+    private List<ItemStack> generateCustomLoot(List<ItemStack> loot) {
+
+        List<ItemStack> customLoot = new ArrayList<>(loot);
+
+        //TODO: For the future, add specific structure rolls (e.g. Ancient City chests only has the chance to spawn epic key shards)
+
+        if(RNGManager.roll(0.1)) {
+            ItemStack shard = InventoryUtil.resolveItem(plugin, "COMMON_KEY_SHARD", RNGManager.rand(1, 10));
+            if(shard != null) customLoot.add(shard);
+        }
+
+        if(RNGManager.roll(0.05)) {
+            ItemStack shard = InventoryUtil.resolveItem(plugin, "ELITE_KEY_SHARD", RNGManager.rand(1, 10));
+            if(shard != null) customLoot.add(shard);
+        }
+
+
+        return customLoot;
     }
 
 
