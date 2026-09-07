@@ -2,19 +2,20 @@ package dawn.nitsugua.dawnSurvivalRPG.Listeners.StructureListeners;
 
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Registry;
+import org.bukkit.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.world.AsyncStructureGenerateEvent;
 import org.bukkit.generator.structure.Structure;
 import org.bukkit.util.BoundingBox;
+
+import java.util.Set;
 
 public class StructureEvents implements Listener {
     private final DawnSurvivalRPG plugin;
@@ -49,6 +50,15 @@ public class StructureEvents implements Listener {
         });
     }
 
+    private static final Set<Material> ALLOWED_TEMPORARY_BLOCKS = Set.of(
+            Material.TORCH,
+            Material.WALL_TORCH,
+            Material.COPPER_TORCH,
+            Material.COPPER_WALL_TORCH,
+            Material.SOUL_TORCH,
+            Material.SOUL_WALL_TORCH
+    );
+
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
         Chunk chunk = e.getBlock().getChunk();
@@ -61,6 +71,33 @@ public class StructureEvents implements Listener {
             int[] yRange = dawnRegistry.getYRange(worldName, chunkX, chunkZ);
 
             if(blockY >= yRange[0] && blockY <= yRange[1]) {
+                if(ALLOWED_TEMPORARY_BLOCKS.contains(e.getBlock().getType()) && dawnRegistry.getAllTemporaryBlocks().containsKey(e.getBlock().getLocation())) {
+                    dawnRegistry.removeTemporaryBlock(e.getBlock().getLocation());
+                    return;
+                }
+                e.setCancelled(true);
+                e.getPlayer().sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "This area seems to be protected."));
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent e) {
+
+        Chunk chunk = e.getBlock().getChunk();
+        String worldName = e.getBlock().getWorld().getName();
+        int chunkZ = chunk.getZ();
+        int chunkX = chunk.getX();
+        int blockY = e.getBlock().getY();
+
+        if(dawnRegistry.isProtected(worldName, chunkX, chunkZ)) {
+            int[] yRange = dawnRegistry.getYRange(worldName, chunkX, chunkZ);
+
+            if(blockY >= yRange[0] && blockY <= yRange[1]) {
+                if(ALLOWED_TEMPORARY_BLOCKS.contains(e.getBlock().getType())) {
+                    plugin.getOverworldManager().trackBlock(e.getBlock());
+                    return;
+                }
                 e.setCancelled(true);
                 e.getPlayer().sendMessage("The ground here is protected.");
             }
@@ -68,7 +105,7 @@ public class StructureEvents implements Listener {
     }
 
     @EventHandler
-    public void onBlockPlace(BlockPlaceEvent e) {
+    public void onFireStart(BlockIgniteEvent e) {
         Chunk chunk = e.getBlock().getChunk();
         String worldName = e.getBlock().getWorld().getName();
         int chunkZ = chunk.getZ();
@@ -84,5 +121,7 @@ public class StructureEvents implements Listener {
             }
         }
     }
+
+
 
 }

@@ -2,6 +2,9 @@ General:
  - Make sure multiverse core is correctly configured
  - reset overworld, nether, and the end
 
+ Issues:
+ - changing y level in structure config doesn't actually update it
+
 Custom Items:
  - Needs dynamic lore instead of static lore.
  - Needs World Item updating whenever config changes.
@@ -33,6 +36,7 @@ Custom Items:
  GUI:
  - DONE (WTF): Build home brew GUI
  - DONE: Create forge/compactor GUI
+ - Make compactor GUI actually working and trading items
  - Shop GUI
 
  SPAWN:

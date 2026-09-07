@@ -8,6 +8,8 @@ import dawn.nitsugua.dawnSurvivalRPG.Mobs.CustomMob;
 import dawn.nitsugua.dawnSurvivalRPG.Player.DawnPlayer;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.ScheduledTask;
 import org.jetbrains.annotations.Nullable;
+import org.bukkit.Location;
+
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,6 +27,8 @@ public class DawnRegistry {
     private final ConcurrentHashMap<String, int[]>protectedChunks = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, String> chunkStructure = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, int[]> structureYRanges = new ConcurrentHashMap<>();
+
+    private final ConcurrentHashMap<Location, Long> trackedBlocks = new ConcurrentHashMap<>();
 
     private final ConcurrentHashMap<String, ScheduledTask> tasks = new ConcurrentHashMap<>();
 
@@ -112,6 +116,14 @@ public class DawnRegistry {
         String key = worldName + ":" + chunkX + ":" + chunkZ;
         return chunkStructure.get(key);
     }
+
+    public void registerTemporaryBlock(Location loc, Long placedAtTime) {
+        trackedBlocks.put(loc, placedAtTime);
+    }
+    public void removeTemporaryBlock(Location loc) {
+        trackedBlocks.remove(loc);
+    }
+    public Map<Location, Long> getAllTemporaryBlocks() {return Collections.unmodifiableMap(trackedBlocks);}
 
     public void setStructureYRange(String structure, int[] ranges) {
         structureYRanges.put(structure, ranges);

@@ -7,6 +7,7 @@ import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.BankAutoSaveTask;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.DungeonTasks;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.ManaTasks;
+import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.TemporaryBlockTask;
 import dawn.nitsugua.dawnSurvivalRPG.Database.BankDAO;
 import dawn.nitsugua.dawnSurvivalRPG.Database.ProtectedChunkDAO;
 import dawn.nitsugua.dawnSurvivalRPG.Economy.SellLoader;
@@ -61,6 +62,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     private CustomRecipeManager customRecipeManager;
     private GuiManager guiManager;
     private CustomItemManager customItemManager;
+    private OverworldManager overworldManager;
 
     //loaders with managers
     private SellLoader sellLoader;
@@ -201,6 +203,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         skillManager = new SkillManager(instance, getManaManager());
         taskManager = new TaskManager();
         guiManager = new GuiManager();
+        overworldManager = new OverworldManager(instance);
 
         sellLoader.initialize();
 
@@ -215,6 +218,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         log.info(TextUtil.format("<yellow>Tasks...</yellow>"));
         ManaTasks.initManaTasks(instance);
         BankAutoSaveTask.runBankAutoSave(instance);
+        TemporaryBlockTask.runTemporaryBlockTask(instance);
         log.info(TextUtil.format("<green>Tasks Registered!</green>"));
     }
 
@@ -263,6 +267,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     public ProtectedChunkDAO getChunkDAO() {return chunkDAO;}
     public SellLoader getSellLoader() {return sellLoader;}
     public CustomItemManager getCustomItemManager() {return customItemManager;}
+    public OverworldManager getOverworldManager() {return overworldManager;}
 
     @NotNull
     public ComponentLogger getLog() {return log;}

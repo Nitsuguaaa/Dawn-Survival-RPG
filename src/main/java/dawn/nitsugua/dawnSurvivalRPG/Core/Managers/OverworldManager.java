@@ -2,14 +2,26 @@ package dawn.nitsugua.dawnSurvivalRPG.Core.Managers;
 
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.Location;
+import org.bukkit.inventory.ItemStack;
 
+import java.util.concurrent.TimeUnit;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 
 public class OverworldManager {
     private static YamlConfiguration yamlConfig;
     private static File configFile;
+
+    private final DawnSurvivalRPG plugin;
+    private final DawnRegistry dawnRegistry = DawnRegistry.getInstance();
+
+    public OverworldManager(DawnSurvivalRPG plugin) {
+        this.plugin = plugin;
+    }
 
     public static void loadStructureYRanges(DawnSurvivalRPG plugin) {
         DawnRegistry.getInstance().clearStructureYRanges();
@@ -40,5 +52,14 @@ public class OverworldManager {
         } catch (IOException e) {
             plugin.getLogger().severe("[Config] Failed to save structure config: " + e.getMessage());
         }
+    }
+
+    public void trackBlock(Block block) {
+        dawnRegistry.registerTemporaryBlock(block.getLocation(), System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(5));
+    }
+
+    public void destroyBlock(Location loc) {
+        loc.getBlock().breakNaturally(true);
+        dawnRegistry.removeTemporaryBlock(loc);
     }
 }
