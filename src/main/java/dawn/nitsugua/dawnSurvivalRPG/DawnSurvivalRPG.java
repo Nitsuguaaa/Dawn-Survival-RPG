@@ -10,6 +10,7 @@ import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.ManaTasks;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.TemporaryBlockTask;
 import dawn.nitsugua.dawnSurvivalRPG.Database.BankDAO;
 import dawn.nitsugua.dawnSurvivalRPG.Database.ProtectedChunkDAO;
+import dawn.nitsugua.dawnSurvivalRPG.Database.TrackedChestDAO;
 import dawn.nitsugua.dawnSurvivalRPG.Economy.SellLoader;
 import dawn.nitsugua.dawnSurvivalRPG.ExcellentEconomy.DawnExcellentEconomy;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItemFactory;
@@ -74,6 +75,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     private DatabaseManager databaseManager;
     private BankDAO bankDAO;
     private ProtectedChunkDAO chunkDAO;
+    private TrackedChestDAO chestDAO;
 
     @Override
     public void onEnable() {
@@ -170,6 +172,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         databaseManager.initialize();
         bankDAO = new BankDAO(instance);
         chunkDAO = new ProtectedChunkDAO(instance);
+        chestDAO = new TrackedChestDAO(instance);
 
         try{
             List<ProtectedChunkDAO.ProtectedChunkData> loadedChunks = chunkDAO.loadAllChunksAsync().get();
@@ -268,6 +271,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     public SellLoader getSellLoader() {return sellLoader;}
     public CustomItemManager getCustomItemManager() {return customItemManager;}
     public OverworldManager getOverworldManager() {return overworldManager;}
+    public TrackedChestDAO getChestDAO() {return chestDAO;}
 
     @NotNull
     public ComponentLogger getLog() {return log;}

@@ -78,6 +78,18 @@ public class DatabaseManager {
                 )
             """);
 
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS tracked_chests (
+                    world_name VARCHAR(50) NOT NULL,
+                    x INTEGER NOT NULL,
+                    y INTEGER NOT NULL,
+                    z INTEGER NOT NULL,
+                    loot_table_key VARCHAR(150) NOT NULL,
+                    first_generated_at INTEGER NOT NULL,
+                    PRIMARY KEY (world_name, x, y, z)
+            )
+        """);
+
             plugin.getLog().info(TextUtil.sendLogInfo("DatabaseManager", TextUtil.LogInfo.SUCCESS, "Database tables verified!"));
         } catch(SQLException e) {
             plugin.getLog().error("Failed to create tables: " + e.getMessage());

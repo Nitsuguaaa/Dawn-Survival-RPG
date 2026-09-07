@@ -7,6 +7,7 @@ import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Waterlogged;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,7 +17,10 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.world.AsyncStructureGenerateEvent;
+import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.generator.structure.Structure;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.loot.LootTable;
 import org.bukkit.util.BoundingBox;
 
 import java.util.Set;
@@ -76,12 +80,13 @@ public class StructureEvents implements Listener {
             int[] yRange = dawnRegistry.getYRange(worldName, chunkX, chunkZ);
 
             if(blockY >= yRange[0] && blockY <= yRange[1]) {
+                if(e.getBlock().getType() == Material.DECORATED_POT) return;
                 if(ALLOWED_TEMPORARY_BLOCKS.contains(e.getBlock().getType()) && dawnRegistry.getAllTemporaryBlocks().containsKey(e.getBlock().getLocation())) {
                     dawnRegistry.removeTemporaryBlock(e.getBlock().getLocation());
                     return;
                 }
                 e.setCancelled(true);
-                e.getPlayer().sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "This area seems to be protected."));
+                e.getPlayer().sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "This ground here is protected."));
             }
         }
     }
@@ -170,6 +175,30 @@ public class StructureEvents implements Listener {
                 e.getPlayer().sendMessage("The ground here is protected.");
             }
         }
+    }
+
+    @EventHandler
+    public void onLootGenerate(LootGenerateEvent e) {
+        InventoryHolder holder = e.getInventoryHolder();
+        if(!(holder instanceof BlockState blockState)) return;
+
+        Block block = blockState.getBlock();
+        int chunkX = block.getChunk().getX();
+        int chunkZ = block.getChunk().getZ();
+
+        if(!dawnRegistry.isProtected(e.getWorld().getName(), chunkX, chunkZ)) return;
+
+        LootTable table = e.getLootTable();
+        if (table == null || table.getKey() == null) return;
+
+        String lootTableKey = table.getKey().asString();
+        String worldName = block.getWorld().getName();
+        int x = block.getX();
+        int y = block.getY();
+        int z = block.getZ();
+
+        plugin.getChestDAO().saveChestAsync(worldName, x, y, z, lootTableKey);
+        plugin.getLog().info("[ChestTracker] Tracked: " + lootTableKey + " at [" + worldName + " " + x + ", " + y + ", " + z + "]");
     }
 
 

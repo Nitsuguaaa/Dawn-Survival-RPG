@@ -37,7 +37,7 @@ public class CustomItemFactory {
     }
 
     public ItemStack createCustomItem(String item, int amount) {
-        plugin.getLogger().info("[Factory] Creating item: " + item.toUpperCase());
+        //plugin.getLogger().info("[Factory] Creating item: " + item.toUpperCase());
         ItemStack finalItem;
 
         //debug: plugin.getLog().info("Got data: {}", item);
@@ -103,7 +103,7 @@ public class CustomItemFactory {
                 plugin.getLog().info(TextUtil.sendLogInfo("CustomItemFactory", TextUtil.LogInfo.WARNING, "Custom Armor not set."));
                 break;
             case "USABLE":
-                plugin.getLog().info(TextUtil.sendLogInfo("CustomItemFactory", TextUtil.LogInfo.SUCCESS, "Usable item registered! asddsadsadsa"));
+                plugin.getLog().info(TextUtil.sendLogInfo("CustomItemFactory", TextUtil.LogInfo.SUCCESS, "Usable item registered!"));
                 return customUsable(finalItem);
             default:
                 return finalItem;
