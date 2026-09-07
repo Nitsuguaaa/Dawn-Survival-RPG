@@ -2,7 +2,9 @@ package dawn.nitsugua.dawnSurvivalRPG.Core.Managers;
 
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
@@ -54,12 +56,26 @@ public class OverworldManager {
         }
     }
 
-    public void trackBlock(Block block) {
-        dawnRegistry.registerTemporaryBlock(block.getLocation(), System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(5));
+    public void trackBlock(Block block, Material material, Long duration) {
+        dawnRegistry.registerTemporaryBlock(block.getLocation(), System.currentTimeMillis() + duration);
+        dawnRegistry.registerExpectedType(block.getLocation(), material);
     }
 
     public void destroyBlock(Location loc) {
-        loc.getBlock().breakNaturally(true);
+        Block block = loc.getBlock();
+        Material expectedType = dawnRegistry.getExpectedTypes().get(loc);
+
+        if(block.getBlockData() instanceof Waterlogged waterlogged) {
+            plugin.getLog().info("Hey, this is waterlogged");
+            waterlogged.setWaterlogged(false);
+            block.setBlockData(waterlogged);
+        }
+
+        if(expectedType != null && block.getType() == expectedType) {
+            block.setType(Material.AIR);
+        }
+
         dawnRegistry.removeTemporaryBlock(loc);
+        dawnRegistry.removeExpectedType(loc);
     }
 }

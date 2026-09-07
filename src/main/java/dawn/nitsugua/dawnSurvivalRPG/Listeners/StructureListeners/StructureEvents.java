@@ -6,16 +6,21 @@ import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.world.AsyncStructureGenerateEvent;
 import org.bukkit.generator.structure.Structure;
 import org.bukkit.util.BoundingBox;
 
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class StructureEvents implements Listener {
     private final DawnSurvivalRPG plugin;
@@ -95,12 +100,57 @@ public class StructureEvents implements Listener {
 
             if(blockY >= yRange[0] && blockY <= yRange[1]) {
                 if(ALLOWED_TEMPORARY_BLOCKS.contains(e.getBlock().getType())) {
-                    plugin.getOverworldManager().trackBlock(e.getBlock());
+                    plugin.getOverworldManager().trackBlock(e.getBlock(), e.getBlock().getType(), TimeUnit.SECONDS.toMillis(3));
                     return;
                 }
                 e.setCancelled(true);
                 e.getPlayer().sendMessage("The ground here is protected.");
             }
+        }
+    }
+
+    @EventHandler
+    public void onWaterPlace(PlayerBucketEmptyEvent e) {
+        if(e.getBucket() != Material.WATER_BUCKET) {
+            e.setCancelled(true);
+            return;
+        }
+
+        Block clickedBlock = e.getBlockClicked();
+        Block targetBlock;
+
+        if(clickedBlock.getBlockData() instanceof Waterlogged) {
+            targetBlock = clickedBlock;
+        } else {
+            targetBlock = clickedBlock.getRelative(e.getBlockFace());
+        }
+
+        Location loc = targetBlock.getLocation();
+        String worldName = loc.getWorld().getName();
+        int chunkX = loc.getChunk().getX();
+        int chunkZ = loc.getChunk().getZ();
+        int blockY = loc.getBlockY();
+
+        if (dawnRegistry.isProtected(worldName, chunkX, chunkZ)) {
+            int[] yRange = dawnRegistry.getYRange(worldName, chunkX, chunkZ);
+
+            if (blockY >= yRange[0] && blockY <= yRange[1]) {
+                // 4. Track it!
+                // We pass Material.WATER explicitly because the block is currently AIR
+                plugin.getOverworldManager().trackBlock(targetBlock, Material.WATER, TimeUnit.SECONDS.toMillis(5));
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBucketFill(PlayerBucketFillEvent e) {
+        Block targetBlock = e.getBlockClicked().getRelative(e.getBlockFace());
+        Location loc = targetBlock.getLocation();
+
+        // If they scoop up a tracked temporary block, stop tracking it
+        if (dawnRegistry.getAllTemporaryBlocks().containsKey(loc)) {
+            dawnRegistry.removeTemporaryBlock(loc);
+            dawnRegistry.removeExpectedType(loc);
         }
     }
 
