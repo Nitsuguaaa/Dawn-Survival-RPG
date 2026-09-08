@@ -14,6 +14,7 @@ Custom Items:
 
  Player:
  - track the player database (connect first join to grief prevention and starter kits BUILD YOUR OWN)
+ - parties
 
  Skills:
  - DONE: add cooldown
@@ -25,8 +26,8 @@ Custom Items:
  PvP:
  - Make PvP damage -50%
 
- Parties:
- - make parties
+ Mobs:
+ - make mobs drop cooked version of raw foods
 
  DONE: MAKE SHIT RELOADABLE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

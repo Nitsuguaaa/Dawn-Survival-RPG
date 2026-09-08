@@ -34,6 +34,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
@@ -52,6 +53,7 @@ public class MobEvents implements Listener {
     @EventHandler
     public void onMobDeath(EntityDeathEvent e) {
         if(e.getEntity() instanceof Player) return;
+        if(!(e.getEntity() instanceof Creature)) return;
         if(!(e.getDamageSource().getCausingEntity() instanceof Player player)) return;
 
         mobManager.onMobDeath(e, e.getEntity(), player);
@@ -265,6 +267,36 @@ public class MobEvents implements Listener {
             "world_nether",
             "world_the_end"
     );
+
+    private static final Set<EntityType> BANNED_CHUNK_SPAWNS = EnumSet.of(
+            // Villages
+            EntityType.VILLAGER, EntityType.IRON_GOLEM, EntityType.CAT,
+            EntityType.HORSE, EntityType.PIG, EntityType.COW, EntityType.SHEEP, EntityType.CHICKEN,
+            // End Cities
+            EntityType.SHULKER,
+            // Mansions & Outposts
+            EntityType.EVOKER, EntityType.VINDICATOR, EntityType.ALLAY, EntityType.PILLAGER,
+            // Ocean Monuments
+            EntityType.GUARDIAN, EntityType.ELDER_GUARDIAN, EntityType.DROWNED,
+            // Nether Bastions
+            EntityType.PIGLIN, EntityType.PIGLIN_BRUTE, EntityType.HOGLIN,
+            // Witch Huts
+            EntityType.WITCH
+    );
+
+    @EventHandler
+    public void banVillagersOnChunks(ChunkLoadEvent e) {
+        if(!ALLOWED_WORLDS.contains(e.getWorld().getName())) return;
+        if(!e.isNewChunk()) return;
+
+        Bukkit.getScheduler().runTask(plugin, () -> {
+           for(Entity entity : e.getChunk().getEntities()) {
+               if(BANNED_CHUNK_SPAWNS.contains(entity.getType())) {
+                   entity.remove();
+               }
+           }
+        });
+    }
 
     @EventHandler
     public void stopNaturalSpawn(CreatureSpawnEvent e) {

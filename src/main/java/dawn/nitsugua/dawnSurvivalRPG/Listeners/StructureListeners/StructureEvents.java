@@ -111,7 +111,7 @@ public class StructureEvents implements Listener {
 
             if(blockY >= yRange[0] && blockY <= yRange[1]) {
                 if(ALLOWED_TEMPORARY_BLOCKS.contains(e.getBlock().getType())) {
-                    plugin.getOverworldManager().trackBlock(e.getBlock(), e.getBlock().getType(), TimeUnit.SECONDS.toMillis(3));
+                    plugin.getOverworldManager().trackBlock(e.getBlock(), e.getBlock().getType(), TimeUnit.MINUTES.toMillis(3));
                     return;
                 }
                 e.setCancelled(true);

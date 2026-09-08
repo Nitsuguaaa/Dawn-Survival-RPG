@@ -3,11 +3,15 @@ package dawn.nitsugua.dawnSurvivalRPG.GUI.DawnGuis;
 import dawn.nitsugua.dawnSurvivalRPG.GUI.DawnGui;
 import dawn.nitsugua.dawnSurvivalRPG.GUI.DawnGuiHolder;
 import dawn.nitsugua.dawnSurvivalRPG.GUI.GuiButton;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.List;
 
 public class MainMenuGui extends DawnGui {
     public MainMenuGui() {
@@ -28,15 +32,21 @@ public class MainMenuGui extends DawnGui {
     public void populate(DawnGuiHolder holder) {
         Player viewer = holder.getViewer();
 
-        ItemStack collectionsIcon = new ItemStack(Material.BOOK);
-
-        holder.setButton(11, new GuiButton(collectionsIcon, event -> {
-            viewer.sendMessage(TextUtil.format("<green>Opening Collections!"));
-        }));
-
-        ItemStack closeIcon = new ItemStack(Material.BARRIER);
-        holder.setButton(15, new GuiButton(closeIcon, event -> {
+        ItemStack SERVER_INFO = new ItemStack(Material.BOOK);
+        SERVER_INFO.setItemMeta(holder.itemBuilder(
+                SERVER_INFO.getItemMeta(),
+                "Server info",
+                null
+        ));
+        holder.setButton(13, new GuiButton(SERVER_INFO, event -> {
             viewer.closeInventory();
+            MessagesUtil.sendServerInfo(viewer);
         }));
+
+//        ItemStack closeIcon = new ItemStack(Material.BARRIER);
+//
+//        holder.setButton(15, new GuiButton(closeIcon, event -> {
+//            viewer.closeInventory();
+//        }));
     }
 }

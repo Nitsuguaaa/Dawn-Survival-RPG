@@ -35,9 +35,18 @@ public class MobManager {
 
     public void onMobDeath(EntityDeathEvent event, Entity entity, Player damager) {
         event.setDroppedExp(0);
-        PersistentDataContainer pdc = entity.getPersistentDataContainer();
-        if(!pdc.has(DawnKeys.DAWN_MOB, PersistentDataType.BOOLEAN)) return;
         event.getDrops().clear();
+        PersistentDataContainer pdc = entity.getPersistentDataContainer();
+        if(!pdc.has(DawnKeys.DAWN_MOB, PersistentDataType.BOOLEAN)) {
+            String vanillaName = entity.getType().toString();
+            LootTable table = dawnRegistry.getLootTable(vanillaName);
+            if(table != null) {
+                event.getDrops().addAll(lootManager.rollLoot(table));
+                event.setDroppedExp(table.rollExp());
+            }
+            return;
+        }
+
 
         String mobName = pdc.get(DawnKeys.DAWN_MOB_NAME, PersistentDataType.STRING);
         if(mobName == null) return;
