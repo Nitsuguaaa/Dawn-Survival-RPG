@@ -12,6 +12,9 @@ Custom Items:
  - make custom items hot reloadable
  - DONE: Custom recipes
 
+ Player:
+ - track the player database (connect first join to grief prevention and starter kits BUILD YOUR OWN)
+
  Skills:
  - DONE: add cooldown
 

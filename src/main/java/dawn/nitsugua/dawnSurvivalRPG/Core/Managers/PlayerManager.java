@@ -3,16 +3,20 @@ package dawn.nitsugua.dawnSurvivalRPG.Core.Managers;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Player.DawnPlayer;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.InventoryUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import su.nightexpress.excellenteconomy.api.ExcellentEconomyAPI;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class PlayerManager {
@@ -29,35 +33,45 @@ public class PlayerManager {
 
     public void playerJoinEvent(Player player) {
         UUID playerId = player.getUniqueId();
-        DawnPlayer dawnPlayer = new DawnPlayer(playerId);
-        dawnPlayer.setUsername(player.getName());
-        dawnRegistry.registerPlayer(playerId, dawnPlayer);
 
-        plugin.getBankDAO().loadBankAsync(playerId).thenAccept(bank -> {
-           Bukkit.getScheduler().runTask(plugin, () -> {
+        plugin.getPlayerDAO().loadPlayerAsync(player).thenAcceptAsync(dawnPlayer -> {
+            //dawnPlayer.setUsername(player.getName());
+            dawnRegistry.registerPlayer(playerId, dawnPlayer);
+
+            if(dawnPlayer.isFirstJoin()) Bukkit.getScheduler().runTask(plugin, () -> {runFirstJoin(player);});
+
+            plugin.getBankDAO().loadBankAsync(playerId).thenAcceptAsync(bank -> {
                dawnPlayer.setBank(bank);
-               //player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.SUCCESS, "Bank data loaded! Balance: <yellow>" + bank.getBalance()));
-           });
-        });
 
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            initializePlayer(player);
-        }, 1L);
-
-        //plugin.getLog().info(TextUtil.format("<green>Player <white>" + player.getName() + " <green>joined in world: <aqua>" + player.getWorld().getName()));
-        if(dungeonManager.isDungeonWorld(player.getWorld().getName())) dungeonManager.addPlayerToWorld(player.getWorld().getName());
+               Bukkit.getScheduler().runTask(plugin, () -> {
+                   //runFirstJoin(player); //DEBUG: REMOVE AFTER TESTING
+                  initializePlayer(player);
+                  if(dungeonManager.isDungeonWorld(player.getWorld().getName())) {
+                      dungeonManager.addPlayerToWorld(player.getWorld().getName());
+                  }
+               });
+            }, plugin.getDatabaseManager().getDbExecutor());
+        }, plugin.getDatabaseManager().getDbExecutor());
     }
 
     public void playerLeaveEvent(Player player) {
         UUID playerId = player.getUniqueId();
         DawnPlayer dp = dawnRegistry.getDawnPlayer(playerId);
 
-        if(dp != null && dp.getBank() != null) {
-            if(dp.getBank().isDirty()) {
-                plugin.getBankDAO().saveBankAsync(dp.getBank());
+        if(dp == null) {
+            dawnRegistry.removePlayer(playerId);
+            if (dungeonManager.isDungeonWorld(player.getWorld().getName())) {
+                dungeonManager.removePlayerFromWorld(player.getWorld().getName());
             }
+            return;
         }
 
+        dp.setLastSeen(System.currentTimeMillis());
+        if(dp.getBank().isDirty()) {
+            plugin.getBankDAO().saveBankAsync(dp.getBank());
+        }
+
+        plugin.getPlayerDAO().savePlayerAsync(dp);
         dawnRegistry.removePlayer(playerId);
         if(dungeonManager.isDungeonWorld(player.getWorld().getName())) dungeonManager.removePlayerFromWorld(player.getWorld().getName());
     }
@@ -96,6 +110,28 @@ public class PlayerManager {
 
         String message = String.format("You died and lost %.2f coins.", lossAmount);
         player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, message));
+
+    }
+
+    public void runFirstJoin(Player player) {
+        for(Player p : plugin.getServer().getOnlinePlayers()) {
+            p.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "<white>" + player.getName() + " <green>joined the server for the first time!"));
+        }
+
+        Inventory inv = player.getInventory();
+        inv.addItem(
+                InventoryUtil.resolveItem(plugin, "GP_CLAIM_SHOVEL", 1),
+                InventoryUtil.resolveItem(plugin, "GP_CLAIM_INSPECTOR", 1),
+                new ItemStack(Material.COOKED_BEEF, 32),
+                new ItemStack(Material.STONE_SWORD),
+                new ItemStack(Material.LEATHER_CHESTPLATE)
+        );
+
+        plugin.getEconomyAPI().getEconomyAPI().deposit(player, "money", 1000);
+        plugin.getEconomyAPI().getEconomyAPI().deposit(player, "coins", 10);
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "claimbook " + player.getName());
+
+        MessagesUtil.sendServerInfo(player);
 
     }
 

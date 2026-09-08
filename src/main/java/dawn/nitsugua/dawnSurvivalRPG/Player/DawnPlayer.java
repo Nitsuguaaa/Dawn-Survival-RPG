@@ -17,6 +17,10 @@ public class DawnPlayer {
     //database caches
     private Bank bank;
     private final List<Bounty> activeBounties = new ArrayList<>();
+    private long firstJoin;
+    private long lastSeen;
+
+    private boolean thisFirstJoin = false;
 
 
     //Attributes
@@ -72,4 +76,21 @@ public class DawnPlayer {
         armorSet.put(equipmentSlot, armorID);
         //recalc stats
     }
+
+    public void flagFirstJoin() {
+        thisFirstJoin = true;
+    }
+    public boolean isFirstJoin() {
+        return thisFirstJoin;
+    }
+
+    public void setFirstJoin(long time) {
+        firstJoin = time;
+    }
+    public long getFirstJoin() {return firstJoin;}
+
+    public void setLastSeen(long time) {
+        lastSeen = time;
+    }
+    public long getLastSeen() {return lastSeen;}
 }
