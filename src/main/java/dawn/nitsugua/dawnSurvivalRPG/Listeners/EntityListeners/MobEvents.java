@@ -265,7 +265,9 @@ public class MobEvents implements Listener {
     private final Set<String> ALLOWED_WORLDS = Set.of(
             "world",
             "world_nether",
-            "world_the_end"
+            "world_the_end",
+            "dungeon-1",
+            "arkos"
     );
 
     private static final Set<EntityType> BANNED_CHUNK_SPAWNS = EnumSet.of(

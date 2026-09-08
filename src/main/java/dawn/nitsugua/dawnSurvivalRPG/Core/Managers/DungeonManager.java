@@ -38,6 +38,7 @@ public class DungeonManager {
         initializeDungeons();
         loadDungeons();
         dawnRegistry.registerDungeonWorld("dungeon-1");
+        dawnRegistry.registerDungeonWorld("arkos");
     }
 
     public boolean isDungeonWorld(String worldName) {

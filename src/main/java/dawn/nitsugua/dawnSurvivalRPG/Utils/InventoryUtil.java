@@ -21,7 +21,7 @@ public class InventoryUtil {
 
         if(material != null && material != Material.AIR) {
             int count = 0;
-            for(ItemStack item : inv.getContents()) {
+            for(ItemStack item : inv.getStorageContents()) {
                 if(item != null) {
                     if(item.getType() == material && !hasCustomId(item)) {
                         count += item.getAmount();
@@ -32,7 +32,7 @@ public class InventoryUtil {
         }
 
         int count = 0;
-        for(ItemStack item : inv.getContents()) {
+        for(ItemStack item : inv.getStorageContents()) {
             if(item != null && item.hasItemMeta()) {
                 String id = item.getItemMeta().getPersistentDataContainer().get(DawnKeys.ITEM_ID, PersistentDataType.STRING);
                 if(itemId.equals(id)) {
@@ -47,8 +47,9 @@ public class InventoryUtil {
     public static void removeItems(Inventory inv, String itemId, int amountToRemove) {
         int remaining = amountToRemove;
         Material material = Material.matchMaterial(itemId);
+        ItemStack[] storage = inv.getStorageContents();
 
-        for(int i = 0; i < inv.getSize(); i++) {
+        for(int i = 0; i < storage.length; i++) {
             if(remaining <= 0) break;
 
             ItemStack item = inv.getItem(i);
