@@ -11,7 +11,7 @@ public class CompactorRegistry {
       new ExchangeRecipe(
               "test",
               List.of("<dark_gray>Requires:", "<white>x128 Coal"),
-              Material.COAL,
+              "ENCHANTED_COAL",
               "COAL",
               1,
               (player) -> {

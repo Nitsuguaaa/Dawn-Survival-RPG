@@ -1,5 +1,6 @@
 package dawn.nitsugua.dawnSurvivalRPG.GUI.DawnGuis;
 
+import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.GUI.DawnGui;
 import dawn.nitsugua.dawnSurvivalRPG.GUI.DawnGuiHolder;
 import dawn.nitsugua.dawnSurvivalRPG.GUI.GUIRegistries.CompactorRegistry;
@@ -18,7 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CompactorGui extends DawnGui {
-    public CompactorGui() {super("compactor");}
+    private final DawnSurvivalRPG plugin;
+    public CompactorGui(DawnSurvivalRPG plugin) {super("compactor"); this.plugin = plugin;}
     private static final int ITEMS_PER_PAGE = 26;
 
     @Override
@@ -47,7 +49,7 @@ public class CompactorGui extends DawnGui {
         for(int i = startIndex; i < endIndex; i++) {
             ExchangeRecipe recipe = CompactorRegistry.RECIPES.get(i);
 
-            ItemStack displayItem = new ItemStack(recipe.icon());
+            ItemStack displayItem = new ItemStack(InventoryUtil.resolveItem(plugin, recipe.icon(), 1));
             displayItem.setItemMeta(holder.itemBuilder(
                     displayItem.getItemMeta(),
                     recipe.displayName(),

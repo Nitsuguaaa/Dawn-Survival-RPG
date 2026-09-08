@@ -41,7 +41,7 @@ tasks {
 
 // Define your paths cleanly at the top
 val alphaServerPath = "C:/Users/AC/Desktop/DawnMC-26.1/plugins"
-val testServerPath = "C:/Users/AC/Desktop/DawnSMP-26.1/plugins"
+val testServerPath = "C:/Users/AC/Desktop/DawnTestServer/plugins"
 
 // Task 1: Deploy to the heavy Alpha Server
 tasks.register<Copy>("deployToAlpha") {

@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 public record ExchangeRecipe(
         String displayName,
         List<String> lore,
-        Material icon,
+        String icon,
         String costItemId,
         int costAmount,
         Consumer<Player> action

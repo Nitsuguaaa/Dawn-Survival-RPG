@@ -69,6 +69,6 @@ public class GuiTesterCommand {
      */
     private void openMenu(@NotNull CommandSourceStack source) {
         if (!(source.getSender() instanceof Player player)) return;
-        plugin.getGuiManager().open(player, new CompactorGui());
+        plugin.getGuiManager().open(player, new CompactorGui(plugin));
     }
 }
