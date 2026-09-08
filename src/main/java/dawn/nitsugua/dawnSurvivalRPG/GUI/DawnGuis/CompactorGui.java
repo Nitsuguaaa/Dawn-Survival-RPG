@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList; 
 import java.util.List;
+import java.util.Map;
 
 public class CompactorGui extends DawnGui {
     private final DawnSurvivalRPG plugin;
@@ -57,7 +58,9 @@ public class CompactorGui extends DawnGui {
             ));
 
             holder.setButton(currentSlot, new GuiButton(displayItem, e -> {
-                recipe.action().accept(viewer);
+                //recipe.action().accept(viewer);
+                compactItems(viewer, recipe);
+
             }));
 
             currentSlot++;
@@ -67,6 +70,22 @@ public class CompactorGui extends DawnGui {
         }
 
         setupPagination(holder, currentPage);
+    }
+
+    private void compactItems(Player viewer, ExchangeRecipe recipe) {
+        int have = InventoryUtil.countItems(viewer.getInventory(), recipe.costItemId());
+        if(have < recipe.costAmount()) {
+            viewer.sendMessage(TextUtil.format("You don't have enough items!"));
+            return;
+        }
+        InventoryUtil.removeItems(viewer.getInventory(), recipe.costItemId(), recipe.costAmount());
+        ItemStack output = InventoryUtil.resolveItem(plugin, recipe.result(), recipe.resultAmount());
+        if(output != null) {
+            Map<Integer, ItemStack> leftover = viewer.getInventory().addItem(output);
+            for(ItemStack drop : leftover.values()) {
+                viewer.getWorld().dropItemNaturally(viewer.getLocation(), drop);
+            }
+        }
     }
 
     private void setupPagination(DawnGuiHolder holder, int currentPage) {

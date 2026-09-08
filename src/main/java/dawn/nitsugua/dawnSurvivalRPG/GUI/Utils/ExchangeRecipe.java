@@ -12,5 +12,7 @@ public record ExchangeRecipe(
         String icon,
         String costItemId,
         int costAmount,
-        Consumer<Player> action
+        String result,
+        int resultAmount
+        //Consumer<Player> action
 ) {}

@@ -42,10 +42,10 @@ public class KeyExchangeGui extends DawnGui {
         commonKey.setItemMeta(holder.itemBuilder(commonKey.getItemMeta(), "<gradient:#464958:#FFFFFF><b>Common Key", DawnGuiHolder.parseLore(commonKeyLore)));
         holder.setButton(10, new GuiButton(commonKey, e -> {
             //viewer.sendMessage(TextUtil.format("<red>Common key not set!"));
-            int shards = InventoryUtil.countCustomItems(viewer.getInventory(), "COMMON_KEY_SHARD");
+            int shards = InventoryUtil.countItems(viewer.getInventory(), "COMMON_KEY_SHARD");
 
             if(shards >= 10) {
-                InventoryUtil.removeCustomItems(viewer.getInventory(), "COMMON_KEY_SHARD", 10);
+                InventoryUtil.removeItems(viewer.getInventory(), "COMMON_KEY_SHARD", 10);
                 String command = String.format("crates key give %s common 1", viewer.getName());
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
 
@@ -69,10 +69,10 @@ public class KeyExchangeGui extends DawnGui {
         eliteKey.setItemMeta(holder.itemBuilder(eliteKey.getItemMeta(), "<gradient:#2DBDC2:#FFFFFF><b>Elite Key", DawnGuiHolder.parseLore(eliteKeyLore)));
         holder.setButton(11, new GuiButton(eliteKey, e -> {
             //viewer.sendMessage(TextUtil.format("<red>Elite key not set!"));\
-            int shards = InventoryUtil.countCustomItems(viewer.getInventory(), "ELITE_KEY_SHARD");
+            int shards = InventoryUtil.countItems(viewer.getInventory(), "ELITE_KEY_SHARD");
 
             if(shards >= 25) {
-                InventoryUtil.removeCustomItems(viewer.getInventory(), "ELITE_KEY_SHARD", 25);
+                InventoryUtil.removeItems(viewer.getInventory(), "ELITE_KEY_SHARD", 25);
                 String command = String.format("crates key give %s elite 1", viewer.getName());
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
 

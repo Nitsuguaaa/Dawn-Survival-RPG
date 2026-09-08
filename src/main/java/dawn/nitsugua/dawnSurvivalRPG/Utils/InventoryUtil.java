@@ -16,46 +16,73 @@ public class InventoryUtil {
      * @return
      */
 
-    public static int countCustomItems(Inventory inv, String itemId) {
-        int count = 0;
-        for(ItemStack item : inv.getContents()) {
-            if(item != null && item.hasItemMeta()) {
-                PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
-                if(pdc.has(DawnKeys.ITEM_ID, PersistentDataType.STRING)) {
-                    String id = pdc.get(DawnKeys.ITEM_ID, PersistentDataType.STRING);
-                    if(id.equals(itemId)) {
+    public static int countItems(Inventory inv, String itemId) {
+        Material material = Material.matchMaterial(itemId);
+
+        if(material != null && material != Material.AIR) {
+            int count = 0;
+            for(ItemStack item : inv.getContents()) {
+                if(item != null) {
+                    if(item.getType() == material && !hasCustomId(item)) {
                         count += item.getAmount();
                     }
                 }
             }
+            return count;
         }
+
+        int count = 0;
+        for(ItemStack item : inv.getContents()) {
+            if(item != null && item.hasItemMeta()) {
+                String id = item.getItemMeta().getPersistentDataContainer().get(DawnKeys.ITEM_ID, PersistentDataType.STRING);
+                if(itemId.equals(id)) {
+                    count += item.getAmount();
+                }
+            }
+        }
+
         return count;
     }
 
-    public static void removeCustomItems(Inventory inv, String itemId, int amountToRemove) {
+    public static void removeItems(Inventory inv, String itemId, int amountToRemove) {
         int remaining = amountToRemove;
+        Material material = Material.matchMaterial(itemId);
+
         for(int i = 0; i < inv.getSize(); i++) {
             if(remaining <= 0) break;
 
             ItemStack item = inv.getItem(i);
-            if(item != null && item.hasItemMeta()) {
-                PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
-                if(pdc.has(DawnKeys.ITEM_ID, PersistentDataType.STRING)) {
-                    String id = pdc.get(DawnKeys.ITEM_ID, PersistentDataType.STRING);
-                    if(itemId.equals(id)) {
-                        int itemAmount = item.getAmount();
-                        if(itemAmount > remaining) {
-                            item.setAmount(itemAmount - remaining);
-                            inv.setItem(i, item);
-                            remaining = 0;
-                        } else {
-                            remaining -= itemAmount;
-                            inv.setItem(i, null);
-                        }
-                    }
+            if(item == null) continue;
+
+            boolean matches = (material != null && material != Material.AIR)
+                    ? item.getType() == material && !hasCustomId(item) //if vanilla
+                    : itemId.equals(getCustomId(item)); //if custom
+
+            if(matches) {
+                int itemAmount = item.getAmount();
+                if(itemAmount > remaining) {
+                    item.setAmount(itemAmount - remaining);
+                    inv.setItem(i, item);
+                    remaining = 0;
+                } else {
+                    remaining -= itemAmount;
+                    inv.setItem(i, null);
                 }
             }
         }
+    }
+
+    // --- Small helpers ---
+    private static boolean hasCustomId(ItemStack item) {
+        return item != null && item.hasItemMeta()
+                && item.getItemMeta().getPersistentDataContainer()
+                .has(DawnKeys.ITEM_ID, PersistentDataType.STRING);
+    }
+
+    private static String getCustomId(ItemStack item) {
+        if (item == null || !item.hasItemMeta()) return null;
+        return item.getItemMeta().getPersistentDataContainer()
+                .get(DawnKeys.ITEM_ID, PersistentDataType.STRING);
     }
 
     public static ItemStack resolveItem(DawnSurvivalRPG plugin, String key, int amount) {
