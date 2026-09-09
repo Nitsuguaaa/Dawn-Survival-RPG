@@ -26,6 +26,7 @@ Custom Items:
  EndSwordSkill:
  - fix the Y issue
  - make skill dynamically get data on config
+ - redo teleport skill, get last nearest looked air
 
  PvP:
  - Make PvP damage -50%

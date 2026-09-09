@@ -24,7 +24,7 @@ public class SkillManager {
         Skill skill = dawnRegistry.getSkill(pdc.get(DawnKeys.ITEM_ID, PersistentDataType.STRING) + "_SKILL");
         if(skill == null) return false;
 
-        boolean success = skill.onUse(player, item);
+        boolean success = skill.onUse(player, item, plugin);
         if(success) {
             //player.sendMessage("Skill used!");
             manaManager.onManaItemUse(dawnRegistry.getCustomItem(itemId), player); //will not run if manacost is null (meaning the items has a cooldown but not mana cost)

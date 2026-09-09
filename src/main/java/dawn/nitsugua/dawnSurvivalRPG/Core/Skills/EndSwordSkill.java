@@ -22,7 +22,7 @@ public class EndSwordSkill implements Skill {
     }
 
     @Override
-    public boolean onUse(Player player, ItemStack item) {
+    public boolean onUse(Player player, ItemStack item, DawnSurvivalRPG plugin) {
         Location destination = findTeleportLocation(player);
 
         if (destination == null) {
