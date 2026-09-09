@@ -28,6 +28,7 @@ public class DawnRegistry {
     private final ConcurrentHashMap<String, int[]>protectedChunks = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, String> chunkStructure = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, int[]> structureYRanges = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Long> cooldowns = new ConcurrentHashMap<>();
 
     private final ConcurrentHashMap<Location, Long> trackedBlocks = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Location, Material> expectedTypes = new ConcurrentHashMap<>();
@@ -138,6 +139,21 @@ public class DawnRegistry {
     }
     public int[] getProtectionYRange(String structure) {
         return structureYRanges.get(structure);
+    }
+
+    public void setCooldown(UUID playerId, String itemId, long timeUsed) {
+        String key = playerId + "_" + itemId;
+        cooldowns.put(key, timeUsed);
+    }
+    @Nullable
+    public Long getCooldown(UUID playerId, String itemId) {
+        String key = playerId + "_" + itemId;
+        return cooldowns.get(key);
+    }
+    public void removeCooldowns(long cooldownCutoff) {
+        cooldowns.entrySet().removeIf(
+                entry -> entry.getValue() < cooldownCutoff
+        );
     }
 
     // --- RELOAD METHODS ---

@@ -103,7 +103,7 @@ public class CustomItemFactory {
                 plugin.getLog().info(TextUtil.sendLogInfo("CustomItemFactory", TextUtil.LogInfo.WARNING, "Custom Armor not set."));
                 break;
             case "USABLE":
-                plugin.getLog().info(TextUtil.sendLogInfo("CustomItemFactory", TextUtil.LogInfo.SUCCESS, "Usable item registered!"));
+                //plugin.getLog().info(TextUtil.sendLogInfo("CustomItemFactory", TextUtil.LogInfo.SUCCESS, "Usable item registered!"));
                 return customUsable(finalItem);
             default:
                 return finalItem;

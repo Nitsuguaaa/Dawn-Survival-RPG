@@ -45,13 +45,10 @@ public class ItemEvents implements Listener {
 
     @EventHandler
     public void onSkillUse(PlayerInteractEvent e) {
-        SkillManager skillManager = new SkillManager(plugin, plugin.getManaManager());
-
         Player player = e.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
         if(!DawnKeys.isDawnObject(item)) return;
-        e.setCancelled(true); //for future stuff, change it because of consumables
 
         // Ensure we are only firing skills on right clicks
         Action action = e.getAction();
@@ -63,16 +60,20 @@ public class ItemEvents implements Listener {
         PersistentDataContainer pdc = itemMeta.getPersistentDataContainer();
 
         if(!pdc.has(DawnKeys.USES)) {return;}
-
         if(pdc.has(DawnKeys.MANA) && pdc.has(DawnKeys.COOLDOWN)) {
-            // --> THE FIX: Stop vanilla Minecraft from continuing the block interaction
-            //e.setCancelled(true);
 
-            if(!manaManager.hasMana(player, pdc)) return;
-            if(cooldownManager.isOnCooldown(player, pdc)) return;
+            if(!manaManager.hasMana(player, pdc)) {
+                e.setCancelled(true);
+                return;
+            }
+            if(cooldownManager.isOnCooldown(player, item)) {
+                e.setCancelled(true);
+                return;
+            }
 
-            skillManager.onUse(player, item, pdc);
-            cooldownManager.setCooldown(item);
+            e.setCancelled(true);
+
+            plugin.getSkillManager().onUse(player, item, pdc);
         }
     }
 

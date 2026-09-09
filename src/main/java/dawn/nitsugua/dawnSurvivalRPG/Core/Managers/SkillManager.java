@@ -19,13 +19,16 @@ public class SkillManager {
         this.manaManager = manaManager;
     }
 
-    public void onUse(Player player, ItemStack item, PersistentDataContainer pdc) {
+    public boolean onUse(Player player, ItemStack item, PersistentDataContainer pdc) {
+        String itemId = pdc.get(DawnKeys.ITEM_ID, PersistentDataType.STRING);
         Skill skill = dawnRegistry.getSkill(pdc.get(DawnKeys.ITEM_ID, PersistentDataType.STRING) + "_SKILL");
-        if(skill != null) {
-            if(!manaManager.hasMana(player, pdc)) {return;}
-            if(skill.onUse(player, item)) {
-                    manaManager.onManaItemUse(dawnRegistry.getCustomItem(pdc.get(DawnKeys.ITEM_ID, PersistentDataType.STRING)), player);
-            }
+        if(skill == null) return false;
+
+        boolean success = skill.onUse(player, item);
+        if(success) {
+            manaManager.onManaItemUse(dawnRegistry.getCustomItem(itemId), player);
+            plugin.getCooldownManager().setCooldown(player, item);
         }
+        return success;
     }
 }

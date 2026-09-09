@@ -4,10 +4,7 @@ import dawn.nitsugua.dawnSurvivalRPG.API.DawnRPGAPI;
 import dawn.nitsugua.dawnSurvivalRPG.Commands.AdminCommands.*;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.*;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
-import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.BankAutoSaveTask;
-import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.DungeonTasks;
-import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.ManaTasks;
-import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.TemporaryBlockTask;
+import dawn.nitsugua.dawnSurvivalRPG.Core.Tasks.*;
 import dawn.nitsugua.dawnSurvivalRPG.Database.BankDAO;
 import dawn.nitsugua.dawnSurvivalRPG.Database.PlayerDAO;
 import dawn.nitsugua.dawnSurvivalRPG.Database.ProtectedChunkDAO;
@@ -225,6 +222,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         ManaTasks.initManaTasks(instance);
         BankAutoSaveTask.runBankAutoSave(instance);
         TemporaryBlockTask.runTemporaryBlockTask(instance);
+        CooldownCleanupTask.startCooldownCleanup();
         log.info(TextUtil.format("<green>Tasks Registered!</green>"));
     }
 
