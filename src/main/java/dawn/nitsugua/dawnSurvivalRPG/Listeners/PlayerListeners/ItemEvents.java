@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -60,19 +61,40 @@ public class ItemEvents implements Listener {
         PersistentDataContainer pdc = itemMeta.getPersistentDataContainer();
 
         if(!pdc.has(DawnKeys.USES)) {return;}
-        e.setCancelled(true);
-        if(pdc.has(DawnKeys.MANA) && pdc.has(DawnKeys.COOLDOWN)) {
 
-            if(!manaManager.hasMana(player, pdc)) {
-                return;
+        boolean isActiveSkill = pdc.has(DawnKeys.MANA) && pdc.has(DawnKeys.COOLDOWN);
+        // 2. The ONLY exception: Block Concentrated Eyes from going into End Portals
+        boolean isBlockedVanillaPlacement = false;
+        if (e.getClickedBlock() != null && e.getClickedBlock().getType() == Material.END_PORTAL_FRAME) {
+            if (item.getType() == Material.ENDER_EYE) {
+                isBlockedVanillaPlacement = true;
             }
-            if(cooldownManager.isOnCooldown(player, item)) {
-                return;
-            }
+        }
+
+        // 3. SMART CANCELLATION
+        if (isActiveSkill || isBlockedVanillaPlacement) {
+            e.setCancelled(true); // Hijack the click!
+        } else {
+            // It's a passive material (like an Elite Key Shard).
+            // Let vanilla Minecraft handle opening chests, doors, etc.!
+            return;
+        }
+
+        if (isActiveSkill) {
+            if (!manaManager.hasMana(player, pdc)) return;
+            if (cooldownManager.isOnCooldown(player, item)) return;
 
             plugin.getSkillManager().onUse(player, item, pdc);
         }
     }
+
+    @EventHandler
+    public void customBlockPlacement(BlockPlaceEvent e) {
+        if(DawnKeys.isDawnObject(e.getItemInHand())) {
+            e.setCancelled(true);
+        }
+    }
+
 
     @EventHandler
     public void onItemHeld(PlayerItemHeldEvent e) {
