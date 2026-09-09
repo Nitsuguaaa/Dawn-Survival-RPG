@@ -6,6 +6,7 @@ import dawn.nitsugua.dawnSurvivalRPG.Utils.DawnKeys;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -95,6 +96,7 @@ public class SellLoader {
         // 5. Use a small threshold for floating point comparison
         if (finalPayout < 0.01) {
             player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.FAILURE, "You have nothing to sell"));
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
             return;
         }
 
@@ -106,6 +108,7 @@ public class SellLoader {
 
         player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.SUCCESS,
                 "Sold items for <gold>₱" + formattedPayout + " <gray>(10% tax: ₱" + formattedTax + ")"));
+        player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
     }
 
     public void reload() {

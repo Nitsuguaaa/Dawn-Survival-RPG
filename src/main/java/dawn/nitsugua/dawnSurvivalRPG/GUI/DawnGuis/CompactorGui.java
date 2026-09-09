@@ -7,6 +7,7 @@ import dawn.nitsugua.dawnSurvivalRPG.GUI.GUIRegistries.CompactorRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.GUI.GuiButton;
 import dawn.nitsugua.dawnSurvivalRPG.GUI.Utils.ExchangeRecipe;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.InventoryUtil;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -75,7 +76,7 @@ public class CompactorGui extends DawnGui {
     private void compactItems(Player viewer, ExchangeRecipe recipe) {
         int have = InventoryUtil.countItems(viewer.getInventory(), recipe.costItemId());
         if(have < recipe.costAmount()) {
-            viewer.sendMessage(TextUtil.format("You don't have enough items!"));
+            viewer.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.FAILURE, "You don't have enough items!"));
             return;
         }
         InventoryUtil.removeItems(viewer.getInventory(), recipe.costItemId(), recipe.costAmount());

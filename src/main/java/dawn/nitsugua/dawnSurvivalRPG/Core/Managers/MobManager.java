@@ -37,25 +37,33 @@ public class MobManager {
         event.setDroppedExp(0);
         event.getDrops().clear();
         PersistentDataContainer pdc = entity.getPersistentDataContainer();
-        if(!pdc.has(DawnKeys.DAWN_MOB, PersistentDataType.BOOLEAN)) {
+
+
+        //if custom mob
+        if(pdc.has(DawnKeys.DAWN_MOB, PersistentDataType.BOOLEAN)) {
+            String mobName = pdc.get(DawnKeys.DAWN_MOB_NAME, PersistentDataType.STRING);
+            if(mobName == null) return;
+            plugin.getLog().info("DAWN MOB FOUND: " + mobName);
+
+            LootTable table = dawnRegistry.getLootTable(mobName);
+            if(table != null) {
+                event.getDrops().addAll(lootManager.rollLoot(table));
+                event.setDroppedExp(table.rollExp());
+                plugin.getLog().info("ROLLING LOOT");
+            } else {
+                plugin.getLog().warn("LOOT NOT FOUND: " + mobName);
+            }
+            return;
+        }
+
+        //if vanilla mob inside protected area
+        if(dawnRegistry.isProtected(entity.getWorld().getName(), entity.getChunk().getX(), entity.getChunk().getZ())) {
             String vanillaName = entity.getType().toString();
             LootTable table = dawnRegistry.getLootTable(vanillaName);
             if(table != null) {
                 event.getDrops().addAll(lootManager.rollLoot(table));
                 event.setDroppedExp(table.rollExp());
             }
-            return;
-        }
-
-
-        String mobName = pdc.get(DawnKeys.DAWN_MOB_NAME, PersistentDataType.STRING);
-        if(mobName == null) return;
-
-        LootTable table = dawnRegistry.getLootTable(mobName);
-
-        if(table != null) {
-            event.getDrops().addAll(lootManager.rollLoot(table));
-            event.setDroppedExp(table.rollExp());
         }
     }
 
