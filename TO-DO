@@ -12,13 +12,16 @@ Custom Items:
  - make custom items hot reloadable
  - DONE: Custom recipes
 
+ Mana:
+ - BUG - Sometimes mana doesn't input right, even holding a sword with mana doesn't update mana pool
+
  Player:
  - track the player database (connect first join to grief prevention and starter kits BUILD YOUR OWN)
  - parties
 
  Skills:
  - DONE: add cooldown
- - player based cooldowns (not item)
+ - DONE: player based cooldowns (not item)
 
  EndSwordSkill:
  - fix the Y issue

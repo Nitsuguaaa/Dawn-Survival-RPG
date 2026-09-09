@@ -89,7 +89,7 @@ public class CustomItemFactory {
             itemMeta.lore(customItem.getLore());
         } else {
             List<Component> defaultLore = new ArrayList<>();
-            defaultLore.add(TextUtil.setItemLore(" "));
+            //defaultLore.add(TextUtil.setItemLore(" "));
             defaultLore.add(TextUtil.setItemRarity(customItem.getRarity(), "<bold>" + customItem.getRarity().name().toLowerCase().replace('_', ' ') + " " + customItem.getSubCategory().toLowerCase().replace('_', ' ')));
             itemMeta.lore(defaultLore);
         }
@@ -103,6 +103,7 @@ public class CustomItemFactory {
                 plugin.getLog().info(TextUtil.sendLogInfo("CustomItemFactory", TextUtil.LogInfo.WARNING, "Custom Armor not set."));
                 break;
             case "USABLE":
+            case"MATERIAL":
                 //plugin.getLog().info(TextUtil.sendLogInfo("CustomItemFactory", TextUtil.LogInfo.SUCCESS, "Usable item registered!"));
                 return customUsable(finalItem);
             default:

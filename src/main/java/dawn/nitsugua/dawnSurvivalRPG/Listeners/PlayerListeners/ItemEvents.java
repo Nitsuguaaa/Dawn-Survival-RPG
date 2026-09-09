@@ -60,18 +60,15 @@ public class ItemEvents implements Listener {
         PersistentDataContainer pdc = itemMeta.getPersistentDataContainer();
 
         if(!pdc.has(DawnKeys.USES)) {return;}
+        e.setCancelled(true);
         if(pdc.has(DawnKeys.MANA) && pdc.has(DawnKeys.COOLDOWN)) {
 
             if(!manaManager.hasMana(player, pdc)) {
-                e.setCancelled(true);
                 return;
             }
             if(cooldownManager.isOnCooldown(player, item)) {
-                e.setCancelled(true);
                 return;
             }
-
-            e.setCancelled(true);
 
             plugin.getSkillManager().onUse(player, item, pdc);
         }
