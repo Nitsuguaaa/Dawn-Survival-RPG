@@ -15,7 +15,7 @@ public class DawnKeys {
     public static NamespacedKey ITEM_VERSION;
     public static NamespacedKey ITEM_UUID;
     public static NamespacedKey COOLDOWN;
-    public static NamespacedKey LAST_USED;
+    //DEPRECATED: public static NamespacedKey LAST_USED; uses in-cache memory cooldowns now
     public static NamespacedKey MANA;
     public static NamespacedKey MAX_MANA;
     public static NamespacedKey SKILL_TYPE;
@@ -25,6 +25,8 @@ public class DawnKeys {
     public static NamespacedKey USES;
     public static NamespacedKey CATEGORY;
     public static NamespacedKey SUB_CATEGORY;
+    public static NamespacedKey ONE_TIME_USE;
+
 
     //for entities
     public static NamespacedKey DAWN_MOB; //bool
@@ -46,7 +48,7 @@ public class DawnKeys {
         ITEM_VERSION = new NamespacedKey(plugin, "item_version");
         ITEM_UUID = new NamespacedKey(plugin, "item_uuid");
         COOLDOWN = new NamespacedKey(plugin, "cooldown");
-        LAST_USED = new NamespacedKey(plugin, "last-used");
+        //DEPRECATED: LAST_USED = new NamespacedKey(plugin, "last-used");
         MANA = new NamespacedKey(plugin, "mana");
         MAX_MANA = new NamespacedKey(plugin, "max_mana");
         SKILL_TYPE = new NamespacedKey(plugin, "skill_type");
@@ -56,6 +58,7 @@ public class DawnKeys {
         USES = new NamespacedKey(plugin, "uses"); //if the item has a right-click usage
         CATEGORY = new NamespacedKey(plugin, "category");
         SUB_CATEGORY = new NamespacedKey(plugin, "sub-category");
+        ONE_TIME_USE = new NamespacedKey(plugin, "one-time-use");
 
         INTELLIGENCE = new NamespacedKey(plugin, "intelligence");
 

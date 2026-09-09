@@ -75,6 +75,11 @@ public class CustomItemFactory {
             pdc.set(DawnKeys.SKILL_TYPE, PersistentDataType.STRING, customItem.getInteractableType());
         }
 
+        //if item is flagged as one time use
+        if(customItem.isOneTimeUse()) {
+            //plugin.getLog().info(TextUtil.sendLogInfo("CustomItemFactory", TextUtil.LogInfo.SUCCESS, "This item is set to one time use!"));
+            pdc.set(DawnKeys.ONE_TIME_USE, PersistentDataType.BOOLEAN, true);
+        }
 
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES); //hide vanilla attributes
         //itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);

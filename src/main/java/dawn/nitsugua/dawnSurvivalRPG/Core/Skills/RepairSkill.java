@@ -8,7 +8,7 @@ public class RepairSkill implements Skill{
     @Override
     public boolean onUse(Player player, ItemStack item) {
         player.sendMessage("You're repairing?");
-        return false;
+        return true;
     }
 
     @Override

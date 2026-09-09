@@ -139,8 +139,14 @@ public class CustomItemLoader {
                     item.setAttributes(intelligence);
                 }
 
+                //check if it has one time uses:
+                if(config.contains("one-time-use")) {
+                    item.toggleOneTimeUse();
+                }
+
                 //check if it has skill
                 if(config.contains("skill")) {
+                    //plugin.getLog().info(TextUtil.sendLogInfo("CustomItemLoader", TextUtil.LogInfo.SUCCESS, "Hey this item has a skill: " + item.getItemName()));
                     String skillType = config.getString("skill.type");
                     Double manaCost = config.contains("skill.mana-cost") ? config.getDouble("skill.mana-cost") : null;
                     Double cooldown = config.contains("skill.cooldown") ? config.getDouble("skill.cooldown") : 0;

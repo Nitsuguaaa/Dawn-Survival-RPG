@@ -30,7 +30,7 @@ public class ManaManager {
         DawnPlayer dawnPlayer = dawnRegistry.getDawnPlayer(player.getUniqueId());
         Double manaCost = customItem.getManaCost();
 
-        if(manaCost == null) return;
+        if(manaCost == null) return; //no mana cost
         dawnPlayer.removeCurrentMana(manaCost);
         //DEBUG player.sendMessage("Removed mana, current: " + dawnPlayer.getCurrentMana());
 

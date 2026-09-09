@@ -26,8 +26,17 @@ public class SkillManager {
 
         boolean success = skill.onUse(player, item);
         if(success) {
-            manaManager.onManaItemUse(dawnRegistry.getCustomItem(itemId), player);
+            //player.sendMessage("Skill used!");
+            manaManager.onManaItemUse(dawnRegistry.getCustomItem(itemId), player); //will not run if manacost is null (meaning the items has a cooldown but not mana cost)
             plugin.getCooldownManager().setCooldown(player, item);
+
+            if(pdc.has(DawnKeys.ONE_TIME_USE)) {
+                //player.sendMessage("This item is one time use");
+                if(pdc.get(DawnKeys.ONE_TIME_USE, PersistentDataType.BOOLEAN)) {
+                    //player.sendMessage("Item used!");
+                    item.setAmount(item.getAmount() - 1);
+                }
+            }
         }
         return success;
     }
