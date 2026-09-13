@@ -59,9 +59,9 @@ public class StructureEvents implements Listener {
             dawnRegistry.protectChunk(worldName, chunkX, chunkZ, yRange[0], yRange[1], structureKey);
             plugin.getChunkDAO().saveChunkAsync(worldName, chunkX, chunkZ, yRange[0], yRange[1], structureKey);
 
-            plugin.getLogger().info("[DAWN] Protected " + structureKey +
-                    " at chunk (" + chunkX + ", " + chunkZ + ")" +
-                    " | Y: " + yRange[0] + " to " + yRange[1]);
+//            plugin.getLogger().info("[DAWN] Protected " + structureKey +
+//                    " at chunk (" + chunkX + ", " + chunkZ + ")" +
+//                    " | Y: " + yRange[0] + " to " + yRange[1]);
         });
     }
 

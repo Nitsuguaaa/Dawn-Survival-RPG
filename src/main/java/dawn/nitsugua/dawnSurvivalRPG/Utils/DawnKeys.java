@@ -32,6 +32,7 @@ public class DawnKeys {
     public static NamespacedKey DAWN_MOB; //bool
     public static NamespacedKey DAWN_MOB_TYPE; //string
     public static NamespacedKey DAWN_MOB_NAME;
+    public static NamespacedKey SPAWNER_MOB; //bool, for spawner and trial spawner spawned mobs
 
     public static NamespacedKey SPAWNER_UUID;
     public static NamespacedKey NODE_ID_STRING;
@@ -69,6 +70,7 @@ public class DawnKeys {
         SPAWNER_UUID = new NamespacedKey(plugin, "spawner_uuid");
         NODE_ID_STRING = new NamespacedKey(plugin, "node_id_string");
         FIXED = new NamespacedKey(plugin, "is_fixed");
+        SPAWNER_MOB = new NamespacedKey(plugin, "spawner-mob");
     }
 
     public static boolean isDawnObject(ItemStack item) {

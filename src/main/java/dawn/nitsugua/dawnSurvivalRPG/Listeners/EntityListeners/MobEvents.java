@@ -43,8 +43,6 @@ public class MobEvents implements Listener {
     private final MobManager mobManager;
     private final DawnRegistry dawnRegistry = DawnRegistry.getInstance();
 
-    private Location cachedLocation = null;
-
     public MobEvents(DawnSurvivalRPG plugin) {
         this.plugin = plugin;
         this.mobManager = plugin.getMobManager();
@@ -60,116 +58,112 @@ public class MobEvents implements Listener {
 
     }
 
-    @EventHandler
-    public void onMobSpawn(CreatureSpawnEvent e) {
-        /*if(!(e.getEntity() instanceof Zombie zombie)) return;
+        @EventHandler
+        public void onMobSpawn(CreatureSpawnEvent e) {
+            /*if(!(e.getEntity() instanceof Zombie zombie)) return;
 
-        Goal<Zombie> goal = new FleeFromPlayerGoal(zombie);
+            Goal<Zombie> goal = new FleeFromPlayerGoal(zombie);
 
-        plugin.getServer().getMobGoals().removeAllGoals(zombie);
-        plugin.getServer().getMobGoals().addGoal(zombie, 0, goal);*/
-        if(!(e.getEntity() instanceof Creature)) return;
+            plugin.getServer().getMobGoals().removeAllGoals(zombie);
+            plugin.getServer().getMobGoals().addGoal(zombie, 0, goal);*/
+            if(!(e.getEntity() instanceof Creature creature)) return;
 
-        mobManager.stripGenericMobGoal(e.getEntity());
-    }
-
-//    @EventHandler
-//    public void onChunkLoad(ChunkLoadEvent e) {
-//        for(Entity entity : e.getChunk().getEntities()) {
-//            if(!(entity instanceof Creature)) return;
-//            mobManager.stripGenericMobGoal((LivingEntity) entity);
-//        }
-//    }
-
-    @EventHandler
-    public void onEntityLoad(EntitiesLoadEvent e) {
-        for(Entity entity : e.getEntities()) {
-            if(entity instanceof Creature creature) {
-                mobManager.stripGenericMobGoal(creature);
+            mobManager.stripGenericMobGoal(e.getEntity());
+            if(e.getEntity().getEntitySpawnReason() == CreatureSpawnEvent.SpawnReason.SPAWNER || e.getEntity().getEntitySpawnReason() == CreatureSpawnEvent.SpawnReason.TRIAL_SPAWNER) {
+                PersistentDataContainer pdc = e.getEntity().getPersistentDataContainer();
+                pdc.set(DawnKeys.SPAWNER_MOB, PersistentDataType.BOOLEAN, true);
+                plugin.getVaultAndSpawnerManager().manageSpawnerSpawnedMob(creature);
+                plugin.getLog().info("Gave spawner mob tag");
             }
         }
-    }
 
+    //    @EventHandler
+    //    public void onChunkLoad(ChunkLoadEvent e) {
+    //        for(Entity entity : e.getChunk().getEntities()) {
+    //            if(!(entity instanceof Creature)) return;
+    //            mobManager.stripGenericMobGoal((LivingEntity) entity);
+    //        }
+    //    }
+
+        @EventHandler
+        public void onEntityLoad(EntitiesLoadEvent e) {
+            for(Entity entity : e.getEntities()) {
+                if(entity instanceof Creature creature) {
+                    mobManager.stripGenericMobGoal(creature);
+                    if(entity.getPersistentDataContainer().has(DawnKeys.SPAWNER_MOB)) {
+                        plugin.getVaultAndSpawnerManager().manageSpawnerSpawnedMob(creature);
+                    }
+                }
+            }
+        }
+
+    //Damage translator for ranged mobs
     @EventHandler
     public void onArrowHit(EntityDamageByEntityEvent event) {
-        // 1. Check if damager is an arrow
         if (!(event.getDamager() instanceof Arrow arrow)) return;
-
-        // 2. Check if shooter is a custom mob
         if (!(arrow.getShooter() instanceof Mob shooter)) return;
         if (!(event.getEntity() instanceof Player)) return;
+        //plugin.getLog().info("Shooting");
 
-        // 3. Check if it's a Dawn custom mob
-        if (!shooter.getPersistentDataContainer().has(DawnKeys.DAWN_MOB, PersistentDataType.BOOLEAN)) return;
+        // 3. Check if it's a Dawn custom mob or a spawner spawned mob
+        if (!shooter.getPersistentDataContainer().has(DawnKeys.DAWN_MOB, PersistentDataType.BOOLEAN) && !shooter.getPersistentDataContainer().has(DawnKeys.SPAWNER_MOB, PersistentDataType.BOOLEAN)) return;
 
-        // 4. Get the mob name
-        String mobName = shooter.getPersistentDataContainer().get(
-                DawnKeys.DAWN_MOB_NAME,
-                PersistentDataType.STRING
-        );
-
-        if (mobName == null) return;
-
-        // 5. Get the custom mob blueprint
-        CustomMob blueprint = dawnRegistry.getCustomMob(mobName.toUpperCase());
-        if (blueprint == null) return;
-
-        // 6. Override arrow damage with the custom attack damage
-        double customDamage = blueprint.getAttackDamage();
-        event.setDamage(customDamage);
+        AttributeInstance attackDamage = shooter.getAttribute(Attribute.ATTACK_DAMAGE);
+        if(attackDamage != null) {
+            event.setDamage(attackDamage.getValue());
+        }
     }
-
-    @EventHandler
-    public void onHit(PlayerInteractEvent e) {
-        Player player = e.getPlayer();
-        if(!player.isOp()) return;
-        ItemStack item = player.getInventory().getItemInMainHand();
-        // 1. Only trigger on Right-Clicking a block (prevents double-firing)
-        if (item.getType() == Material.AIR || !item.hasItemMeta()) return;
-        // 2. Extract the name from the Component
-        Component nameComp = item.getItemMeta().displayName();
-        if (nameComp == null) return;
-        String itemName = PlainTextComponentSerializer.plainText().serialize(nameComp);
-        if (!itemName.equals("spawner-tester")) return;
-
-        if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-
-
-            // 3. Get the block and check if it's a spawner
-            Block block = e.getClickedBlock();
-            if(block == null) return;
-
-            cachedLocation = block.getLocation().add(0.5,1,0.5);
-            player.sendMessage(TextUtil.format("<green>Location cached: <white>" +
-                    cachedLocation.getWorld().getName() + " " +
-                    cachedLocation.getBlockX() + ", " +
-                    cachedLocation.getBlockY() + ", " +
-                    cachedLocation.getBlockZ()));
-
-//            if(block.getType() == Material.AIR) return;
+//    @EventHandler
+//    public void onHit(PlayerInteractEvent e) {
+//        Player player = e.getPlayer();
+//        if(!player.isOp()) return;
+//        ItemStack item = player.getInventory().getItemInMainHand();
+//        // 1. Only trigger on Right-Clicking a block (prevents double-firing)
+//        if (item.getType() == Material.AIR || !item.hasItemMeta()) return;
+//        // 2. Extract the name from the Component
+//        Component nameComp = item.getItemMeta().displayName();
+//        if (nameComp == null) return;
+//        String itemName = PlainTextComponentSerializer.plainText().serialize(nameComp);
+//        if (!itemName.equals("spawner-tester")) return;
+//
+//        if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+//
+//
+//            // 3. Get the block and check if it's a spawner
+//            Block block = e.getClickedBlock();
+//            if(block == null) return;
+//
+//            cachedLocation = block.getLocation().add(0.5,1,0.5);
+//            player.sendMessage(TextUtil.format("<green>Location cached: <white>" +
+//                    cachedLocation.getWorld().getName() + " " +
+//                    cachedLocation.getBlockX() + ", " +
+//                    cachedLocation.getBlockY() + ", " +
+//                    cachedLocation.getBlockZ()));
+//
+//           if(block.getType() == Material.AIR) return;
 //            Location spawnLocation = block.getLocation().add(0.5, 1., 0.5);
 //
-//            Zombie zombie = block.getWorld().spawn(spawnLocation, Zombie.class);
+//           Zombie zombie = block.getWorld().spawn(spawnLocation, Zombie.class);
 //            zombie.setBaby();
 //
 //            zombie.getPersistentDataContainer().set(DawnKeys.DAWN_MOB, PersistentDataType.BOOLEAN, true);
-        } else if(e.getAction() == Action.LEFT_CLICK_AIR) {
-            if (cachedLocation == null) {
-                player.sendMessage(TextUtil.format("<red>No location cached! Right-click a block first."));
-                return;
-            }
-
-            //spawn mob here
-            Mob mob = mobManager.spawnCustomMob(cachedLocation, "GRAVEYARD_ZOMBIE");
-            MobGoals mobGoal = plugin.getServer().getMobGoals();
-
-            if(mob instanceof Animals animal) {
-                mobGoal.removeGoal(animal, VanillaGoal.TEMPT);
-                //plugin.getLog().info(TextUtil.format("<green>is an animal"));
-            }
-
-        }
-    }
+//        } else if(e.getAction() == Action.LEFT_CLICK_AIR) {
+//            if (cachedLocation == null) {
+//                player.sendMessage(TextUtil.format("<red>No location cached! Right-click a block first."));
+//                return;
+//            }
+//
+//            //spawn mob here
+//            Mob mob = mobManager.spawnCustomMob(cachedLocation, "GRAVEYARD_ZOMBIE");
+//            MobGoals mobGoal = plugin.getServer().getMobGoals();
+//
+//            if(mob instanceof Animals animal) {
+//                mobGoal.removeGoal(animal, VanillaGoal.TEMPT);
+//                //plugin.getLog().info(TextUtil.format("<green>is an animal"));
+//            }
+//
+//        }
+//    }
 
     @EventHandler
     public void onBreed(EntityBreedEvent e) {
@@ -180,64 +174,64 @@ public class MobEvents implements Listener {
         if(e.getEntity().getPersistentDataContainer().has(DawnKeys.DAWN_MOB)) e.setCancelled(true);
     }
 
-    @EventHandler
-    public void onDebugHit(EntityDamageByEntityEvent e) {
-        if (!(e.getDamager() instanceof Player player)) return;
-        if(!player.isOp()) return;
-        if (!(e.getEntity() instanceof Mob mob)) return;
+//    @EventHandler
+//    public void onDebugHit(EntityDamageByEntityEvent e) {
+//        if (!(e.getDamager() instanceof Player player)) return;
+//        if(!player.isOp()) return;
+//        if (!(e.getEntity() instanceof Mob mob)) return;
+//
+//        // 1. Check if they are holding the "spawner-tester" stick
+//        ItemStack hand = player.getInventory().getItemInMainHand();
+//        if (hand.getType() == Material.AIR || !hand.hasItemMeta()) return;
+//
+//        Component nameComp = hand.getItemMeta().displayName();
+//        if (nameComp == null) return;
+//        String itemName = PlainTextComponentSerializer.plainText().serialize(nameComp);
+//        if (!itemName.equals("mob-tester")) return;
+//
+//        // 2. Cancel the damage so you don't accidentally kill the mob while debugging!
+//        e.setCancelled(true);
+//
+//        // 3. Print the debug info
+//        printMobDebugInfo(player, mob);
+//    }
+//
+//    private void printMobDebugInfo(Player player, Mob mob) {
+//        player.sendMessage("<gold><b>--- " + mob.getType().name() + " DEBUG ---");
+//
+//        // --- ATTRIBUTES ---
+//        player.sendMessage("<yellow>Attributes:");
+//        // Loop through all possible attributes in the game
+//        for (Attribute attribute : Registry.ATTRIBUTE) {
+//            AttributeInstance instance = mob.getAttribute(attribute);
+//            // If the mob actually has this attribute, print it!
+//            if (instance != null) {
+//                player.sendMessage("<gray> • " + attribute.getKey().getKey() + ": <white>" + instance.getBaseValue());
+//            }
+//        }
+//
+//        // --- PDC TAGS ---
+//        player.sendMessage("<yellow>PDC Tags:");
+//        PersistentDataContainer pdc = mob.getPersistentDataContainer();
+//        if (pdc.getKeys().isEmpty()) {
+//            player.sendMessage("<gray> • No tags found.");
+//        } else {
+//            for (NamespacedKey key : pdc.getKeys()) {
+//                String value = extractPdcValue(pdc, key);
+//                player.sendMessage("<gray> • " + key.asString() + ": <white>" + value);
+//            }
+//        }
+//    }
 
-        // 1. Check if they are holding the "spawner-tester" stick
-        ItemStack hand = player.getInventory().getItemInMainHand();
-        if (hand.getType() == Material.AIR || !hand.hasItemMeta()) return;
-
-        Component nameComp = hand.getItemMeta().displayName();
-        if (nameComp == null) return;
-        String itemName = PlainTextComponentSerializer.plainText().serialize(nameComp);
-        if (!itemName.equals("mob-tester")) return;
-
-        // 2. Cancel the damage so you don't accidentally kill the mob while debugging!
-        e.setCancelled(true);
-
-        // 3. Print the debug info
-        printMobDebugInfo(player, mob);
-    }
-
-    private void printMobDebugInfo(Player player, Mob mob) {
-        player.sendMessage("<gold><b>--- " + mob.getType().name() + " DEBUG ---");
-
-        // --- ATTRIBUTES ---
-        player.sendMessage("<yellow>Attributes:");
-        // Loop through all possible attributes in the game
-        for (Attribute attribute : Registry.ATTRIBUTE) {
-            AttributeInstance instance = mob.getAttribute(attribute);
-            // If the mob actually has this attribute, print it!
-            if (instance != null) {
-                player.sendMessage("<gray> • " + attribute.getKey().getKey() + ": <white>" + instance.getBaseValue());
-            }
-        }
-
-        // --- PDC TAGS ---
-        player.sendMessage("<yellow>PDC Tags:");
-        PersistentDataContainer pdc = mob.getPersistentDataContainer();
-        if (pdc.getKeys().isEmpty()) {
-            player.sendMessage("<gray> • No tags found.");
-        } else {
-            for (NamespacedKey key : pdc.getKeys()) {
-                String value = extractPdcValue(pdc, key);
-                player.sendMessage("<gray> • " + key.asString() + ": <white>" + value);
-            }
-        }
-    }
-
-    // Helper method to safely extract PDC values without knowing the type
-    private String extractPdcValue(PersistentDataContainer pdc, NamespacedKey key) {
-        if (pdc.has(key, PersistentDataType.STRING)) return pdc.get(key, PersistentDataType.STRING);
-        if (pdc.has(key, PersistentDataType.INTEGER)) return String.valueOf(pdc.get(key, PersistentDataType.INTEGER));
-        if (pdc.has(key, PersistentDataType.DOUBLE)) return String.valueOf(pdc.get(key, PersistentDataType.DOUBLE));
-        if (pdc.has(key, PersistentDataType.BOOLEAN)) return String.valueOf(pdc.get(key, PersistentDataType.BOOLEAN));
-        if (pdc.has(key, PersistentDataType.LONG)) return String.valueOf(pdc.get(key, PersistentDataType.LONG));
-        return "[Complex Type]";
-    }
+//    // Helper method to safely extract PDC values without knowing the type
+//    private String extractPdcValue(PersistentDataContainer pdc, NamespacedKey key) {
+//        if (pdc.has(key, PersistentDataType.STRING)) return pdc.get(key, PersistentDataType.STRING);
+//        if (pdc.has(key, PersistentDataType.INTEGER)) return String.valueOf(pdc.get(key, PersistentDataType.INTEGER));
+//        if (pdc.has(key, PersistentDataType.DOUBLE)) return String.valueOf(pdc.get(key, PersistentDataType.DOUBLE));
+//        if (pdc.has(key, PersistentDataType.BOOLEAN)) return String.valueOf(pdc.get(key, PersistentDataType.BOOLEAN));
+//        if (pdc.has(key, PersistentDataType.LONG)) return String.valueOf(pdc.get(key, PersistentDataType.LONG));
+//        return "[Complex Type]";
+//    }
 
     @EventHandler
     public void onBurn(EntityCombustEvent e) {

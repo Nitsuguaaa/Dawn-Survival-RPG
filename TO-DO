@@ -12,6 +12,9 @@ Custom Items:
  - make custom items hot reloadable
  - DONE: Custom recipes
 
+ DEADLY DEADLY DUNGEONS:
+ - let iron bars be broken
+
  Mana:
  - BUG - Sometimes mana doesn't input right, even holding a sword with mana doesn't update mana pool
 

@@ -22,6 +22,7 @@ import dawn.nitsugua.dawnSurvivalRPG.Listeners.EntityListeners.VillagerEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.GuiListeners.GuiEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.PlayerListeners.ItemEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.PlayerListeners.PlayerEvents;
+import dawn.nitsugua.dawnSurvivalRPG.Listeners.StructureListeners.LootGenerateEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.StructureListeners.StructureEvents;
 import dawn.nitsugua.dawnSurvivalRPG.Listeners.TestListeners.PlayerBreakingBlockListener;
 import dawn.nitsugua.dawnSurvivalRPG.Loots.LootTableLoader;
@@ -62,6 +63,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     private GuiManager guiManager;
     private CustomItemManager customItemManager;
     private OverworldManager overworldManager;
+    private VaultAndSpawnerManager vaultAndSpawnerManager;
 
     //loaders with managers
     private SellLoader sellLoader;
@@ -158,6 +160,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new AntiEndGameListener(), instance);
         getServer().getPluginManager().registerEvents(new GuiEvents(), instance);
         getServer().getPluginManager().registerEvents(new StructureEvents(instance), instance);
+        getServer().getPluginManager().registerEvents(new LootGenerateEvents(), instance);
 
         Bukkit.getScheduler().runTaskLater(this, this::hookOptionalPlugins, 1L);
 
@@ -207,6 +210,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         taskManager = new TaskManager();
         guiManager = new GuiManager();
         overworldManager = new OverworldManager(instance);
+        vaultAndSpawnerManager = new VaultAndSpawnerManager(instance);
 
         sellLoader.initialize();
 
@@ -274,6 +278,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     public OverworldManager getOverworldManager() {return overworldManager;}
     public TrackedChestDAO getChestDAO() {return chestDAO;}
     public PlayerDAO getPlayerDAO() {return playerDAO;}
+    public VaultAndSpawnerManager getVaultAndSpawnerManager() {return vaultAndSpawnerManager;}
 
     @NotNull
     public ComponentLogger getLog() {return log;}

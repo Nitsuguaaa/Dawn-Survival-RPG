@@ -32,17 +32,17 @@ public class ItemEvents implements Listener {
         this.cooldownManager = plugin.getCooldownManager();
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onItemInteraction(PlayerInteractEvent e) {
-        Player player = e.getPlayer();
-        ItemStack item = player.getInventory().getItemInMainHand();
-        if(!DawnKeys.isDawnObject(item)) return;
-
-
-        //player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "Checking if item is updated..."));
-
-        //check item versions here
-    }
+//    @EventHandler(priority = EventPriority.LOWEST)
+//    public void onItemInteraction(PlayerInteractEvent e) {
+//        Player player = e.getPlayer();
+//        ItemStack item = player.getInventory().getItemInMainHand();
+//        if(!DawnKeys.isDawnObject(item)) return;
+//
+//
+//        //player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "Checking if item is updated..."));
+//
+//        //check item versions here
+//    }
 
     @EventHandler
     public void onSkillUse(PlayerInteractEvent e) {
