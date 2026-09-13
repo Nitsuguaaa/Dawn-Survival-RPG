@@ -73,7 +73,7 @@ public class MobEvents implements Listener {
                 PersistentDataContainer pdc = e.getEntity().getPersistentDataContainer();
                 pdc.set(DawnKeys.SPAWNER_MOB, PersistentDataType.BOOLEAN, true);
                 plugin.getVaultAndSpawnerManager().manageSpawnerSpawnedMob(creature);
-                plugin.getLog().info("Gave spawner mob tag");
+                //plugin.getLog().info("Gave spawner mob tag");
             }
         }
 

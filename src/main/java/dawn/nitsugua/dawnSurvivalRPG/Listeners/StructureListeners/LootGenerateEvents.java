@@ -1,11 +1,17 @@
 package dawn.nitsugua.dawnSurvivalRPG.Listeners.StructureListeners;
 
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.TrialSpawner;
+import org.bukkit.block.Vault;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockDispenseLootEvent;
 import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
@@ -71,39 +77,89 @@ public class LootGenerateEvents implements Listener {
 
 
     @EventHandler
-    public void antiInflation(LootGenerateEvent e) {
-        List<ItemStack> generatedLoot = e.getLoot();
+    public void chestGeneration(LootGenerateEvent e) {
+        sanitizeLoot(e.getLoot());
+    }
 
-        Iterator<ItemStack> iterator = generatedLoot.iterator();
+    @EventHandler
+    public void vaultAndSpawnerGeneration(BlockDispenseLootEvent e) {
+        Block block = e.getBlock();
+        BlockState state = block.getState();
+
+        if(state instanceof Vault || state instanceof TrialSpawner) {
+            sanitizeLoot(e.getDispensedLoot());
+        }
+    }
+
+    public static void sanitizeLoot(List<ItemStack> lootList) {
+        Map<Material, Integer> totalAmounts = new HashMap<>();
+
+        for (ItemStack loot : lootList) {
+            Integer cap = INFLATED_ITEMS.get(loot.getType());
+            if (cap != null) {
+                totalAmounts.merge(loot.getType(), loot.getAmount(), Integer::sum);
+            }
+        }
+
+        Iterator<ItemStack> iterator = lootList.iterator();
+        Map<Material, Integer> remainingAmounts = new HashMap<>(totalAmounts);
 
         while (iterator.hasNext()) {
             ItemStack loot = iterator.next();
+            Material type = loot.getType();
+            Integer cap = INFLATED_ITEMS.get(type);
 
-            Integer cap = INFLATED_ITEMS.get(loot.getType());
-            if(cap != null && cap == 0) {
-                iterator.remove();
-                continue;
-            }
+            if (cap != null) {
+                if (cap == 0) {
+                    iterator.remove();
+                    continue;
+                }
 
-            if(cap != null && loot.getAmount() > cap) {
-                loot.setAmount(cap);
-            }
+                // Calculate how much of this item we can still keep
+                int remaining = remainingAmounts.getOrDefault(type, 0);
+                int allowed = Math.min(cap, remaining);
 
-            if(!loot.hasItemMeta()) continue;
-            ItemMeta meta = loot.getItemMeta();
-
-            Map<Enchantment, Integer> enchants = new HashMap<>(meta.getEnchants());
-            for(Map.Entry<Enchantment, Integer> entry : enchants.entrySet()) {
-                Enchantment ench = entry.getKey();
-                Integer level = entry.getValue();
-                Integer maxLevel = ENCHANT_CAPS.get(ench);
-                if(maxLevel != null && level > maxLevel) {
-                    meta.removeEnchant(ench);
-                    meta.addEnchant(ench, maxLevel, true);
+                if (allowed <= 0) {
+                    iterator.remove(); // Already hit the total cap
+                } else {
+                    loot.setAmount(Math.min(loot.getAmount(), allowed));
+                    remainingAmounts.put(type, remaining - allowed);
                 }
             }
 
-            loot.setItemMeta(meta);
+            // 3. Handle enchantments
+            if (!loot.hasItemMeta()) continue;
+            ItemMeta meta = loot.getItemMeta();
+
+            if (meta instanceof EnchantmentStorageMeta storageMeta) {
+                // --- ENCHANTED BOOKS (Crucial for Vaults!) ---
+                Map<Enchantment, Integer> storedEnchants = new HashMap<>(storageMeta.getStoredEnchants());
+                for (Map.Entry<Enchantment, Integer> entry : storedEnchants.entrySet()) {
+                    Enchantment ench = entry.getKey();
+                    int level = entry.getValue();
+                    Integer maxLevel = ENCHANT_CAPS.get(ench);
+
+                    if (maxLevel != null && level > maxLevel) {
+                        storageMeta.removeStoredEnchant(ench);
+                        storageMeta.addStoredEnchant(ench, maxLevel, true);
+                    }
+                }
+                loot.setItemMeta(storageMeta);
+            } else {
+                // --- REGULAR ITEMS ---
+                Map<Enchantment, Integer> enchants = new HashMap<>(meta.getEnchants());
+                for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet()) {
+                    Enchantment ench = entry.getKey();
+                    int level = entry.getValue();
+                    Integer maxLevel = ENCHANT_CAPS.get(ench);
+
+                    if (maxLevel != null && level > maxLevel) {
+                        meta.removeEnchant(ench);
+                        meta.addEnchant(ench, maxLevel, true);
+                    }
+                }
+                loot.setItemMeta(meta);
+            }
         }
     }
 }
