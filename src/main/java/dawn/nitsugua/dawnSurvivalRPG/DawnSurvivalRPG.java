@@ -160,7 +160,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new AntiEndGameListener(), instance);
         getServer().getPluginManager().registerEvents(new GuiEvents(), instance);
         getServer().getPluginManager().registerEvents(new StructureEvents(instance), instance);
-        getServer().getPluginManager().registerEvents(new LootGenerateEvents(), instance);
+        getServer().getPluginManager().registerEvents(new LootGenerateEvents(instance), instance);
 
         Bukkit.getScheduler().runTaskLater(this, this::hookOptionalPlugins, 1L);
 

@@ -45,7 +45,10 @@ public class StructureEvents implements Listener {
     public void onStructureGenerate(AsyncStructureGenerateEvent e) {
         Registry<Structure> structureRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.STRUCTURE);
         NamespacedKey key = structureRegistry.getKey(e.getStructure());
-        plugin.getLog().info(TextUtil.sendLogInfo("StructureEvents", TextUtil.LogInfo.INFO, "Structure loaded: <white>" + key.toString()));
+//        if(!key.toString().contains("minecraft")) {
+//            plugin.getLog().info(TextUtil.sendLogInfo("StructureEvents", TextUtil.LogInfo.INFO, "Structure loaded: <white>" + key.toString()));
+//        }
+
         if(key == null) return;
 
         String structureKey = key.toString();

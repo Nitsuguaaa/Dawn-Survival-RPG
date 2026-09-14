@@ -1,5 +1,7 @@
 package dawn.nitsugua.dawnSurvivalRPG.Listeners.StructureListeners;
 
+import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.VaultAndSpawnerManager;
+import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -22,6 +24,14 @@ import java.util.List;
 import java.util.Map;
 
 public class LootGenerateEvents implements Listener {
+
+    private final DawnSurvivalRPG plugin;
+    private final VaultAndSpawnerManager vsm;
+
+    public LootGenerateEvents(DawnSurvivalRPG plugin) {
+        this.plugin = plugin;
+        this.vsm = plugin.getVaultAndSpawnerManager();
+    }
 
     private static final Map<Material, Integer> INFLATED_ITEMS = Map.ofEntries(
             // Ingots/Items (More common, slightly higher cap)
@@ -93,6 +103,11 @@ public class LootGenerateEvents implements Listener {
 
         if(state instanceof Vault || state instanceof TrialSpawner) {
             sanitizeLoot(e.getDispensedLoot());
+            if(state instanceof Vault) {
+                vsm.manageVaultLoot(e.getDispensedLoot());
+            } else {
+                vsm.manageTrialSpawnerLoot(e.getDispensedLoot());
+            }
         }
     }
 
