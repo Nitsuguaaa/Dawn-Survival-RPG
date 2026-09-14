@@ -64,6 +64,7 @@ public final class DawnSurvivalRPG extends JavaPlugin {
     private CustomItemManager customItemManager;
     private OverworldManager overworldManager;
     private VaultAndSpawnerManager vaultAndSpawnerManager;
+    private NetheriteSmithingManager netheriteSmithingManager;
 
     //loaders with managers
     private SellLoader sellLoader;
@@ -211,7 +212,9 @@ public final class DawnSurvivalRPG extends JavaPlugin {
         guiManager = new GuiManager();
         overworldManager = new OverworldManager(instance);
         vaultAndSpawnerManager = new VaultAndSpawnerManager(instance);
+        netheriteSmithingManager = new NetheriteSmithingManager(instance);
 
+        netheriteSmithingManager.initialize();
         sellLoader.initialize();
 
         //External plugins

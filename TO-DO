@@ -74,6 +74,7 @@ Economy:
  - add alternatives to making Elytra usable and netherite upgrading.
  - DONE: MAKE ALL LOADERS HOT RELOADABLE
  - invisibility shows no killer in the death message
+ - ban custom items in smithing, cooking, and anvil
 
  Experimental:
  - Ban food regen

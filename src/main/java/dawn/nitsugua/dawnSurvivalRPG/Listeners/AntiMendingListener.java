@@ -1,6 +1,8 @@
 package dawn.nitsugua.dawnSurvivalRPG.Listeners;
 
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.DawnKeys;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.InventoryUtil;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentOffer;
@@ -14,6 +16,7 @@ import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 
 public class AntiMendingListener implements Listener {
     private final DawnSurvivalRPG plugin;
@@ -68,50 +71,51 @@ public class AntiMendingListener implements Listener {
     @EventHandler
     public void onItemDrop(ItemSpawnEvent e) {
         ItemStack item = e.getEntity().getItemStack();
+        Material type = item.getType();
 
-        if(isPotentiallyEnchanted(item.getType())) {
-            if(hasMending(item)) {
-                if(item.getType() == Material.ENCHANTED_BOOK) {
-                    e.getEntity().setItemStack(plugin.getCustomItemFactory().createCustomItem("COMMON_KEY_SHARD", 1));
-                } else {
-                    ItemMeta itemMeta = item.getItemMeta();
-                    itemMeta.removeEnchant(Enchantment.MENDING);
-                    item.setItemMeta(itemMeta);
-                    e.getEntity().setItemStack(item);
+        // 1. THE BOUNCER: If it's a Dawn Custom Item, instantly ignore it!
+        // This saves the server from doing ANY calculations on your custom gear.
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null && meta.getPersistentDataContainer().has(DawnKeys.DAWN_OBJECT)) {
+            return;
+        }
+
+        // 2. Now we only run the heavy logic on VANILLA items
+        if(type == Material.ENCHANTED_BOOK || type.getMaxDurability() > 0) {
+
+            if(meta != null) {
+                // Since Mending is erased, this will only ever trigger if a vanilla
+                // mob somehow drops a mending book (e.g. from a villager trading glitch)
+                if(hasMending(meta)) {
+                    if(type == Material.ENCHANTED_BOOK) {
+                        e.getEntity().setItemStack(InventoryUtil.resolveItem(plugin, "COMMON_KEY_SHARD", 1));
+                    } else {
+                        meta.removeEnchant(Enchantment.MENDING);
+                        item.setItemMeta(meta);
+                        e.getEntity().setItemStack(item);
+                    }
+                }
+            }
+
+            // 3. ELYTRA PLUG (Only runs on Vanilla Elytras now!)
+            if(type == Material.ELYTRA) {
+                boolean isCustomElytra = (meta != null && meta.getPersistentDataContainer().has(DawnKeys.FIXED));
+
+                if(!isCustomElytra) {
+                    ItemStack brokenElytra = InventoryUtil.resolveItem(plugin, "BROKEN_ELYTRA", 1);
+                    if(brokenElytra != null) {
+                        e.getEntity().setItemStack(brokenElytra);
+                    }
                 }
             }
         }
-
     }
 
-    private boolean isPotentiallyEnchanted(Material type) {
-        return type == Material.ENCHANTED_BOOK ||
-                type.name().contains("HELMET") ||
-                type.name().contains("CHESTPLATE") ||
-                type.name().contains("LEGGINGS") ||
-                type.name().contains("BOOTS") ||
-                type.name().contains("TUNIC") ||
-                type.name().contains("SWORD") ||
-                type.name().contains("PICKAXE") ||
-                type.name().contains("AXE") ||
-                type.name().contains("SHOVEL") ||
-                type.name().contains("HOE") ||
-                type.name().contains("BOW") ||
-                type.name().contains("CROSSBOW") ||
-                type == Material.FISHING_ROD ||
-                type == Material.SHEARS ||
-                type == Material.FLINT_AND_STEEL ||
-                type == Material.CARROT_ON_A_STICK ||
-                type == Material.WARPED_FUNGUS_ON_A_STICK;
-    }
-
-    private boolean hasMending(ItemStack item) {
-        if(item == null || !item.hasItemMeta()) return false;
-
-        ItemMeta meta = item.getItemMeta();
-        if(meta instanceof EnchantmentStorageMeta storageMeta) {
+    private boolean hasMending(ItemMeta meta) {
+        if (meta instanceof EnchantmentStorageMeta storageMeta) {
             return storageMeta.hasStoredEnchant(Enchantment.MENDING);
-        } else return meta.hasEnchant(Enchantment.MENDING);
+        }
+        return meta.hasEnchant(Enchantment.MENDING);
     }
 
 

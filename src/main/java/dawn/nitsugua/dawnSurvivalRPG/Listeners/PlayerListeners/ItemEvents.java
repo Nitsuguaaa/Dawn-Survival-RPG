@@ -7,7 +7,9 @@ import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.DawnKeys;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.DebounceUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
+import org.bukkit.Keyed;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -15,9 +17,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.event.inventory.PrepareSmithingEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.SmithingInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -136,5 +141,35 @@ public class ItemEvents implements Listener {
         if(e.getInventory().getResult().getType() == Material.TNT_MINECART) {
             e.getInventory().setResult(null);
         }
+    }
+
+    @EventHandler
+    public void onPrepareSmith(PrepareSmithingEvent e) {
+        SmithingInventory inv = e.getInventory();
+        ItemStack result = e.getResult();
+        if(result == null) return;
+
+        Recipe recipe = inv.getRecipe();
+        if(isDawnRecipe(recipe)) {
+            return;
+        }
+
+        // Block Dawn items from vanilla recipes
+        ItemStack template = inv.getItem(0);
+        ItemStack base = inv.getItem(1);
+        ItemStack addition = inv.getItem(2);
+
+        if (DawnKeys.isDawnObject(template)
+                || DawnKeys.isDawnObject(base)
+                || DawnKeys.isDawnObject(addition)) {
+            e.setResult(null);
+        }
+    }
+
+    private boolean isDawnRecipe(Recipe recipe) {
+        if(!(recipe instanceof Keyed keyed)) return false;
+
+        NamespacedKey key = keyed.getKey();
+        return key.getNamespace().equalsIgnoreCase("DawnSurvivalRPG");
     }
 }
