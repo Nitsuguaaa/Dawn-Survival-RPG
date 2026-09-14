@@ -2,6 +2,7 @@ package dawn.nitsugua.dawnSurvivalRPG.Listeners.EntityListeners;
 
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.GUI.DawnGuis.KeyExchangeGui;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.DebounceUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import de.oliver.fancynpcs.api.events.NpcInteractEvent;
@@ -33,6 +34,11 @@ public class FancyNPCEvents implements Listener {
     @EventHandler
     public void onNPCInteract(NpcInteractEvent e) {
         Player player = e.getPlayer();
+
+        if (DebounceUtil.isGlobalDebounceActive(player.getUniqueId())) {
+            return; // Too fast! Ignore the click
+        }
+
         Npc npc = e.getNpc();
 
         switch (npc.getData().getName()) {

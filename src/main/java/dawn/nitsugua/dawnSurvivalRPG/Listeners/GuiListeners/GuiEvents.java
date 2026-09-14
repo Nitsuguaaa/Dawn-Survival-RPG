@@ -2,6 +2,7 @@ package dawn.nitsugua.dawnSurvivalRPG.Listeners.GuiListeners;
 
 import dawn.nitsugua.dawnSurvivalRPG.GUI.DawnGuiHolder;
 import dawn.nitsugua.dawnSurvivalRPG.GUI.GuiButton;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.DebounceUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
@@ -25,6 +26,11 @@ public class GuiEvents implements Listener {
 
         if(clicked.getHolder() instanceof DawnGuiHolder guiHolder) {
             e.setCancelled(true);
+
+            if (DebounceUtil.isGlobalDebounceActive(e.getWhoClicked().getUniqueId())) {
+                return; // Too fast! Ignore the click
+            }
+
             GuiButton button = guiHolder.getButton(e.getSlot());
             if(button != null) button.handleClick(e);
             return;

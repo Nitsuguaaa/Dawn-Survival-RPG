@@ -81,9 +81,8 @@ public class ItemEvents implements Listener {
             return;
         }
 
-        // 🔁 GLOBAL DEBOUNCE: Stops all skill uses for 200ms after any skill
+        // GLOBAL DEBOUNCE: Stops all skill uses for 200ms after any skill
         if (DebounceUtil.isGlobalDebounceActive(player.getUniqueId())) {
-            player.sendMessage("debounce active");
             return; // Too fast! Ignore the click
         }
 
