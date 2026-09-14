@@ -5,6 +5,7 @@ import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.InventoryUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.RNGManager;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.*;
@@ -44,6 +45,7 @@ public class StructureEvents implements Listener {
     public void onStructureGenerate(AsyncStructureGenerateEvent e) {
         Registry<Structure> structureRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.STRUCTURE);
         NamespacedKey key = structureRegistry.getKey(e.getStructure());
+        plugin.getLog().info(TextUtil.sendLogInfo("StructureEvents", TextUtil.LogInfo.INFO, "Structure loaded: <white>" + key.toString()));
         if(key == null) return;
 
         String structureKey = key.toString();

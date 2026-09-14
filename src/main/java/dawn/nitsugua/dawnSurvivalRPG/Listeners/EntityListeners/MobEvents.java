@@ -268,6 +268,7 @@ public class MobEvents implements Listener {
             // Villages
             EntityType.VILLAGER, EntityType.IRON_GOLEM, EntityType.CAT,
             EntityType.HORSE, EntityType.PIG, EntityType.COW, EntityType.SHEEP, EntityType.CHICKEN,
+            EntityType.DONKEY, EntityType.ARMADILLO, EntityType.LLAMA, EntityType.GOAT,
             // End Cities
             EntityType.SHULKER,
             // Mansions & Outposts
@@ -281,7 +282,7 @@ public class MobEvents implements Listener {
     );
 
     @EventHandler
-    public void banVillagersOnChunks(ChunkLoadEvent e) {
+    public void banMobsOnChunks(ChunkLoadEvent e) {
         if(!ALLOWED_WORLDS.contains(e.getWorld().getName())) return;
         if(!e.isNewChunk()) return;
 
@@ -307,11 +308,8 @@ public class MobEvents implements Listener {
             return;
         }
 
-        if(ALLOWED_REASONS.contains(reason)) {
-            //plugin.getLog().info("Allowed spawn for: " + e.getEntity().getName() + ". Spawn Reason: " + e.getEntity().getEntitySpawnReason().name());
-        } else {
+        if(!ALLOWED_REASONS.contains(reason)) {
             e.setCancelled(true);
-            //plugin.getLog().info("Banned spawn for: " + e.getEntity().getName() + ". Spawn Reason: " + e.getEntity().getEntitySpawnReason().name());
         }
     }
 }

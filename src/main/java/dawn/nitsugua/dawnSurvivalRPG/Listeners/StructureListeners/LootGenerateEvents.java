@@ -13,6 +13,8 @@ import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -49,7 +51,10 @@ public class LootGenerateEvents implements Listener {
             Map.entry(Material.ELYTRA,                0),  // YOU DISABLED ELYTRAS! Cap to 0 = remove entirely
             Map.entry(Material.NETHERITE_INGOT,        0),  // YOU DISABLED NETHERITE! Remove from loot
             Map.entry(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE, 0), // Same
-            Map.entry(Material.SHULKER_BOX,            1)   // Portable storage is OP
+            Map.entry(Material.SHULKER_BOX,            1),  // Portable storage is OP
+
+            Map.entry(Material.BLAZE_POWDER, 32),
+            Map.entry(Material.BLAZE_ROD, 10)
     );
 
     private static final Map<Enchantment, Integer> ENCHANT_CAPS = Map.ofEntries(
@@ -92,17 +97,11 @@ public class LootGenerateEvents implements Listener {
     }
 
     public static void sanitizeLoot(List<ItemStack> lootList) {
-        Map<Material, Integer> totalAmounts = new HashMap<>();
-
-        for (ItemStack loot : lootList) {
-            Integer cap = INFLATED_ITEMS.get(loot.getType());
-            if (cap != null) {
-                totalAmounts.merge(loot.getType(), loot.getAmount(), Integer::sum);
-            }
-        }
-
+        // We don't even need the first loop anymore!
         Iterator<ItemStack> iterator = lootList.iterator();
-        Map<Material, Integer> remainingAmounts = new HashMap<>(totalAmounts);
+
+        // Track exactly how many items we've allowed to pass through so far
+        Map<Material, Integer> alreadyKept = new HashMap<>();
 
         while (iterator.hasNext()) {
             ItemStack loot = iterator.next();
@@ -115,24 +114,29 @@ public class LootGenerateEvents implements Listener {
                     continue;
                 }
 
-                // Calculate how much of this item we can still keep
-                int remaining = remainingAmounts.getOrDefault(type, 0);
-                int allowed = Math.min(cap, remaining);
+                // 1. How much of this item have we already given them?
+                int keptSoFar = alreadyKept.getOrDefault(type, 0);
 
-                if (allowed <= 0) {
-                    iterator.remove(); // Already hit the total cap
+                // 2. How much space is left under the cap?
+                int spaceLeft = cap - keptSoFar;
+
+                if (spaceLeft <= 0) {
+                    iterator.remove(); // TOTAL CAP REACHED! Delete the stack!
                 } else {
-                    loot.setAmount(Math.min(loot.getAmount(), allowed));
-                    remainingAmounts.put(type, remaining - allowed);
+                    // 3. Only give them what fits in the remaining space
+                    int amountToKeep = Math.min(loot.getAmount(), spaceLeft);
+                    loot.setAmount(amountToKeep);
+
+                    // 4. Add it to our running total
+                    alreadyKept.put(type, keptSoFar + amountToKeep);
                 }
             }
 
-            // 3. Handle enchantments
+            // 3. Handle enchantments (Same as before)
             if (!loot.hasItemMeta()) continue;
             ItemMeta meta = loot.getItemMeta();
 
             if (meta instanceof EnchantmentStorageMeta storageMeta) {
-                // --- ENCHANTED BOOKS (Crucial for Vaults!) ---
                 Map<Enchantment, Integer> storedEnchants = new HashMap<>(storageMeta.getStoredEnchants());
                 for (Map.Entry<Enchantment, Integer> entry : storedEnchants.entrySet()) {
                     Enchantment ench = entry.getKey();
@@ -146,7 +150,6 @@ public class LootGenerateEvents implements Listener {
                 }
                 loot.setItemMeta(storageMeta);
             } else {
-                // --- REGULAR ITEMS ---
                 Map<Enchantment, Integer> enchants = new HashMap<>(meta.getEnchants());
                 for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet()) {
                     Enchantment ench = entry.getKey();
@@ -159,6 +162,31 @@ public class LootGenerateEvents implements Listener {
                     }
                 }
                 loot.setItemMeta(meta);
+            }
+
+            if (meta instanceof PotionMeta potionMeta) {
+                // Loop through custom effects (like the ones in the JSON)
+                for (PotionEffect effect : potionMeta.getCustomEffects()) {
+                    // Get the internal name, e.g., "instant_health", "strength", "regeneration"
+                    String effectName = effect.getType().getKey().getKey();
+                    int amp = effect.getAmplifier(); // Amplifier 0 = Level I, Amplifier 5 = Level VI
+                    int dur = effect.getDuration();
+
+                    // 1. Cap Instant Health to Level II (Amplifier 1 = 8 hearts of healing)
+                    if (effectName.equals("instant_health") && amp > 1) {
+                        potionMeta.removeCustomEffect(effect.getType());
+                        potionMeta.addCustomEffect(new PotionEffect(effect.getType(), 1, 1), true);
+                    }
+                    // 2. Cap Buffs (Regen, Strength, Speed, Haste, Resistance) to Level II (Amplifier 1)
+                    else if ((effectName.equals("regeneration") || effectName.equals("strength") ||
+                            effectName.equals("speed") || effectName.equals("swiftness") ||
+                            effectName.equals("haste") || effectName.equals("resistance")) && amp > 1) {
+                        potionMeta.removeCustomEffect(effect.getType());
+                        // Keep the original duration, but nerf the level
+                        potionMeta.addCustomEffect(new PotionEffect(effect.getType(), dur, 1), true);
+                    }
+                }
+                loot.setItemMeta(potionMeta);
             }
         }
     }
