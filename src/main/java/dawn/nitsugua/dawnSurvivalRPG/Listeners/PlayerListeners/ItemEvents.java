@@ -5,6 +5,7 @@ import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.ManaManager;
 import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.SkillManager;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.DawnKeys;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.DebounceUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -80,8 +81,15 @@ public class ItemEvents implements Listener {
             return;
         }
 
+        // 🔁 GLOBAL DEBOUNCE: Stops all skill uses for 200ms after any skill
+        if (DebounceUtil.isGlobalDebounceActive(player.getUniqueId())) {
+            player.sendMessage("debounce active");
+            return; // Too fast! Ignore the click
+        }
+
         if (isActiveSkill) {
             if (!manaManager.hasMana(player, pdc)) return;
+
             if (cooldownManager.isOnCooldown(player, item)) return;
 
             plugin.getSkillManager().onUse(player, item, pdc);

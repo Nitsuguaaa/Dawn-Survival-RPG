@@ -141,7 +141,9 @@ public class CustomItemLoader {
 
                 //check if it has one time uses:
                 if(config.contains("one-time-use")) {
-                    item.toggleOneTimeUse();
+                    if(config.getBoolean("one-time-use")) {
+                        item.toggleOneTimeUse();
+                    }
                 }
 
                 //check if it has skill
