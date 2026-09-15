@@ -53,7 +53,12 @@ public class NetheriteSmithingManager {
                 "netherite_pickaxe_smithing",
                 "netherite_axe_smithing",
                 "netherite_shovel_smithing",
-                "netherite_hoe_smithing"
+                "netherite_hoe_smithing",
+                //extras
+                "respawn_anchor",
+                "tnt_minecart",
+                "tnt",
+                "end_crystal"
         );
 
         for(String id : vanillaRecipeIds) {

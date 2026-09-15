@@ -25,7 +25,7 @@ public class BankAutoSaveTask {
                 plugin.getLog().info(TextUtil.sendLogInfo("BankAutoSaveTask", TextUtil.LogInfo.SUCCESS, "Saved " + savedCount + " banks records to database."));
             }
         })
-                .setInterval(5)
+                .setInterval(50)
                 .setTimeUnit(TimeUnit.SECOND);
 
         plugin.getTaskManager().registerTask(runBankSaving);

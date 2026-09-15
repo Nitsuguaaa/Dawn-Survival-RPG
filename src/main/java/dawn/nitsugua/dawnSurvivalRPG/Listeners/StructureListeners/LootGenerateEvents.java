@@ -64,7 +64,10 @@ public class LootGenerateEvents implements Listener {
             Map.entry(Material.SHULKER_BOX,            1),  // Portable storage is OP
 
             Map.entry(Material.BLAZE_POWDER, 32),
-            Map.entry(Material.BLAZE_ROD, 10)
+            Map.entry(Material.BLAZE_ROD, 10),
+            Map.entry(Material.END_CRYSTAL, 0),
+            Map.entry(Material.TNT_MINECART, 0),
+            Map.entry(Material.RESPAWN_ANCHOR, 0)
     );
 
     private static final Map<Enchantment, Integer> ENCHANT_CAPS = Map.ofEntries(

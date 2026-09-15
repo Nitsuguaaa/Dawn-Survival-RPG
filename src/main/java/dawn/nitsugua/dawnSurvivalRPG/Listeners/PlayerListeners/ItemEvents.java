@@ -38,18 +38,6 @@ public class ItemEvents implements Listener {
         this.cooldownManager = plugin.getCooldownManager();
     }
 
-//    @EventHandler(priority = EventPriority.LOWEST)
-//    public void onItemInteraction(PlayerInteractEvent e) {
-//        Player player = e.getPlayer();
-//        ItemStack item = player.getInventory().getItemInMainHand();
-//        if(!DawnKeys.isDawnObject(item)) return;
-//
-//
-//        //player.sendMessage(MessagesUtil.sendInfo(MessagesUtil.commonMessages.MESSAGE, "Checking if item is updated..."));
-//
-//        //check item versions here
-//    }
-
     @EventHandler
     public void onSkillUse(PlayerInteractEvent e) {
         Player player = e.getPlayer();
@@ -124,7 +112,6 @@ public class ItemEvents implements Listener {
 
     @EventHandler
     public void onPrepareCraft(PrepareItemCraftEvent e) {
-        bannedItems(e);
         if(DawnKeys.isDawnObject(e.getInventory().getResult())) return;
         for(ItemStack ingredient : e.getInventory().getMatrix()) {
             if(ingredient == null || ingredient.getType() == Material.AIR) continue;
@@ -133,13 +120,6 @@ public class ItemEvents implements Listener {
                 e.getInventory().setResult(null);
                 return;
             }
-        }
-    }
-
-    private void bannedItems(PrepareItemCraftEvent e) {
-        if(e.getInventory().getResult() == null) return;
-        if(e.getInventory().getResult().getType() == Material.TNT_MINECART) {
-            e.getInventory().setResult(null);
         }
     }
 
