@@ -14,16 +14,16 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.BrewingStand;
+import org.bukkit.block.Furnace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockCookEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.inventory.PrepareAnvilEvent;
-import org.bukkit.event.inventory.PrepareGrindstoneEvent;
-import org.bukkit.event.inventory.PrepareItemCraftEvent;
-import org.bukkit.event.inventory.PrepareSmithingEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.*;
@@ -214,6 +214,71 @@ public class ItemEvents implements Listener {
                 || DawnKeys.isDawnObject(inv.getItem(1))
                 || DawnKeys.isDawnObject(inv.getItem(2))) {
             e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent e) {
+        Inventory top = e.getView().getTopInventory();
+        if (!(top instanceof FurnaceInventory) && !(top instanceof BrewerInventory)) return;
+
+        Inventory clicked = e.getClickedInventory();
+        if (clicked == null) return; // Clicked outside the window
+
+        Player player = (Player) e.getWhoClicked();
+
+        // --- 1. CATCH NUMBER KEY SWAPS (Hotbar 1-9) ---
+        if (e.getClick() == ClickType.NUMBER_KEY) {
+            // Get the actual item in the hotbar slot being swapped
+            ItemStack hotbarItem = player.getInventory().getItem(e.getHotbarButton());
+            if (DawnKeys.isDawnObject(hotbarItem)) {
+                e.setCancelled(true); // Block it from entering the top inventory
+            }
+            return;
+        }
+
+        boolean holdingDawnItem = DawnKeys.isDawnObject(e.getCursor());
+        boolean clickingDawnItem = DawnKeys.isDawnObject(e.getCurrentItem());
+        boolean isPlayerInv = (clicked == player.getInventory());
+
+        // --- 2. CATCH SHIFT-CLICKS ---
+        if (e.getClick().isShiftClick()) {
+            // Shift-clicking from player inventory sends it to the top inventory
+            if (isPlayerInv && clickingDawnItem) {
+                e.setCancelled(true);
+            }
+            return;
+        }
+
+        // --- 3. CATCH DOUBLE CLICKS (Collection) ---
+        if (e.getClick() == ClickType.DOUBLE_CLICK) {
+            if (clickingDawnItem || holdingDawnItem) {
+                e.setCancelled(true);
+            }
+            return;
+        }
+
+        // --- 4. CATCH STANDARD CLICKS (Left, Right, Drop, etc.) ---
+        // If holding a Dawn item and clicking on the top inventory -> BLOCK placement
+        if (holdingDawnItem && clicked == top) {
+            e.setCancelled(true);
+            return;
+        }
+    }
+
+    @EventHandler
+    public void onInventoryDrag(InventoryDragEvent e) {
+        Inventory top = e.getView().getTopInventory();
+        if (!(top instanceof FurnaceInventory) && !(top instanceof BrewerInventory)) return;
+
+        if (DawnKeys.isDawnObject(e.getOldCursor())) {
+            int topSize = top.getSize();
+            for (int rawSlot : e.getRawSlots()) {
+                if (rawSlot < topSize) {
+                    e.setCancelled(true);
+                    return;
+                }
+            }
         }
     }
 
