@@ -7,6 +7,10 @@ import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.DawnKeys;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.DebounceUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.event.player.PlayerLoomPatternSelectEvent;
+import io.papermc.paper.event.player.PlayerStonecutterRecipeSelectEvent;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -16,16 +20,18 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.PrepareAnvilEvent;
+import org.bukkit.event.inventory.PrepareGrindstoneEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.inventory.PrepareSmithingEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.SmithingInventory;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+
+import java.util.Objects;
 
 public class ItemEvents implements Listener {
     private final DawnSurvivalRPG plugin;
@@ -145,6 +151,73 @@ public class ItemEvents implements Listener {
             e.setResult(null);
         }
     }
+
+    @EventHandler
+    public void onPrepareAnvil(PrepareAnvilEvent e) {
+        AnvilInventory inv = e.getInventory();
+
+        ItemStack target = inv.getItem(0);
+        if(target == null) return;
+
+        ItemStack sacrifice = inv.getItem(1);
+
+        boolean targetIsDawn = DawnKeys.isDawnObject(target);
+        boolean sacrificeIsDawn = DawnKeys.isDawnObject(sacrifice);
+
+        //check if the item is a dawn object, if it's not equipment related then don't bother
+        //TODO: if decided to make custom enchants then check for books as well but that's for the future
+        if(targetIsDawn && target.getType().getMaxDurability() <= 0) {
+            e.setResult(null);
+            return;
+        }
+
+        if(sacrificeIsDawn && sacrifice.getType().getMaxDurability() <= 0) {
+            e.setResult(null);
+            return;
+        }
+
+        //ban custom items and vanilla items with the same material type
+        if(targetIsDawn && !(sacrificeIsDawn)) {
+            e.setResult(null);
+        }
+        if(sacrificeIsDawn && !(targetIsDawn)) {
+            e.setResult(null);
+        }
+
+        if(e.getResult() == null) return;
+        //disable renaming
+        // 3. Disable Renaming (The Fix!)
+        // Only compare the CUSTOM_NAME component (the text the player typed in the box).
+        // If they didn't type anything, both are null/unchanged, and Objects.equals() returns true!
+        Component targetCustomName = target.getData(DataComponentTypes.CUSTOM_NAME);
+        Component resultCustomName = e.getResult().getData(DataComponentTypes.CUSTOM_NAME);
+
+        if (!Objects.equals(targetCustomName, resultCustomName) && targetIsDawn) {
+            // The player tried to type a new name in the text box!
+            e.setResult(null);
+        }
+
+    }
+
+    @EventHandler
+    public void onStonecutterPrepare(PlayerStonecutterRecipeSelectEvent e) {
+        Inventory inv = e.getStonecutterInventory();
+        if(DawnKeys.isDawnObject(inv.getItem(0))) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onLoomPrepare(PlayerLoomPatternSelectEvent e) {
+        Inventory inv = e.getLoomInventory();
+        if (DawnKeys.isDawnObject(inv.getItem(0))
+                || DawnKeys.isDawnObject(inv.getItem(1))
+                || DawnKeys.isDawnObject(inv.getItem(2))) {
+            e.setCancelled(true);
+        }
+    }
+
+
 
     private boolean isDawnRecipe(Recipe recipe) {
         if(!(recipe instanceof Keyed keyed)) return false;

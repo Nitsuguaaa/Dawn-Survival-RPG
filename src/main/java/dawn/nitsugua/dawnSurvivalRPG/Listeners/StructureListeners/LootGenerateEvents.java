@@ -2,6 +2,7 @@ package dawn.nitsugua.dawnSurvivalRPG.Listeners.StructureListeners;
 
 import dawn.nitsugua.dawnSurvivalRPG.Core.Managers.VaultAndSpawnerManager;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
+import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -105,6 +106,7 @@ public class LootGenerateEvents implements Listener {
         BlockState state = block.getState();
 
         if(state instanceof Vault || state instanceof TrialSpawner) {
+            plugin.getLog().info(TextUtil.format("Loot from: " + e.getLootTable().getKey()));
             sanitizeLoot(e.getDispensedLoot());
             if(state instanceof Vault) {
                 vsm.manageVaultLoot(e.getDispensedLoot());

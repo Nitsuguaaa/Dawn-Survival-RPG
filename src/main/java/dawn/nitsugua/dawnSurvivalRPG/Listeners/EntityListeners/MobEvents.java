@@ -13,6 +13,7 @@ import dawn.nitsugua.dawnSurvivalRPG.Mobs.MobGoals.FleeFromPlayerGoal;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.DawnKeys;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
+import io.papermc.paper.event.player.PlayerNameEntityEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.*;
@@ -311,5 +312,10 @@ public class MobEvents implements Listener {
         if(!ALLOWED_REASONS.contains(reason)) {
             e.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void onMobRename(PlayerNameEntityEvent e) {
+        e.setCancelled(true);
     }
 }
