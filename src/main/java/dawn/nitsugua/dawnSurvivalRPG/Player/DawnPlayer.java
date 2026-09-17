@@ -12,6 +12,7 @@ import java.util.UUID;
 
 public class DawnPlayer {
     private final UUID playerId;
+    private UUID partyId;
     private String username;
 
     //database caches
@@ -93,4 +94,9 @@ public class DawnPlayer {
         lastSeen = time;
     }
     public long getLastSeen() {return lastSeen;}
+
+    public void setParty(UUID partyId) {this.partyId = partyId;}
+    public void removeParty() {this.partyId = null;}
+    public UUID getPartyId() {return partyId;}
+    public boolean isInParty() {return partyId != null;}
 }

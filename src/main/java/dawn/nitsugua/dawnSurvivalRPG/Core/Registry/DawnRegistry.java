@@ -5,6 +5,7 @@ import dawn.nitsugua.dawnSurvivalRPG.Dungeons.SpawnArea;
 import dawn.nitsugua.dawnSurvivalRPG.Items.CustomItem;
 import dawn.nitsugua.dawnSurvivalRPG.Loots.LootTable;
 import dawn.nitsugua.dawnSurvivalRPG.Mobs.CustomMob;
+import dawn.nitsugua.dawnSurvivalRPG.Parties.Party;
 import dawn.nitsugua.dawnSurvivalRPG.Player.DawnPlayer;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.ScheduledTask;
 import org.bukkit.Material;
@@ -29,6 +30,7 @@ public class DawnRegistry {
     private final ConcurrentHashMap<String, String> chunkStructure = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, int[]> structureYRanges = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Long> cooldowns = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, Party> parties = new ConcurrentHashMap<>();
 
     private final ConcurrentHashMap<Location, Long> trackedBlocks = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Location, Material> expectedTypes = new ConcurrentHashMap<>();
@@ -155,6 +157,12 @@ public class DawnRegistry {
                 entry -> entry.getValue() < cooldownCutoff
         );
     }
+
+    public void addParty(Party party) {
+        parties.put(party.getId(), party);
+    }
+    public Party getParty(UUID id) {return parties.get(id);}
+    public void removeParty(UUID id) {parties.remove(id);}
 
     // --- RELOAD METHODS ---
     public void clearStructureYRanges() {structureYRanges.clear();}
