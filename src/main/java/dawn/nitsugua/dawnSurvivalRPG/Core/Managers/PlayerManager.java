@@ -2,6 +2,7 @@ package dawn.nitsugua.dawnSurvivalRPG.Core.Managers;
 
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
+import dawn.nitsugua.dawnSurvivalRPG.Parties.Party;
 import dawn.nitsugua.dawnSurvivalRPG.Player.DawnPlayer;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.InventoryUtil;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.MessagesUtil;
@@ -65,6 +66,44 @@ public class PlayerManager {
             }
             return;
         }
+
+        UUID partyId = dp.getPartyId();
+        Party party = dawnRegistry.getParty(partyId);
+
+        if(party == null) {
+            dp.removeParty();
+        } else {
+            boolean wasLeader = playerId.equals(party.getLeader());
+
+            // Remove them first
+            party.removeMember(playerId);
+
+            // If they were the leader, transfer to someone else
+            if (wasLeader && !party.getMembers().isEmpty()) {
+                UUID newLeaderId = party.getMembers().keySet().iterator().next();
+                party.setLeader(newLeaderId);
+
+                Player newLeader = Bukkit.getPlayer(newLeaderId);
+                if (newLeader != null) {
+                    newLeader.sendMessage(MessagesUtil.sendInfo(
+                            MessagesUtil.commonMessages.SUCCESS,
+                            "You are now the party leader!"
+                    ));
+                }
+
+                plugin.getPartyManager().broadcastToParty(party, "<white>" + newLeader.getName() + "<gray> is now the party leader.");
+            }
+
+            // Notify the party
+            plugin.getPartyManager().broadcastToParty(party, "<white>" + player.getName() + "<gray> disconnected and left the party.");
+
+            // Clean up empty parties
+            if (party.getMembers().isEmpty()) {
+                dawnRegistry.removeParty(partyId);
+            }
+        }
+
+
 
         dp.setLastSeen(System.currentTimeMillis());
         if(dp.getBank().isDirty()) {

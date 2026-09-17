@@ -321,7 +321,7 @@ public class PartyManager {
                 "<white>" + invited.getName() + "<red> declined your party invite."));
     }
 
-    private void broadcastToParty(Party party, String message) {
+    public void broadcastToParty(Party party, String message) {
         for (UUID memberId : party.getMembers().keySet()) {
             Player onlineMember = Bukkit.getPlayer(memberId);
             if (onlineMember != null) {
