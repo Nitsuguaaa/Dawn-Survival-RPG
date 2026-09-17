@@ -269,17 +269,18 @@ public class MobEvents implements Listener {
             // Villages
             EntityType.VILLAGER, EntityType.IRON_GOLEM, EntityType.CAT,
             EntityType.HORSE, EntityType.PIG, EntityType.COW, EntityType.SHEEP, EntityType.CHICKEN,
-            EntityType.DONKEY, EntityType.ARMADILLO, EntityType.LLAMA, EntityType.GOAT,
+            EntityType.DONKEY, EntityType.ARMADILLO, EntityType.LLAMA, EntityType.GOAT, EntityType.RABBIT,
+            EntityType.POLAR_BEAR,
             // End Cities
             EntityType.SHULKER,
             // Mansions & Outposts
-            EntityType.EVOKER, EntityType.VINDICATOR, EntityType.ALLAY, EntityType.PILLAGER,
+            //EntityType.EVOKER, EntityType.VINDICATOR, EntityType.ALLAY, EntityType.PILLAGER,
             // Ocean Monuments
-            EntityType.GUARDIAN, EntityType.ELDER_GUARDIAN, EntityType.DROWNED,
+            //EntityType.GUARDIAN, EntityType.ELDER_GUARDIAN, EntityType.DROWNED,
             // Nether Bastions
-            EntityType.PIGLIN, EntityType.PIGLIN_BRUTE, EntityType.HOGLIN,
+            EntityType.PIGLIN, EntityType.PIGLIN_BRUTE, EntityType.HOGLIN
             // Witch Huts
-            EntityType.WITCH
+            //EntityType.WITCH
     );
 
     @EventHandler

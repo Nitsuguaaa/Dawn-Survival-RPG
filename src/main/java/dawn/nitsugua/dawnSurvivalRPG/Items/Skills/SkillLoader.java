@@ -1,10 +1,7 @@
 package dawn.nitsugua.dawnSurvivalRPG.Items.Skills;
 
 import dawn.nitsugua.dawnSurvivalRPG.Core.Registry.DawnRegistry;
-import dawn.nitsugua.dawnSurvivalRPG.Core.Skills.DungeonPearlSkill;
-import dawn.nitsugua.dawnSurvivalRPG.Core.Skills.EndSwordSkill;
-import dawn.nitsugua.dawnSurvivalRPG.Core.Skills.RepairSkill;
-import dawn.nitsugua.dawnSurvivalRPG.Core.Skills.Skill;
+import dawn.nitsugua.dawnSurvivalRPG.Core.Skills.*;
 import dawn.nitsugua.dawnSurvivalRPG.DawnSurvivalRPG;
 import dawn.nitsugua.dawnSurvivalRPG.Utils.TextUtil;
 
@@ -14,7 +11,8 @@ public class SkillLoader {
     private static final DawnRegistry dawnRegistry = DawnRegistry.getInstance();
 
     private static final Skill[] skillList = {
-      new EndSwordSkill(), new RepairSkill(), new DungeonPearlSkill()
+      new EndSwordSkill(), new RepairSkill(), new DungeonPearlSkill(),
+            new ChronosGearSkill()
     };
 
     public static void initialize(DawnSurvivalRPG plugin) {

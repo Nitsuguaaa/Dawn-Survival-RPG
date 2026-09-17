@@ -68,51 +68,61 @@ public class PlayerManager {
         }
 
         UUID partyId = dp.getPartyId();
-        Party party = dawnRegistry.getParty(partyId);
 
-        if(party == null) {
-            dp.removeParty();
-        } else {
-            boolean wasLeader = playerId.equals(party.getLeader());
+        // THE FIX: Only look up the party if the player actually has a partyId!
+        if (partyId != null) {
+            Party party = dawnRegistry.getParty(partyId);
 
-            // Remove them first
-            party.removeMember(playerId);
+            if(party == null) {
+                dp.removeParty();
+            } else {
+                boolean wasLeader = playerId.equals(party.getLeader());
 
-            // If they were the leader, transfer to someone else
-            if (wasLeader && !party.getMembers().isEmpty()) {
-                UUID newLeaderId = party.getMembers().keySet().iterator().next();
-                party.setLeader(newLeaderId);
+                // Remove them first
+                party.removeMember(playerId);
 
-                Player newLeader = Bukkit.getPlayer(newLeaderId);
-                if (newLeader != null) {
-                    newLeader.sendMessage(MessagesUtil.sendInfo(
-                            MessagesUtil.commonMessages.SUCCESS,
-                            "You are now the party leader!"
-                    ));
+                // If they were the leader, transfer to someone else
+                if (wasLeader && !party.getMembers().isEmpty()) {
+                    UUID newLeaderId = party.getMembers().keySet().iterator().next();
+                    party.setLeader(newLeaderId);
+
+                    Player newLeader = Bukkit.getPlayer(newLeaderId);
+                    if (newLeader != null) {
+                        newLeader.sendMessage(MessagesUtil.sendInfo(
+                                MessagesUtil.commonMessages.SUCCESS,
+                                "You are now the party leader!"
+                        ));
+                    }
+
+                    plugin.getPartyManager().broadcastToParty(party, "<white>" + newLeader.getName() + "<gray> is now the party leader.");
                 }
 
-                plugin.getPartyManager().broadcastToParty(party, "<white>" + newLeader.getName() + "<gray> is now the party leader.");
-            }
+                // Notify the party
+                plugin.getPartyManager().broadcastToParty(party, "<white>" + player.getName() + "<gray> disconnected and left the party.");
 
-            // Notify the party
-            plugin.getPartyManager().broadcastToParty(party, "<white>" + player.getName() + "<gray> disconnected and left the party.");
-
-            // Clean up empty parties
-            if (party.getMembers().isEmpty()) {
-                dawnRegistry.removeParty(partyId);
+                // Clean up empty parties
+                if (party.getMembers().isEmpty()) {
+                    dawnRegistry.removeParty(partyId);
+                }
             }
+        } else {
+            // Defensive cleanup just in case they had a null partyId but thought they were in one
+            dp.removeParty();
         }
 
-
-
         dp.setLastSeen(System.currentTimeMillis());
-        if(dp.getBank().isDirty()) {
+
+        // Null check for bank to prevent similar NPEs if bank loading failed
+        if(dp.getBank() != null && dp.getBank().isDirty()) {
             plugin.getBankDAO().saveBankAsync(dp.getBank());
         }
 
         plugin.getPlayerDAO().savePlayerAsync(dp);
         dawnRegistry.removePlayer(playerId);
-        if(dungeonManager.isDungeonWorld(player.getWorld().getName())) dungeonManager.removePlayerFromWorld(player.getWorld().getName());
+
+        if(dungeonManager.isDungeonWorld(player.getWorld().getName())) {
+            dungeonManager.removePlayerFromWorld(player.getWorld().getName());
+        }
     }
 
     public void playerSwitchWorldEvent(Player player, World from, World to) {
